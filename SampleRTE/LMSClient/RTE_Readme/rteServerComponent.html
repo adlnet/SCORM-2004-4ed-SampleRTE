@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+   <title>SCORM 2004 4th Edition Sample Run-Time Environment Version 1.1.1 Readme</title>
+   <link rel="stylesheet" href="README.css" type="text/css" />
+</head>
+<body class="bg">
+<div>
+<a name="rteServerComponent"></a>
+</div>
+<table width="100%" cellpadding="3">
+   <tr>
+      <td class="stagebar">
+     		Design Information
+      </td>
+   </tr>
+</table>
+   <table>
+	   <tr>
+	      <td valign="top">
+	         <p>
+	         <br />
+	            The SRTE Version 1.1.1 is composed of two 
+	            distinct and separate components:
+	         </p>
+	         
+		         <ol style="margin-bottom: 0;">
+		            <li>
+		               SRTE Server Component: Implemented using 
+		               Java Applications and Java Servlets.
+		            </li>
+		            <li>
+		               SRTE Client Component: Implemented using JSP,
+		                Java Applets, HTML and JavaScript.
+		                
+	         	<br />
+	         	<br /><br />
+		            </li>
+		         </ol>
+		         
+	         	<h5 class="title">SRTE Server Component</h5>
+	         
+	         <p>
+		         The SRTE Server Component is implemented using 
+		         Java Servlets and Java Applications. The Servlets respond to 
+		         requests from the Run-time Environment Client Component and are 
+		         responsible for data model persistence as well as sequencing and 
+		         parsing logic.  The source files for the server component are located
+		         in the Sample_RTE\source\src directory.  In addition, the JavaDoc
+		         associated with the source files is located at Sample_RTE\api\index.html.
+		         The modules that make up the Server Component are listed below:
+	         </p>
+	         <ul>
+	            <li>
+	               <i>ADL Validator</i>: This module validates
+	               the imsmanifest.xml file required by SCORM Content
+	               Aggregation Content Packages.  The ADL 
+                   Validator also parses the XML file and 
+                   returns a DOM tree representation to the SRTE Server 
+                   Component. <i>Refer to the JavaDoc Package, &quot;org.adl.validator&quot; 
+                   for details.</i>
+	            </li>
+	            <li>
+	               <i>Utilities</i>: This module contains general purpose 
+                   utility Java files.
+	               <i>Refer to the JavaDoc Package, &quot;org.adl.util&quot; for details.</i>
+	            </li>
+	            <li>
+	               <i>ADL Sequencer</i>: This module handles
+	               sequencing based on the IMS Simple Sequencing Specification and
+	               SCORM 2004 4<sup>th</sup> Ed. Sequencing and Navigation Version 1.1.1.
+	               It contains classes that create an initialized activity tree, 
+	               maintain the activity tree throughout the sequencing process, and 
+	               handle all sequencing logic.
+	               <i>Refer to the JavaDoc Package, &quot;org.adl.sequencer&quot; for details.</i>
+	            </li>
+	            <li>
+	               <i>SRTE</i>:  The SRTE Package is the hub of all of
+	               the Server Component packages.  It contains the logic to use
+	               the other packages when needed.  It also contains Java 
+                   classes that interact with Java Server Pages to implement
+                   server side functionality.
+	               <i>Refer to the JavaDoc Packages,&quot;org.adl.samplerte.server&quot; and
+	               &quot;org.adl.samplerte.util&quot; for details.</i>
+	            </li>
+	            <li>
+	               <i>Data Models</i>:  This package contains the classes that
+	               maintain the SCORM Run-Time Environment Data Model and the 
+                   Navigation Data Model. <i>Refer to the JavaDoc Package 
+                   &quot;org.adl.datamodels&quot; for details.</i>
+	            </li>
+	         </ul>
+	     	</td>
+	  	</tr>
+   </table>
+</body>
+</html>

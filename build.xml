@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<project name="ADL" default="RTE" >
+
+    <!-- Properties are passed down to other 'ant' calls, with properties being loaded here they apply to all other ant files called in this build process -->
+    <property environment="env" />
+    <property file="build.properties" />
+
+    <target name="setup" >
+        <mkdir dir="${buildDir}" />
+    </target>
+
+    <!-- This will build the Sample Run-Time Environment -->
+    <target name="RTE" depends="setup" >
+        <ant antfile="buildSRTE.xml"  />
+    </target >
+
+    <target name="cleanRTE" >
+        <delete dir="${buildDir}" />
+        <delete dir="${tomcatDir}" /> 
+        <delete includeEmptyDirs = "true" quiet="true">
+           <fileset dir="${CATALINA_HOME}\work\Catalina\localhost" />  
+        </delete>
+        <delete dir="C:\SCORM4EDSampleRTE111Files" />
+    </target>
+
+</project>
+
+
+
+
+
+

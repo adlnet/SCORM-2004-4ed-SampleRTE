@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<project name="ADL" default="buildSampleRTE" >
+
+    <target name="init" >        
+        <mkdir dir="${tempDir}" />
+        <mkdir dir="${tomcatDir}/debug" />
+        <mkdir dir="${tomcatDir}/WEB-INF/lib" />
+        <mkdir dir="${tomcatDir}/WEB-INF/classes/org/adl/samplerte/util" />
+        <mkdir dir="${tomcatDir}/WEB-INF/classes/org/adl/samplerte/server" />
+        <mkdir dir="${tomcatDir}/CourseImports" />
+        <mkdir dir="${tomcatDir}/xml" />
+        <echo message="deleting existing jar files" />
+        <delete >
+            <fileset dir="${buildDir}" >
+                <include name="*.jar" />
+            </fileset >
+        </delete >
+    </target >
+
+    <!--*************************************************************************
+    The next group of targets will be used to build the entire TestSuite
+    *************************************************************************-->
+    <target name="buildDebug" depends="init" >
+        <ant antfile="buildDebug.xml" target="SRTE" />
+    </target>
+
+    <target name="buildUtil" depends="buildDebug" >
+       <ant antfile="buildUtil.xml" target="SRTE" />
+    </target>
+
+    <target name="buildADLSeq" depends="buildUtil" >
+        <ant antfile="buildSequencer.xml"  />
+    </target>
+
+    <target name="buildAdlValidator" depends="buildADLSeq" >
+        <ant antfile="buildAdlValidator.xml" target="SRTE" />
+    </target>
+
+    <target name="buildCmiDataModel" depends="buildAdlValidator" >
+       <ant antfile="buildcmid.xml" target="SRTE" />
+    </target>
+
+    <target name="buildLMSClient" depends="buildCmiDataModel">
+        <ant antfile="buildLMSClient.xml" />
+    </target>
+
+    <target name="createPrintableReadme" depends="buildLMSClient">
+        <echo message="Creating RTE Printable Readme" />
+		<java classname="org.adl.util.createPrintableReadmeRTE" fork="true" failonerror="true">
+			<classpath>
+				<pathelement location="${buildDir}/" />
+			</classpath>
+		</java>
+    </target>
+
+    <!--All the necessary files have been compiled and jarred.  The next step is to move some of them to the local machine-->
+    <target name="moveFiles" depends="createPrintableReadme" >        
+
+        <copy todir="${tomcatDir}/WEB-INF/classes/org/adl/samplerte/util" >
+            <fileset dir="${buildDir}/org/adl/samplerte/util/" />
+        </copy>
+
+        <copy todir="${tomcatDir}/WEB-INF/classes/org/adl/samplerte/server" >
+            <fileset dir="${buildDir}/org/adl/samplerte/server/" />
+        </copy>
+
+        <!-- Tomcat Modifications -->
+        <copy todir="${tomcatDir}/WEB-INF" file="${ccHome}/source/SampleRTE/Tomcat_Modifications/WEB-INF/web.xml" />
+
+        <copy todir="${tomcatDir}/server/lib" file="${ccHome}/source/SampleRTE/Tomcat_Modifications/server/lib/catalina.jar" />
+        <copy todir="${tomcatDir}/conf" file="${ccHome}/source/SampleRTE/Tomcat_Modifications/conf/web.xml" />
+        <copy todir="${tomcatDir}/conf" file="${ccHome}/source/SampleRTE/Tomcat_Modifications/conf/server.xml" />
+        <copy todir="${tomcatDir}/conf" file="${ccHome}/source/SampleRTE/Tomcat_Modifications/conf/logging.properties" />
+
+        <copy todir="${tomcatDir}/bin" file="${ccHome}/source/SampleRTE/Tomcat_Modifications/bin/newstartup.bat" />
+        <copy todir="${tomcatDir}/bin" file="${ccHome}/source/SampleRTE/Tomcat_Modifications/bin/newshutdown.bat" />
+
+        <copy todir="${tomcatDir}" >
+        <fileset dir="${ccHome}/source/SampleRTE/LMSClient/" />
+        </copy>
+
+	  <copy todir="${tomcatDir}/css/" >
+        <fileset dir="${ccHome}/css/" />
+        </copy>
+
+       <copy todir="${tomcatDir}/xml" >
+            <fileset dir="${ccHome}/source/xml" />
+        </copy>
+
+        <copy todir="${CATALINA_HOME}/common/endorsed/" >
+            <fileset dir="${ccHome}/source/lib" >
+                <include name="saxon8.jar" />
+                <include name="jdom.jar" />
+                <include name="jaxen-1.1.1.jar" />
+                <include name="xercesImpl.jar" />
+                <include name="xalan.jar" />
+                <include name="xml-apis.jar" />
+                <include name="xmlParserAPIs.jar" />
+                <include name="joda-time-1.1.jar" />
+                <include name="xalan.jar" />
+            </fileset>
+        </copy>
+         <!--start add for java file upload -->
+        <copy todir="${CATALINA_HOME}/common/lib/" >
+            <fileset dir="${ccHome}/source/lib" >
+                <include name="saxon8.jar" />
+                <include name="jdom.jar" />
+                <include name="jaxen-1.1.1.jar" />
+                <include name="commons-fileupload-1.1.jar" />
+                <include name="commons-io-1.2.jar" />
+		        <include name="ant.jar" />
+		        <include name="xalan.jar" />
+            </fileset>
+        </copy>
+        <!--end add for java file upload -->
+
+        <copy todir="${CATALINA_HOME}/webapps/adl" >
+            <fileset dir="${ccHome}/source/lib" >
+                <include name="joda-time-1.1.jar" />
+            </fileset>
+        </copy>
+
+        <copy todir="${tomcatDir}/WEB-INF/lib/" >
+            <fileset dir="${buildDir}" >
+                <include name="*.jar" />
+            </fileset>
+        </copy>
+
+        <copy todir="${tomcatDir}/" >
+           <fileset dir="${buildDir}" >
+               <include name="*.jar" />
+           </fileset>
+       </copy>
+
+        <!--Copy adllog.properties-->
+       <copy todir="${tomcatDir}/config/" >
+           <fileset dir="${ccHome}/source/config/" >
+           </fileset>
+       </copy> 
+
+    </target>
+
+    <target name="buildSampleRTE" depends="moveFiles" /> 
+
+</project>
+

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+      <title>SCORM 2004 4th Edition Sample Run-Time Environment Version 1.1.1 Readme</title>
+      <link rel="stylesheet" href="README.css" type="text/css" />
+</head>
+<body class="bg">
+<div><a name="rteclientComponentWeb"></a></div>
+
+   <table>
+	   <tr>
+	      <td>
+	         
+	         	<h5 class="title">
+	         		SRTE Client Component (Web Files)
+	         	</h5>
+	         <p>
+	         	The SRTE Client Component is comprised of the following modules
+	         	located in the Sample_RTE\source\SampleRTE\LMSClient directory:
+	         </p>
+	         <ul>
+	            <li>
+	               <i>Administrative</i>: This module contains files that change
+	               passwords, delete courses, manage global objectives, create or
+	               delete users, delete courses and clear the SRTE database.
+	               The files that make up the Administrative module are located 
+                   in the &quot;admin&quot; directory.
+	            </li>
+	            <li>
+	               <i>Help</i>: This module contains information pages on how to
+	               use the SRTE.  The files that make up the Help module 
+                   are located in the &quot;help&quot; directory.
+	            </li>
+	            <li>
+	               <i>Import</i>: This module is responsible for managing the course
+	               import process.  These files use the SRTE Server side 
+	               Java Component to handle parsing, validation and database access. 
+	               The files that make up the Import module are located in the 
+	               &quot;import&quot; directory.
+	            </li>
+	            <li>
+	               <i>Includes</i>:  The SRTE uses a style sheet (*.css)
+	               that handles the interface look and feel.  See
+	               sampleRTE_style.css for details.  This file is located in the
+	               &quot;includes&quot; directory.
+	            </li>
+	            <li>
+	               <i>Run-Time</i>:  This module contains the files used to deliver
+	               a SCORM-conformant Content Aggregation Content Package and the SCORM API.  
+	               All images used in 
+                 the SRTE menu are located in the &quot;menu-images&quot; directory 
+                 of this module.  The files that make up the Run-Time 
+                 module are located in the &quot;runtime&quot; directory.
+	            </li>
+	            <li>
+	               <i>Special State</i>: This module contains information pages that
+	               describe special sequencing states.  Content
+	               may not be delivered as a result of a sequencing request.  In that
+	               event these pages inform the user about what state the sequencer
+	               is in. <strong>Note:</strong> These pages are included to help debug sequencing
+	               in content.  SCORM does not require the presence of these pages.  LMSs may handle sequencing states in their
+	               own manner.  The files that make up the Special State 
+	               module are located in the &quot;specialstate&quot; directory.
+	            </li>
+	         </ul>
+      	</td>
+  		</tr>
+  	</table>
+</body>
+</html>
+

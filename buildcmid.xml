@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<project name="ADL" default="SRTE" >
+<description>Compiles code for the Data Model</description>
+
+    <!--creates directories if they don't already exist -->
+    <target name="init">
+    </target>
+
+    <!-- SRTE -->
+   <target name="buildFiles" depends="init">
+        <javac destdir="${buildDir}" srcdir="${src}"
+            includes="org/adl/datamodels/"
+            classpath="${lib}/sequencer.jar,${buildDir}/util.jar,${lib}/joda-time-1.1.jar" >
+            <exclude name="SCORM_1_2_DM.java" />
+            <exclude name="SCORM_1_2_DMElement.java" />
+            <exclude name="CMITimespanValidator.java" />
+            <exclude name="CMITimeValidator.java" />
+            <exclude name="ADLDuration.java"/>
+            <exclude name="ADLNavigation.java"/>
+            <exclude name="NavProcessor.java"/>
+        </javac>
+    </target>
+
+   <!-- This is necessary for SRTE only -->
+    <target name="buildCmidJar" depends="buildFiles">
+        <echo message="building jar file from class files"/>
+        <jar destfile="${buildDir}/${cmidJar}" basedir="${buildDir}"
+            includes="org/adl/datamodels/**/**,
+                             org/adl/sequencer/ADLTOC.class,
+                             org/adl/sequencer/ADLValidRequests.class,
+                             org/adl/sequencer/SeqNavRequests.class"
+            />
+    </target>
+
+    <!--If the SRTE is being built this is the call that will be made -->
+    <target name="SRTE" depends="buildCmidJar" />
+
+</project>
+

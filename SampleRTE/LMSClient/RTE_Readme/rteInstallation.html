@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+      <title>SCORM 2004 4th Edition Sample Run-Time Environment Version 1.1.1 Readme</title>
+      <link rel="stylesheet" href="README.css" type="text/css" />
+</head>
+<body class="bg">
+<div><a name="rteInstallation"></a></div>
+<table width="100%" cellpadding="3">
+   <tr>
+      <td class="stagebar">Installation</td>
+   </tr>
+</table>
+
+   <table>
+	   <tr>
+	      <td valign="top">
+	         <p><br />
+	         <a name="prereqs"></a>
+	         </p>
+
+		         <h5 class="title">Prerequisites</h5>
+
+	         <p>
+		          <strong>IMPORTANT: Read ALL of the Installation
+		          Instructions BEFORE beginning installation.</strong><br /><br />
+	         
+            This release of the SRTE requires the Java Development Kit (JDK)
+        from any one of the following Java versions:
+        </p>
+        <ul>
+          <li>Java SE 6, Update 1 or later</li>
+        </ul>
+        <p>
+        The latest version of this software can be downloaded free of charge at
+        <a href="http://java.sun.com/javase/downloads/index.jsp"
+        onclick="window.open(this.href);return false">
+        http://java.sun.com/javase/downloads/index.jsp</a>.
+        Archived versions are available at 
+         <a href="http://java.sun.com/products/archive"
+         onclick="window.open(this.href);return false">
+         http://java.sun.com/products/archive/</a>.   
+         Refer to this site for a list of specific Java versions verified.
+	         </p>
+	         
+	         <div><a name="notes"></a></div>
+	         <p>
+	            <b>Notes:</b>
+	            </p>
+               <ul>
+                  <li>
+                     <strong>
+                        The SRTE requires the full Java Development Kit.  The 
+                        Java Runtime Environment (JRE) alone is NOT sufficient for this software.
+                     </strong>
+                  </li>
+                  <li>
+                     <strong>
+                        The SRTE client may be accessed from a machine 
+                        other than the one on which it is installed using 
+                        Microsoft<sup>&reg;</sup> Internet Explorer<sup>&reg;</sup>.  In this case, the Java 
+                        Runtime Environment must be installed on the second machine. 
+                     </strong>
+                  </li>
+                  
+               </ul>
+               
+                              
+	           After installing the Java Development Kit, you must:
+	            <ol style="margin-bottom: 0;">
+	               <li>
+	                  Create an environment variable named &quot;JAVA_HOME&quot; and set 
+	                  its value to the root directory of the Java Development Kit.
+	                  <ul style="margin-bottom: 0;">
+	                     <li>
+	                        For Windows XP: Right click &quot;My Computer&quot;,
+	                        select &quot;Properties&quot;, select the &quot;Advanced&quot; tab and then
+	                        click &quot;Environment Variables&quot;. Add a JAVA_HOME entry
+	                        in the User or System Variables that points to the
+	                        location where you installed the Java Development Kit.
+	                     </li>
+	                     <li>
+	                        For Windows Vista: Open the &quot;Start&quot; menu and right click 
+	                        &quot;Computer&quot;, select &quot;Properties&quot;, select the &quot;Advanced 
+	                        System Settings&quot; link on the left navigation menu, and 
+	                        then click <strong>Environment Variables</strong>. Add a JAVA_HOME 
+	                        entry in the User or System Variables that points to the 
+	                        location where you installed the Java Development Kit.<br /><br />
+	                     </li>
+	                  </ul>
+	               </li>
+	               <li>
+	                  Add the full path of the Java Development Kit bin directory (where the
+	                  java.exe is located) to the PATH environment variable.
+	                  <ul style="margin-bottom: 0;">
+	                     <li>
+	                        For Windows XP: Right click &quot;My Computer&quot;,
+	                        select &quot;Properties&quot;, select the &quot;Advanced&quot; tab and then
+	                        click &quot;Environment Variables&quot;. Add the Java Development Kit bin
+	                        directory to the Path by adding a semicolon followed by
+	                        a reference to the JAVA_HOME environment variable
+	                        followed by &quot;\bin&quot; (i.e., %JAVA_HOME%\bin).
+	                     </li>
+	                     <li>
+	                        For Windows Vista: Open the &quot;Start&quot; menu and right click 
+	                        &quot;Computer&quot;, select &quot;Properties&quot;, select the &quot;Advanced 
+	                        System Settings&quot; link on the left navigation menu, and 
+	                        then click <strong>Environment Variables</strong>. Add the Java Development Kit 
+	                        bin directory to the Path by adding a semicolon followed 
+	                        by a reference to the JAVA_HOME environment variable 
+	                        followed by &quot;\bin&quot; (i.e., %JAVA_HOME%\bin).
+	                     </li>
+	                  </ul>
+	               </li>
+	            </ol>         
+	         <div>
+	         <a name="constraints"></a>
+	         </div>
+	         
+	            <h5 class="title">Constraints</h5>
+	         
+	         <p>
+	            As of this release, the SRTE was tested on the Intel<sup>&reg;</sup> 
+	            Pentium<sup>&reg;</sup> PC platform running Microsoft<sup>&reg;</sup> 
+	            Windows<sup>&reg;</sup> Vista SP1 and XP Professional SP3.  
+	            Microsoft Internet Explorer 7.0 and Internet Explorer 8.0 were also
+	            tested with the SRTE.  The SRTE was not formally tested with any other 
+	            browsers on any other platforms than those indicated above.
+	         </p>
+		         
+	         <div><a name="installation"></a></div>
+	         
+	            <h5 class="title">Installation</h5>
+	         
+	         <p>
+	            <strong>
+	               IMPORTANT:  Only install the SRTE after installing the 
+	               Java Development Kit as described in the Prerequisites.
+	            </strong>
+	         </p>
+	         <p>
+	            The SRTE is available for download as a self-extracting
+	            executable install file. Once you have completed 
+	            downloading the file, perform the following steps:
+	         </p>
+	            <ol>
+	               <li>
+	                  Double-click the downloaded self-extracting executable 
+	                  file to begin the installation process.
+	               </li>
+	               <li>
+	                  Click <strong>Next</strong> to continue from the &quot;Welcome&quot; page.
+	               </li>
+	               <li>
+	                  Read the &quot;License Agreement&quot;
+	                  <ul>
+	                     <li>
+	                        Click <strong>Yes</strong> to agree and continue with the install.
+	                     </li>
+	                     <li>
+	                        Click <strong>No</strong> if you do not agree with the terms 
+	                        of the license and wish to exit the install.
+	                     </li>
+	                  </ul>
+	               </li>
+	               <li>
+	                  Choose whether you would like the SRTE to be installed
+	                  for <i>Anyone who uses this computer (all users)</i> or <i>Only me</i>.
+	               </li>
+	               <li>
+	                  The recommended root installation directory
+	                  is &quot;C:\ADL&quot;. You may choose
+	                  another root installation directory, but the SRTE
+	                  install will always append the 
+	                  &quot;\ADL\SCORM_2004_4th_Ed_Sample_RTE_V1.1.1&quot; sub-directory to the
+	                  specified root installation directory.  The remainder 
+	                  of this Readme document assumes that the SRTE will be
+	                  installed to &quot;C:\ADL\SCORM_2004_4th_Ed_Sample_RTE_V1.1.1&quot;.  
+	                  This is referred to as 
+	                  &quot;&lt;drive&gt;:\&lt;install_directory&gt;&quot;. If 
+	                  you override the default to use a different root 
+	                  installation directory, please remember the directory you selected 
+	                  when reading the remainder of this Readme.
+	               </li>
+	               <li>Click <strong>Next</strong></li>
+	               <li>Click <strong>Install</strong> to begin the installation</li>
+	               <li>
+	                  You will have the option to view a copy of this Readme document.
+	                  <ul>
+	                     <li>
+	                        Check &quot;Show the Readme file&quot; to view the Readme.
+	                     </li>
+	                     <li>
+	                        Uncheck &quot;Show the Readme file&quot; to skip viewing the Readme.
+	                     </li>
+	                  </ul>
+	               </li>
+	               <li>
+	                  Click <strong>Finish</strong> to complete the installation.
+	               </li>
+	            </ol>
+	            <strong>Note:</strong> This installation will not remove or un-install 
+	            previous versions of the SRTE.
+	            <br /><br />
+	         
+	         <p>
+	            <strong>Note:</strong> The apache-tomcat-5.5.20 servlet engine and web server
+	            will be installed and pre-configured to bind to port 8080.
+	         </p>
+	         
+	         <div><a name="config"></a></div>
+	         
+	            <h5 class="title">Configuration</h5>
+	         
+	         After installation, perform the following actions to ensure 
+             that the SRTE runs properly:
+	         <ul>
+	           	<li>
+	              	The Internet Explorer browser must be set to check
+	              	for a new page every visit to the page.  To configure the
+	              	browser:
+	              	<ul>
+		              	<li>
+		              	Using Microsoft Internet Explorer 6.0 Service Pack 2
+		              	<ol>	              		
+		                 	<li>Open a Microsoft Internet Explorer browser</li>
+		                 	<li>Go to &quot;Tools&quot; and select &quot;Internet Options&quot;</li>
+		                 	<li>
+		                 		Select the &quot;General&quot; tab, then under 
+		                 		&quot;Temporary Internet files&quot;, click <strong>Settings</strong>
+		                 	</li>
+		                 	<li>
+		                 		Select the &quot;Every visit to the page&quot; radio button
+		                  	if it is not already selected
+		                 	</li>
+		                 	<li>
+		                  	Click <strong>OK</strong> and then <strong>OK</strong> again.
+		                 	<br /><br />
+		                 	</li>
+		              	</ol>
+		              	</li>		              	
+		              	<li>
+		              	Using Microsoft Internet Explorer 7 and 8
+		              	<ol>	              		
+		                 	<li>Open a Microsoft Internet Explorer browser</li>
+		                 	<li>Go to &quot;Tools&quot; and select &quot;Internet Options&quot;</li>
+		                 	<li>
+		                 		Select the &quot;General&quot; tab, then under &quot;Browsing History&quot;, click <strong>Settings</strong>
+		                 	</li>
+		                 	<li>
+		                 		Select the &quot;Every time I visit the page&quot; radio button
+		                  	if it is not already selected
+		                 	</li>
+		                 	<li>
+		                  	Click <strong>OK</strong> and then <strong>OK</strong> again.<br /><br />
+		                 	</li>
+		              	</ol>
+		              	</li>
+	              	</ul>
+	            </li>                
+	            <li>
+	               The Java Plug-in must be configured to disable caching.  To
+	               disable the Java Plug-in cache:
+	               <ul>
+				      <li>For Java SE 6				      
+				      <ol>
+					     <li>Open the Windows &quot;Control Panel&quot;</li>
+					     <li>Double click the &quot;Java&quot; icon</li>
+					     <li>Select the &quot;General&quot; tab</li>
+					     <li>Under the &quot;Temporary Internet Files&quot; section, 
+                              click <strong>Settings</strong></li>
+					     <li>Uncheck the &quot;Keep Temporary Files on my computer.&quot; if it is checked.</li>					     
+				      </ol>
+				      </li>
+			       </ul>
+            	</li>
+	            <li>
+	               Set the Sun Java Plug-in as the default Java Environment for the 
+	               Microsoft Internet Explorer browser by doing the following:
+	               <ul>
+	               	   <li>For Java SE 6
+		               <ol>	               
+		                  <li>Open the Windows &quot;Control Panel&quot;</li>
+					      <li>Double click the &quot;Java&quot; icon</li>
+		                  <li>Select the &quot;Advanced&quot; tab</li>
+		                  <li>Expand the &quot;Default Java for Browsers&quot; section</li>
+		                  <li>
+		                  	Select the checkbox next to the browser you are
+		                     using to run the SRTE
+		                     </li>
+		                  <li>Click <strong>Apply</strong>.</li>		                  
+	               	   </ol>
+	               	   </li>
+               	   </ul>
+	            </li>	                            
+	            <li>
+	               Perform these additional actions if you are using Windows XP SP2 or Vista:
+	               <ul>
+	                  <li>
+	                     Allow JavaScript to run by:
+	                     <ol>
+	                        <li>Opening a Microsoft Internet Explorer browser</li>
+	                        <li>Clicking &quot;Tools&quot; and then &quot;Internet Options&quot;</li>
+	                        <li>
+	                           On the &quot;Advanced&quot; tab under the &quot;Security&quot; section, 
+	                           check the box that states &quot;Allow active content to 
+	                           run in files on My Computer&quot;
+	                        </li>
+	                     </ol>
+	                  </li>
+	                  <li>
+	                     Allow the SRTE to pop-up windows by either
+	                     disabling pop-up blocking or exclude the SRTE
+	                     from pop-up blocking.
+	                  </li>
+	               </ul>
+	            </li>
+	         </ul>
+	         <p>
+	            This completes the installation of the SRTE.
+	         </p>
+	         
+	         <div><a name="uninstalling"></a></div>
+	         
+	            <h5 class="title">Uninstalling the SRTE</h5>
+	         <p>
+	         Use one of two possible methods to uninstall the SRTE:
+	         </p>
+	         
+           <ul>
+	              <li> For Windows XP, use the Windows Control Panel &quot;Add/Remove 
+	              Programs&quot; feature:
+	                 <ol>	                    
+	                    <li>Open the Windows &quot;Control Panel&quot;</li>
+	                    <li>Double-click the &quot;Add or Remove Programs&quot; icon</li>
+	                    <li>Highlight &quot;SCORM 2004 4th Ed. Sample Run-Time 
+	                    Environment Version 1.1.1&quot;</li>
+	                    <li>Click <strong>Remove</strong> and follow the instructions</li>
+	                 </ol>
+	              </li>
+	              <li>For Windows Vista, use the Windows Control Panel &quot;Programs and 
+	              Features&quot; option:
+	                 <ol>	                    
+	                    <li>Open the Windows &quot;Control Panel&quot;</li>
+	                    <li>Double-click &quot;Programs and Features&quot;</li>
+	                    <li>Highlight &quot;SCORM 2004 4th Ed. Sample Run-Time 
+	                    Environment Version 1.1.1&quot;</li>
+	                    <li>Click <strong>Uninstall</strong> on the toolbar above the list and follow the instructions</li>	                    
+	                 </ol>
+	              </li>
+              <li>If this version of the SRTE is already installed, running the install 
+                 again will uninstall the software. This method will not re-install 
+                 the SRTE. You will need to run the install a third
+                 time to accomplish a re-installation.</li>
+              </ul>
+           <strong>Note:</strong> The Sample Run-Time Environment may not appear 
+           in the &quot;Add/Remove Programs&quot; menu. If it does not appear, use the 
+           second method to uninstall it.
+           <br /><br />
+           
+           These methods of uninstalling will not remove files or directories that
+           have been altered in the course of running the SRTE.  To complete the 
+           process of uninstalling the SRTE, the follow these steps:
+           
+           <ol>
+              <li>Delete the directory that the SRTE was installed to
+                  (&lt;drive&gt;:\&lt;Install Directory&gt;\SCORM_2004_4th_Ed_Sample_RTE_V1.1.1 by default) along with any
+                  files or directories contained within it</li>
+              <li>Delete the &lt;drive&gt;:\SCORM4EDSampleRTE111Files directory</li>
+           </ol>
+           
+	     </td>
+	  </tr>
+   </table>
+
+</body>
+</html>

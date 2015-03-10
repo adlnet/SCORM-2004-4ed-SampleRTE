@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <title>SCORM 2004 4th Edition Sample Run-Time Environment Version 1.1.1 Readme</title>
+   <link rel="stylesheet" href="README.css" type="text/css" />
+</head>
+
+<body class="bg">
+
+<!-- Page Content -->
+<div>
+<a name="revisionsTo4thEdRTE1.1.1"></a>
+</div>
+
+<table width="100%" cellpadding="3">
+   <tr>
+      <td class="stagebar">Revisions</td>
+   </tr>
+</table>
+
+<table width="100%" cellpadding="3">
+   <tr>
+      <td>
+   
+         <!-- align="left" removed -->
+         <h5 class="title">Changes from SCORM 2004 4<sup>th</sup> Ed. Sample RTE Version 1.1 
+         to SCORM 2004 4<sup>th</sup> Ed. Sample RTE Version 1.1.1</h5>      
+      </td>
+   </tr>
+   <tr>
+      <td>
+        <ul>
+        <li>
+           The SRTE course import process was updated to enforce the following rules:
+           <ul>
+              <li><!--  Ticket #273 --> 
+                 Parents of a given element are correct in both name and XML namespace.
+              </li>
+              </ul>
+            </li>
+          <li>
+               The SRTE was also updated to:
+               <ul>              
+               <li><!--  Ticket #229 -->
+                     Correctly display user status information when no courses exist. 
+                </li>
+               <li><!--  Ticket #239, 240 -->
+                     Provide the user with the options to reset or sort courses. 
+               </li>
+            </ul>
+          </li>
+        </ul>     
+     </td>
+   </tr>
+   
+   <tr>
+      <td>
+         <div>
+            <a name="revisionsTo4thEdRTE1.1"></a>
+         </div>
+        <!-- align="left" removed -->
+        <h5 class="title">Changes from SCORM 2004 4<sup>th</sup> Ed. Sample RTE Version 1.0 
+        to SCORM 2004 4<sup>th</sup> Ed. Sample RTE Version 1.1</h5>      
+      </td>
+   </tr>
+   <tr>
+      <td>
+        <ul>
+            <li>
+                The SRTE course import process was updated to enforce the following rules:
+                <ul>
+                    <li><!--  Issue 159: Location of <imsss:sequencing> Children  --> 
+                        Children of the &lt;imsss:sequencing&gt; element must exist only under 
+                        an &lt;imsss:sequencing&gt; element.  
+                    </li>
+                </ul>
+            </li>          
+            <li>
+                The SRTE Sequencer was updated to:
+                <ul>              
+                    <li><!-- 1121: Data Stores Not Properly Managed -->
+                        Determine if the root was suspended before deleting the Data Store objects.
+                    </li>
+                    <li><!-- Issue 124: Sample RTE evaluates a post condition rule on a suspended activity -->
+                        Check the state of each activity before performing post condition evaluations.
+                    </li>
+                    <li><!-- Issue 133: adl.nav.request_valid.xxx returning unknown values -->
+                        Correctly process &quot;adl.nav.request_valid&quot; GetValue() and SetValue() requests.
+                    </li>
+                    <li><!-- Issue 134: Incorrect Value Returned when "not attempted" Set on Secondary Objectives -->
+                        Store and return &quot;incomplete&quot; when &quot;not attempted&quot; is set on secondary 
+                        objectives and later retrieved via a shared global objective.
+                    </li>
+                </ul>
+            </li>
+            <li>
+                The SRTE was also updated to:
+                <ul>                   
+                    <li><!--  10 -->
+                        Handle all course management activities from one central Home Page.  Course import,
+                        registration, launching, and status viewing were combined into one central location
+                        which also contains links to administrative options and user management options. 
+                    </li>
+                </ul>
+            </li>          
+        </ul>     
+     </td>
+   </tr>
+   
+   <tr>
+      <td>
+      <div>
+        <a name="revisionsTo4thEdRTE1.0"></a>
+      </div>
+      	<!-- align="left" removed -->
+      	<h5 class="title">Changes from SCORM 2004 3rd Edition Sample RTE Version 1.0.2 
+      	to SCORM 2004 4<sup>th</sup> Ed. Sample RTE Version 1.0</h5>      
+      </td>
+   </tr>
+   <tr>
+      <td>
+        <ul>
+		    <li>
+					The SRTE course import process was updated to enforce the following rules:
+					<ul>
+						<li><!--  Ticket #11362 --> 
+							If the &quot;xsi:schemaLocation&quot; attribute is used, then  
+							every namespace used in the XML instance must be listed in that attribute.
+						</li>
+
+	      		<li><!--  Ticket #11364 -->
+							If the &quot;xsi:schemaLocation&quot; attribute is used, the 
+							actual locations of the attribute must be checked, even if they are not 
+							in the root.
+		    		</li>	
+		    		<li><!--  Ticket #11365 -->
+							The &lt;adlnav:presentation&gt; element must have a parent that has 
+							an &quot;identifierref&quot; attribute that refers to a 
+							resource with &quot;scormtype&quot; attribute equal to &quot;sco&quot; 
+							or &quot;asset&quot;. 
+		    		</li>
+		    		<li><!--  Ticket #11367 -->
+							The &lt;adlcp:timeLimitAction&gt;, &lt;adlcp:completionThreshold&gt;,  
+							and &lt;adlcp:dataFromLMS&gt; elements shall only be used with &lt;item&gt;  
+							elements that reference resources with the &quot;scormtype&quot; 
+							attribute equal to &quot;sco&quot;.
+		    		</li>
+                    <li><!-- Ticket #11368 -->
+         			        All extension elements must be valid against the controlling documents(XSDs) provided.
+                             
+				    </li>  
+				    <li><!--  Ticket #11371 -->
+							The correct multiplicity on the &lt;ruleCondition&gt; element beneath 
+							any of the  &lt;preConditionRule&gt;,&lt;postConditionRule&gt;,
+							&lt;exitConditionRule&gt; elements must be one and only one.
+				    </li>
+			         <li><!--  Ticket #11372 -->
+							An &quot;ID&quot; attribute cannot be allowed on a &lt;sequencing&gt; 
+							element that is a child of an &lt;item&gt; or &lt;organization&gt; element.
+				    </li>
+						<li><!--  Ticket #11402 -->
+							The &lt;targetObjectiveID&gt; element must not contain only white 
+							space characters. 
+				    </li>   
+						<li><!--  Ticket #11535 -->
+							Packages that contain (sub)manifests in the 
+							&lt;manifest&gt; element (or its children) will fail to import when Validation 
+                            is enabled. In 
+							cases that a (sub)manifest exists, but isn't referenced from the &lt;manifest&gt; 
+							element, it will be ignored during execution. 
+				    </li>
+						<li><!--  Ticket #12187 -->
+							Packages containing &lt;resource&gt; 
+							&quot;href&quot; attributes that reference external URLs will fail to import. 
+				    </li>
+						<li><!--  Ticket #12191 -->
+							Packages that contain sequencing information (The use 
+							of &quot;flow&nbsp;=&nbsp;false&quot; and &quot;choice&nbsp;=&nbsp;false&quot; Control Modes on the 
+							package root with no reachable children) which will result in no reachable 
+							activities at the time of course launch will fail to import. 
+				    </li>  
+                    <li><!-- 12168 May 08 TWG Issue #16: Case sensitivity test missing in LMSTestPackage manifests  -->
+                            Objective IDs which differ only in case must be treated as unique objective IDs. 
+                            (ex: &quot;OBJ1&quot; is a different ID than &quot;obj1&quot;)
+                     </li>
+               </ul>
+		    </li>          
+          <li>
+               The SRTE Sequencer was updated to:
+            <ul>
+              
+               <li><!-- 11386 & 12169 May 08 TWG Issue #22: Correct processing of SequencingCollections -->
+                  If an &lt;item&gt; contains a &lt;imsss:sequencing&gt; element that has an IDRef to a 
+                  &lt;imsss:sequencing&gt; element in an &lt;imsss:sequencingCollection&gt; then the 
+                  elements in the sequencingCollection are now properly merged into the sequencing 
+                  information for the item.
+               </li>
+               <li><!-- 12185 ConstraintedChoice = true on organization produces ERROR page -->
+                  Behave correctly regarding the use of the &quot;constrainChoice&nbsp;=&nbsp;true&quot; 
+                  attribute on the &lt;adlseq:constrainedChoiceConsiderations&gt; element on 
+                  the root of the course.
+               </li>
+               <li><!-- 12200 12215  Additional May 08 TWG Issue #34 LMS Test Content Packages -->
+                  Correctly initializes a cluster
+                  activity and process the default Rollup Rules.
+                </li>
+                <li><!-- 12214 evaluating an objective not satisfied sequencing rule condition -->
+                   Correctly handle Activity status &quot;unknown&quot; so that this invalid 
+                   state does not cause a Not &quot;Satisfied&quot; or Not &quot;Completed&quot; 
+                   rule from triggering in the LMS.
+                </li>       
+               
+             </ul>
+          </li>
+          
+		    <li>
+					The SRTE was also updated to:
+					<ul>				   
+			      <li><!--  Ticket #11496 -->
+							Properly process Extended Rollup based on status changes to 
+                            the secondary objectives. 
+				    </li>
+			      <li><!--  Ticket #11497 -->
+							Allow the &quot;Quit&quot; button to properly persist &quot;
+							completion status&quot; and &quot;success status&quot; data. 
+			      </li>
+			      <li><!--  Ticket #11524 -->
+							Directly launch the single
+					 		leaf Activity in content packages that contain only a single SCO.
+				  </li>
+			      <li><!--  Ticket #no ticket -->
+							Disable all Navigation Controls while the course content is being loaded or unloaded.
+				  </li>
+                  <li><!-- 12167 RTE does not correctly handle all whitespace values -->
+                           Correctly process the whitespace component of identifier, 
+                           indentifierref, ID, and IDRef attributes based on the defined 
+                           datatypes of those attributes.                       
+                  </li>                 
+		    	</ul>
+		    </li>
+	     </ul>     
+     </td>
+   </tr>
+   
+   <tr>
+     <td>&nbsp;</td>
+   </tr>
+</table>
+
+<div></div>
+
+</body>
+</html>

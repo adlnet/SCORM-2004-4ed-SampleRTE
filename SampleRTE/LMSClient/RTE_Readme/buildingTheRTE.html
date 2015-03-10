@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- not strict due to the target="_blank" attribute in the <a> tag -->
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>SCORM 2004 4th Edition Sample Run-Time Environment
+			Version 1.1.1 Readme</title>
+		<link rel="stylesheet" href="README.css" type="text/css" />
+	</head>
+
+	<body class="bg">
+
+		<p>
+			<a name="buildingTheRTE"></a>
+		</p>
+
+		<h5 class="title">
+			Building the SRTE
+		</h5>
+
+		<p>
+			<strong> <strong>Note:</strong> You are not a required to
+				build the SRTE before using it. It will install as a fully
+				operational unit. You only have to build the SRTE if
+				the source code has been changed. </strong>
+		</p>
+		<p>
+			<em>Complete the SRTE full installation
+				instructions before compiling the SRTE.</em> The SRTE build file
+			depends on a full apache-tomcat-5.5.20 install, along with resources
+			provided in the installation of the SRTE. When the SRTE is built, 
+			it overwrites the previously installed SRTE. To revert back to the original 
+			SRTE, execute the un-install and then rerun the downloaded self-extracting
+			executable.
+		</p>
+		<p>
+			Apache Ant must be installed before building the SRTE.</b>  For information 
+			about and downloads of Ant, refer to
+			<a href="http://ant.apache.org/" target="_blank">http://ant.apache.org/</a>.
+			<br />
+			<em> To build the SRTE: </em>
+		</p>
+
+
+		<ol>
+			<li>
+				Open a command prompt and navigate to the directory where the SRTE is 
+				installed (Default: C:\ADL\SCORM_2004_4th_Ed_Sample_RTE_V1.1.1)
+			</li>
+			<li>
+				Navigate to the Sample_RTE\source directory
+			</li>
+			<li>
+				At the prompt type &quot;ant&quot;.
+			</li>
+		</ol>
+
+		<p>
+			The XML Ant build files will compile all Java class and jar files
+			needed by the SRTE. In addition the files will be installed to
+			apache-tomcat. (
+			<strong>Note:</strong> Restart the Tomcat server for changes to take effect. 
+			This completes the compilation of the SRTE.
+		</p>
+
+		<p>
+			<em>Source File Locations</em>
+		</p>
+		<ul>
+			<li>
+				All JSP, HTML, and JavaScript files are located at
+				&lt;drive&gt;:\&lt;install_directory&gt;\Sample_RTE\source\SampleRTE\LMSClient.
+			</li>
+			<li>
+				The SRTE Java files are located in their respective package
+				locations. For example the data model classes are located at
+				&quot;org\adl\datamodels&quot;. The root of the Java source directory is
+				&lt;drive&gt;:\&lt;install_directory&gt;\Sample_RTE\source\src. There
+				you will find the build script and the root &quot;org&quot; directory.
+			</li>
+		</ul>
+
+
+	</body>
+</html>

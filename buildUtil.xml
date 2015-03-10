@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!--<!DOCTYPE project [
+    <!ENTITY properties SYSTEM "file:properties.xml">
+]> -->
+<project name="ADL" default="SRTE">
+<description>Compiles code for the Utilities.jar</description>
+
+<!-- Importing properties from build.properties file -->
+
+    <target name="compile" >
+        <javac destdir="${buildDir}" srcdir="${src}" includes="org/adl/testsuite/util/ org/adl/logging/DetailedLogMessageCollection.java" />
+        <javac destdir="${buildDir}" srcdir="${src}" includes="org/adl/util/" 
+                    excludes="org/adl/util/xmltransform/,
+                                      org/adl/util/debug/">
+	   <classpath>
+                <pathelement location="${lib}/ant.jar"/>                
+           </classpath>
+	</javac>
+    </target>
+
+    <target name="buildUtilJar" depends="compile">
+        <echo message="building jar file from class files"/>
+
+        <!-- Copy the new org/adl/util/message.properties to the appropriate location -->
+      <copy todir="${buildDir}/org/adl/util/resources">
+         <fileset dir="${resources}/org/adl/util/resources">
+            <include name="*.properties"/>
+         </fileset>
+      </copy>
+
+        <jar destfile="${buildDir}/${utilJar}" basedir="${buildDir}/" 
+            includes="org/adl/testsuite/util/**,
+                             org/adl/logging/**,
+                              org/adl/util/*.class,
+                              org/adl/util/support/**,
+                              org/adl/util/zip/**,
+                              org/adl/util/decode/**,
+                              org/adl/util/servlet/**,
+        	org/adl/util/resources/*.properties"/>
+    </target>
+
+    <!-- start SRTE util jar -->
+    <target name="buildSRTEUtilJar" depends="compile">
+        <echo message="building jar file from class files"/>
+
+        <!-- Copy the new org/adl/util/message.properties to the appropriate location -->
+      <copy todir="${buildDir}/org/adl/util/resources">
+         <fileset dir="${resources}/org/adl/util/resources">
+            <include name="*.properties"/>
+         </fileset>
+      </copy>
+
+        <jar destfile="${buildDir}/${utilJar}" basedir="${buildDir}/" 
+            includes="org/adl/logging/ADLMessageCollection.class,
+                             org/adl/logging/DetailedLogMessageCollection.class,
+                              org/adl/util/*.class,
+                              org/adl/util/support/**,
+                              org/adl/util/zip/**,
+                              org/adl/util/decode/**,
+                              org/adl/util/servlet/**,
+                              org/adl/util/resources/*.properties"/>
+    </target>
+    <!-- end SRTE util jar -->
+
+    <!--If just the SRTE is being built, this is the call that will be made -->
+    <target name="SRTE" depends="buildSRTEUtilJar" />
+
+</project>
+

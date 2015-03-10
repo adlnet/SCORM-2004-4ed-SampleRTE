@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+      <title>SCORM 2004 4th Edition Sample Run-Time Environment Version 1.1.1 Readme</title>
+      <link rel="stylesheet" href="README.css" type="text/css" />
+</head>
+
+<body class="bg">
+
+<p>
+<a name="implementationDecisions"></a>
+ </p>
+	<table>
+	   <tr>
+	      <td valign="top">
+	      	 <h5 class="title">Implementation Decisions</h5>	      	 
+	         <strong>Case Sensitive URLs</strong>
+	        
+	            <ul style="margin-bottom: 0;">
+	               <li>
+	               	    URLs that are located in the imsmanifest.xml file and that 
+                        identify launch locations and other hrefs are case sensitive in 
+                        the SRTE.
+                        For example, sco.html is different from SCO.HTML and from Sco.html.
+                        If the case used to specify a file name does not match the case 
+                        of the actual file, an error will result while running the course.
+	               <br />
+	               <br />
+	               </li>	               
+	            </ul>
+	      	<p>
+	      	<strong>Maximum Allowable Course Size</strong>
+	         </p>
+	            <ul style="margin-bottom: 0;">
+	               <li>
+	               	    The maximum allowable size for a course imported into the SRTE is approximately 2.0 gigabytes.  
+                         Courses exceeding 2.0 gigabytes may not import correctly.
+	               <br />
+	               <br />
+	               </li>
+	               
+	            </ul>
+	      	<p>
+	      	<strong>Manifest Encodings</strong>
+	         </p>
+	            <ul style="margin-bottom: 0;">
+	               <li>
+	               	    Any course imported into the SRTE that
+	               	    contains foreign characters in the manifest, must have the
+	               	    imsmanifest.xml file encoded in either UTF-8 or UTF-16 (Big Endian
+	               	    or Little Endian). 
+	                <br />
+	               <br />
+	               </li>
+	              
+	            </ul>
+	      	
+	   	</td>
+	   </tr>
+   	<tr>
+	      <td valign="top">
+	         <strong>Supported Java Versions</strong>
+	         <ul style="margin-bottom: 0;">
+	         	<li>
+                  The following Java Development Kit versions have been 
+	               tested with the SRTE as of the date of this release:
+                  <ul>
+                     <li>Java SE 6, Update 1 or later</li>
+                     <br />
+                  <br /></li>
+                  </ul>
+                  
+               </li>
+	         </ul>
+	   	</td>
+   	</tr>
+	</table>
+</body>
+</html>

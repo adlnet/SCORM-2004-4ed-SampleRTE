@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<project name="ADL" default="SRTE">
+<description>Compiles code for the TestSuite</description>
+
+    <!--creates directories if they don't already exist -->
+    <target name="init">
+        <!--<copy file="${adlDir}\util\EnvironmentVariable.java" todir="${buildDir}"/>-->
+    </target>
+
+    <target name="compile" depends="init">
+        <javac srcdir="${src}" destdir="${buildDir}" includes="org/adl/util/EnvironmentVariable.java"/>
+        <javac srcdir="${src}" destdir="${buildDir}" includes="org/adl/util/debug/"/>
+    </target>
+
+    <target name="buildDebugJar" depends="compile">
+        <echo message="building jar file from class files"/>
+        <jar destfile="${buildDir}\${debugJar}" basedir="${buildDir}"
+            includes="org/adl/util/debug/**,
+                             org/adl/util/EnvironmentVariable.class"/>
+    </target>
+
+    <!--If the SRTE is being built this is the call that will be made-->
+    <target name="SRTE" depends="buildDebugJar" />
+
+</project>
+

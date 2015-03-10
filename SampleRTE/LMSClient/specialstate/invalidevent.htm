@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+	<!--
+/*******************************************************************************
+**
+** Filename: invalidevent.htm
+**
+** File Description: This page is displayed when the sequencer returns an 
+**                   invalidevent code.
+**
+** Author: ADL Technical Team
+**
+** Contract Number:
+** Company Name: CTC
+**
+** Module/Package Name:
+** Module/Package Description:
+**
+** Design Issues:
+**
+** Implementation Issues:
+** Known Problems:
+** Side Effects:
+**
+** References: ADL SCORM
+**
+/*******************************************************************************
+   
+ADL SCORM 2004 4th Edition Sample Run-Time Environment
+
+The ADL SCORM 2004 4th Ed. Sample Run-Time Environment is licensed under
+Creative Commons Attribution-Noncommercial-Share Alike 3.0 United States.
+
+The Advanced Distributed Learning Initiative allows you to:
+  *  Share - to copy, distribute and transmit the work.
+  *  Remix - to adapt the work. 
+
+Under the following conditions:
+  *  Attribution. You must attribute the work in the manner specified by the author or
+     licensor (but not in any way that suggests that they endorse you or your use
+     of the work).
+  *  Noncommercial. You may not use this work for commercial purposes. 
+  *  Share Alike. If you alter, transform, or build upon this work, you may distribute
+     the resulting work only under the same or similar license to this one. 
+
+For any reuse or distribution, you must make clear to others the license terms of this work. 
+
+Any of the above conditions can be waived if you get permission from the ADL Initiative. 
+Nothing in this license impairs or restricts the author's moral rights.
+
+*******************************************************************************/
+-->
+	<head>
+		<meta http-equiv="expires" content="Tue, 20 Aug 1999 01:00:00 GMT" />
+		<meta http-equiv="Pragma" content="no-cache" />
+		<title>SCORM 2004 4th Edition Sample Run-Time Environment
+			Version 1.1.1 - Special State Invalid Event</title>
+
+		<link href="../includes/sampleRTE_style.css" rel="stylesheet"
+			type="text/css" />
+
+	</head>
+	<body>
+		<div>
+			<br />
+			<br />
+			<br />
+			<br />
+		</div>
+
+		<p class="wide">
+			SCORM 2004 4<sup>th</sup> Edition
+			<br />
+			Sample Run-Time Environment
+		</p>
+
+		<p class="wide">
+			<i> [INVALIDEVENT] page </i>
+			<br />			
+		</p>
+<div><br /><br /></div>
+		<table width="400" border="1" cellpadding="25">
+			<tr>
+				<td>
+					NOTES:
+					<br />
+					This
+					<i>[INVALIDEVENT]</i> page indicates that the ADL Sequencer
+					received a navigation event that is not permissible. Look at the
+					User Interface controls present during course execution and
+					evaluate whether they should be visible.
+					<br />
+					<br />
+					Typical reasons this page is being encountered include:
+					<ul>
+						<li>
+							A Continue Navigation Request was invoked within a flow =
+							False cluster.
+						</li>
+						<li>
+							A Previous Navigation Request was invoked from the root of
+							the Activity Tree.
+						</li>
+						<li>
+							A Previous Navigation Request was invoked within a
+							forward-only cluster.
+						</li>
+						<li>
+							A Choice Navigation Request targeted an activity within a
+							choice = False cluster.
+						</li>
+						<li>
+							A Choice Navigation Request targeted an activity that is
+							hidden from choice.
+						</li>
+					</ul>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

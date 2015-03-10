@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>SCORM 2004 4th Edition Sample Run-Time Environment Version 1.1.1 Readme</title>
+   <link rel="stylesheet" href="README.css" type="text/css" />
+</head>
+<body class="bg">
+<div><a name="runSampleRTE"></a></div>
+<table width="100%" cellpadding="3">
+   <tr>
+      <td class="stagebar">
+     		Running the SRTE
+      </td>
+   </tr>
+</table>
+   <table>
+	   <tr>
+	   	 <td>
+	     	<br />
+	         <h5 class="title">Instructions</h5>
+	      
+	      </td>
+	   </tr>
+	   <!-- End Major Heading Row -->
+	   <!-- Begin Text Row -->
+	   <tr>
+	      <td valign="top">
+	         <p>
+		         These instructions are for running the SRTE on a 
+		         Windows platform.  Windows is the only platform on which the software 
+		         has been tested and for which instructions are provided.
+	         </p>
+	         <p>
+	         	<strong>To Run the SRTE:</strong>
+	         </p>
+	         <p>
+		         Ensure that your default browser is Microsoft Internet Explorer 6.0 
+		         or greater and then start the apache&#45;tomcat&#45;5.5.20 servlet 
+		         container and Web server that is provided with this installation by:
+		     </p>
+	         	<ol>
+		            <li>
+			            Clicking the shortcut at Start Menu &#45;> All Programs &#45;> ADL &#45;> 
+			            SCORM_2004_4th_Edition_Sample_Run&#45;Time_Environment_version_1.1.1 &#45;> 
+			            Start Server.  A command prompt window will appear and show several 
+			            lines of textual information.  This window will remain open until 
+			            you stop the server.
+		            </li>
+		            <li>
+			            Clicking the Start Menu &#45;> All Programs &#45;> ADL &#45;> 
+                  SCORM_2004_4th_Edition_Sample_Run&#45;Time_Environment_version_1.1.1 &#45;> 
+                  SCORM 2004 4th Edition Sample Run&#45;Time Environment version 1.1.1 
+                  will launch the SRTE Main Page. 
+                </li> 
+                <li>  
+                  Log in using
+                  <ul>
+                  	<li> username: &quot;admin&quot;</li>
+                  	<li>password: &quot;admin&quot;</li> 
+                  </ul>
+		            </li>
+	        	</ol>
+	        	
+	        	<p>
+	           	Online help pages are available once the SRTE is started.
+	           	&quot;Help&quot; links will typically be located on the top right
+	           	of each page.
+	        	</p>
+	        	<p>
+	          	To close the SRTE, first close the browser in which it is 
+              running.  To stop the apache&#45;tomcat&#45;5.5.20 servlet container 
+              and Web server, click  Start Menu &#45;> All Programs &#45;> ADL &#45;> 
+              SCORM_2004_4th_Edition_Sample_Run&#45;Time_Environment_version_1.1.1 &#45;> 
+              Stop Server.
+	        	</p>
+	        	<p>
+	           	To return the SRTE to a &quot;clean&quot; state, log into the SRTE and from 
+	           	the home page choose &quot;Clear Database&quot;.  This will remove all 
+	           	of the imported course files as well as any information associated with 
+	           	them.  It will also remove all user registration information and all Global 
+	           	Objective information.
+	        	</p>
+	        	<p>
+	         	   <strong>Course Navigation User Interface</strong>
+	          </p>
+		        <p>
+			        In addition to any User Interface (UI) controls provided within course 
+			        content, the SRTE provides several mechanisms for navigating through 
+			        a course that complies with Section 2.1.7 of the SCORM 2004 4<sup>th</sup> Ed. 
+			        Testing Requirements.  These mechanisms include the navigation 
+			        buttons in the top frame of the SRTE, such as the Quit, Suspend, 
+			        Previous, and Continue buttons, and the Table of Contents provided in 
+			        the left&#45;hand frame.
+		        </p>
+	         
+		        <p>
+		          <strong>Navigation Buttons</strong>
+		        </p>
+		        
+		        <p>
+		           The navigation buttons provided by the SRTE in the top frame 
+		           will be visible when they are not explicitly &quot;hidden&quot; by an activity 
+		           via the &quot;hideLMSUI&quot; element within the manifest.  When an activity 
+		           explicitly hides any of the buttons, they will not appear in the 
+		           top frame.
+		        </p>
+		        
+		        <p>
+		           The following section describes the behavior of the navigation buttons when 
+		           they are not hidden:
+		        </p>
+		        
+		      
+			        <ul>
+			           <li>
+			              Quit &#45; This button will issue an Exit All navigation request 
+			              to the SRTE's Sequencer; the SRTE will end a user's current 
+			              attempt on a course.  The user's progress and course status 
+			              information for the current attempt will no longer be available 
+			              if  the user makes another attempt on the course.
+			           </li>
+			           <li>
+			              Suspend &#45; This button will issue a Suspend All navigation request 
+			              to the SRTE's Sequencer; the SRTE will end a user's 
+			              current attempt on a course and will also 'bookmark' the user's 
+			              position within the course.  The user's progress and course status 
+			              information will persist.  When the user starts the course 
+			              again, the course will resume with the same content where they 
+			              triggered the suspend.
+			           </li>
+			           <li>
+			              Previous &#45; This button will issue a Previous navigation request 
+			              to the SRTE's Sequencer, resulting in launching the activity 
+			              identified prior to the current activity in the course's activity 
+			              tree.
+			           </li>
+			           <li>
+			              Continue &#45; This button will issue a Continue navigation request 
+			              to the SRTE's Sequencer, resulting in launching the  
+			              activity identified after the current activity in the 
+			              course's activity tree.
+			           </li>
+			        </ul>
+		        
+		        
+		        <p>
+		          <strong>Table of Contents</strong>
+		        </p>
+		        
+		        <p>
+		           A table of contents (ToC) will be provided by the SRTE when 
+		           a course includes  Choice equal to &quot;true&quot; anywhere within its 
+		           activity tree.  When a course includes Choice equal to &quot;false&quot; at 
+		           every level of its activity tree, the table of contents will not 
+		           appear.
+		        </p>
+		        
+		        <p>
+		           The following describes the items in the ToC when Choice is set to 
+		           &quot;true&quot; in the course:
+		        </p>
+		        
+		       
+			        <ul>
+			           <li>
+			              Selectable &#45; Items that are selectable will be indicated with 
+			              black text and the cursor will change as the user moves an input 
+			              device over them.
+			           </li>
+			           <li>
+			              Not Selectable &#45; Items that are not selectable will be indicated 
+			              by gray text or  black text and a cursor that does not change 
+			              when the user moves an input device over them.
+			           </li>
+			        </ul>
+				</td>
+	  	</tr>
+   </table>
+</body>
+</html>

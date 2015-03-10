@@ -1,0 +1,178 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+ <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <!--
+/*******************************************************************************
+**
+** Filename:  button.htm
+**
+** File Description:    This file controls showing and hiding the string 
+**                      containing API and Data Model calls made by a SCO.
+**                      
+**
+** Author: ADL Technical Team
+**
+** Contract Number:
+** Company Name: CTC
+**
+** Module/Package Name:
+** Module/Package Description:
+**
+** Design Issues:
+**                                    
+** Implementation Issues:
+** Known Problems:
+** Side Effects:
+**
+** References: ADL SCORM
+**
+/*******************************************************************************
+   
+ADL SCORM 2004 4th Edition Sample Run-Time Environment
+
+The ADL SCORM 2004 4th Ed. Sample Run-Time Environment is licensed under
+Creative Commons Attribution-Noncommercial-Share Alike 3.0 United States.
+
+The Advanced Distributed Learning Initiative allows you to:
+  *  Share - to copy, distribute and transmit the work.
+  *  Remix - to adapt the work. 
+
+Under the following conditions:
+  *  Attribution. You must attribute the work in the manner specified by the author or
+     licensor (but not in any way that suggests that they endorse you or your use
+     of the work).
+  *  Noncommercial. You may not use this work for commercial purposes. 
+  *  Share Alike. If you alter, transform, or build upon this work, you may distribute
+     the resulting work only under the same or similar license to this one. 
+
+For any reuse or distribution, you must make clear to others the license terms of this work. 
+
+Any of the above conditions can be waived if you get permission from the ADL Initiative. 
+Nothing in this license impairs or restricts the author's moral rights.
+
+*******************************************************************************/
+-->
+
+<head>
+<meta http-equiv="expires" content="Tue, 20 Aug 1999 01:00:00 GMT" />
+<meta http-equiv="Pragma" content="no-cache" />
+
+<title>SCORM 2004 4th Edition Sample Run-Time Environment Version  - Buttons</title>
+
+<link href="../includes/sampleRTE_style.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+//<!-- [CDATA[
+var log_active = "false";
+ /****************************************************************************
+**
+** Function: showLog()
+** Input:   none
+** Output:  none
+**
+** Description:  This function shows the API and data model calls that have been       
+** made by a SCO.
+**               
+**
+***************************************************************************/
+function showLog() 
+{    
+   top.frames['log'].document.getElementById('log_span').style.display='';
+}       
+ /****************************************************************************
+**
+** Function: hideLog()
+** Input:   none
+** Output:  none
+**
+** Description:  This function hides the API and data model calls that have been       
+** made by a SCO.
+**               
+**
+***************************************************************************/
+function hideLog() 
+{    
+  top.frames['log'].document.getElementById('log_span').style.display='none';
+} 
+/****************************************************************************
+**
+** Function: clearLog()
+** Input:   none
+** Output:  none
+**
+** Description:  This function clears the API and data model calls that have been       
+** logged by a SCO.
+**               
+**
+***************************************************************************/
+function clearLog()
+{  
+   top.frames['LMSFrame'].reset_log_string();
+}
+
+/****************************************************************************
+**
+** Function: resetLoging()
+** Input:   none
+** Output:  none
+**
+** Description:  This function activates and deactivates logging.       
+** 
+**               
+**
+***************************************************************************/
+function resetLogging()
+{  
+   top.frames['LMSFrame'].reset_logging();
+   if ( log_active == "true") 
+   {
+       document.getElementById('deactivate').style.display='none';
+       document.getElementById('activate').style.display='';
+       log_active = "false";
+
+   }
+   else
+   {    
+       document.getElementById('activate').style.display='none';
+       document.getElementById('deactivate').style.display='';
+       log_active = "true";
+   }
+
+}
+    
+//]]-->
+</script>
+</head>
+
+<body>
+
+        <div class="smallText">
+        
+        <b>API and Data Model Logging</b>
+         
+        <br />
+    
+        <!-- ;return false; should keep this frame from refreshing, It knows it's 
+        not supposed to be redirected anywhere with the # link and not supposed to 
+        wait for the js function called to return -->
+        
+        <a href="#" onclick="showLog();return false;">Show</a>
+        &nbsp;
+        <a href="#" onclick="hideLog();return false;">Hide</a>
+        &nbsp;
+        <a href="#" onclick="clearLog();return false;">Clear</a>
+        &nbsp;
+        <span id="deactivate" style="display:none">
+        <!-- name="log_span" removed-->
+        <a href="#" onclick="resetLogging();return false;">Deactivate</a>
+        </span>
+        
+        <span id="activate" style="display">
+        <!-- "log_span" removed -->
+            
+            <a href="#" onclick="resetLogging();return false;">Activate</a></span>
+    </div>
+   </body>
+</html>

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<project name="SampleRTE" default="buildSequencerJar" >
+<description>Compiles code for the Sequencer.Jar</description>
+
+    <!--creates directories if they don't already exist -->
+    <target name="init">
+    </target>       
+
+    <target name="compile" depends="init">
+        
+        <javac destdir="${buildDir}" srcdir="${src}" includes="org/adl/samplerte/util/LMSDBHandler.java" >
+             <classpath>
+                <pathelement location="${buildDir}/debug.jar"/>
+            </classpath>                             
+        </javac>
+        <!--    I'm not sure why this was here and I'm leaving it in case it was necessary
+        <javac destdir="${buildDir}" srcdir="${adlDir}/datamodels/">
+            <include name="ADLDuration.java" />
+            <classpath>
+                <pathelement location="${buildDir}/debug.jar"/>
+                <pathelement location="${buildDir}/cmidatamodel.jar"/> 
+           </classpath>          
+        </javac>
+                         -->
+        <javac destdir="${buildDir}" srcdir="${src}" includes="org/adl/sequencer/" >
+            <classpath>
+                <pathelement location="${buildDir}/debug.jar"/>
+                <pathelement location="${lib}/xalan.jar"/>
+            </classpath>
+        </javac>
+    
+    </target>
+
+    <target name="buildSequencerJar" depends="compile">
+        <echo message="building jar file from class files"/>
+        <jar destfile="${buildDir}/${sequencerJar}" basedir="${buildDir}"
+            includes="org/adl/sequencer/**,
+                             org/adl/samplerte/util/LMSDBHandler.class"/>
+    </target>
+
+    <!--If just the debug.jar is being built, then this will delete the temp build directory after the jar is copied to the lib folder.    <target name="buildAdlValidator" depends="buildSequencerJar" />
+                                                                                                                -->
+
+</project>
+

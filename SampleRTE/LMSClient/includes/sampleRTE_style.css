@@ -1,0 +1,317 @@
+/* ********************************************************************** */
+/* Re-defined Tags  */
+/* ********************************************************************** */
+
+BODY
+{
+	font-family : Verdana;
+	font-size : 10pt;
+	font-weight : normal;
+	font-style : normal;
+	background-color : #FBFAF4; 	
+	width : 500px;		
+}
+BODY.logBody
+{
+	background-color:#FBFAF4;
+	width : auto;
+}
+
+LI
+{
+	font-family : Verdana;
+	font-size : 10pt;
+	font-weight : normal;
+	font-style : normal;
+}
+
+TD
+{
+	font-family : Verdana;
+	font-size : 10pt;
+	font-weight : normal;
+	font-style : normal;
+}
+sup
+{
+   font-size: 0.8em;
+}
+
+td.course45
+{
+	width:45%;	
+}
+
+a:link 
+{ 
+	font-weight: bold; 
+	text-decoration: underline; 
+	color: #363C54;
+}
+
+a:visited 
+{ 
+	font-weight: bold; 
+	text-decoration: underline; 
+	color: #566B87;
+}
+
+a:hover, a:active 
+{ 
+	text-decoration: underline; 
+	color: #E7BC68;
+}
+
+input.unpw
+{
+	width:120px;
+}
+
+/* ********************************************************************** */
+/* Classes  */
+/* ********************************************************************** */
+
+.font_two
+{
+	font-family: Verdana;
+	font-size: 10pt;
+	color: black;
+	font-weight: normal;
+	font-style : normal;
+}
+
+.font_header
+{
+	font-family: Verdana;
+	font-size: 12pt;
+	color: #890C08;
+	font-weight: bold;
+	font-style : normal;
+}
+
+.font_header2
+{
+	font-size: 36pt;
+	font-weight: normal;
+	font-style : normal;
+}
+
+.page_title 
+{
+	font-family: Verdana; 
+	font-size: 12pt;
+	color: #890C08;
+	font-weight: bold;
+	font-style : normal;
+}
+
+.font_four
+{
+	font-family: Verdana;
+	font-size: 14pt;
+	color: #566B87;
+	font-weight: normal;
+	font-style : normal;
+}
+
+.white_text
+{
+	font-family : Verdana;
+	font-size : 10pt;
+	color: #fff;
+	font-weight : normal;
+	font-style : normal;
+	border:1px solid #F7C555;
+	background-color: #363C54;
+}
+
+.darkBlue_text
+{
+	font-family : Verdana;
+	font-size : 10pt;
+	color: #566B87;
+	font-weight : bold;
+	font-style : normal;
+}
+
+.main_window_text
+{
+	font-family : Verdana;
+	font-size : 10pt;
+	color: #566B87;
+	font-weight : bold;
+	font-style : normal;
+}
+
+.red_text
+{
+	font-family : Verdana;
+	font-size : 10pt;
+	color: #890C08;
+	font-weight : normal;
+	font-style : normal;
+}
+
+.green_text
+{
+	font-family : Verdana;
+	font-size : 10pt;
+	color: #339900;
+	font-weight : normal;
+	font-style : normal;
+}
+
+.orange_text
+{
+        font-family : Verdana;
+        font-size : 10pt;
+        color: #FF7F00;
+        font-weight : normal;
+        font-style : normal;
+}
+
+.font_four_black
+{
+	font-family: Verdana;
+	font-size: 14pt;
+	font-weight: normal;
+	font-style : normal;
+}
+
+strong.scorm
+{
+   font-size : small;
+   font-family :  Verdana;
+}
+
+strong.srte
+{
+   font-size: 10pt;
+   font-family :  Verdana;
+   color: #FFFFFF;
+   background-color: transparent;
+}
+
+.wide
+{
+	font-size: 36pt;
+	font-weight: normal;
+	font-style : normal;
+	width : 1000px;
+}
+.smallText
+{
+	width : 275px;
+	font-size : 8pt;
+	font-family : Verdana,arial;
+	font-weight: bold;
+	text-align : center;	
+}
+
+/* ********************************************************************** */
+/* IDs  */
+/* ********************************************************************** */
+#log_Span
+{
+	display:inline ;
+    font-family: Arial ;
+    font-size: "8pt" ;	
+    overflow: scroll;
+    
+}
+
+#topNav
+{
+	background-color : #363C54;
+	font-family : Verdana;
+	color: #E7BC68;
+	width: 400px;
+}
+
+#login_col1
+{
+	float: left;
+	font-family : Verdana;
+	font-size: 10pt;
+	color: #566B87;
+	font-weight:bold;
+	width : 80px;
+	padding : 2px;
+}
+
+#login_col1a
+{
+	float: left;
+	font-family : Verdana;
+	font-size: 10pt;
+	color: #566B87;
+	font-weight:bold;
+	width : 80px;
+	padding : 3px;
+}
+
+#login_col1a_pwd
+{
+	float: left;
+	font-family : Verdana;
+	font-size: 10pt;
+	color: #566B87;
+	font-weight:bold;
+	width : 80px;
+	padding : 3px;
+		
+}
+
+#login_col2
+{
+	float: left;
+	font-family : Verdana;
+	font-size: 10pt;
+	color: #566B87;
+	padding : 0px 5px;
+	width : 50px;
+}
+#login_col3
+{
+	float: left;
+	font-family : Verdana;
+	font-size: 10pt;
+	color: #566B87;
+	padding : 0px 5px;
+	width : 50px;
+}
+#login_page
+{
+	float: left;
+	width : 400px;
+}
+
+#main_page
+{
+	width : 400px;
+}
+
+#code_jsp
+{
+	background-color : #FFFFFF;
+	font-family : normal Verdana;
+	color: black;
+    width: 400px;
+}
+
+.topNavLinks a
+{
+   text-align: right;
+   vertical-align : bottom;
+   font-weight: bold;
+   font-family : Verdana;
+   color: #E7BC68;
+   font-size : 9pt;
+   padding: 0px 0px 3px 0px;
+   text-decoration: none;
+}
+
+.topNavLinks a:hover
+{
+	text-decoration: underline;
+}

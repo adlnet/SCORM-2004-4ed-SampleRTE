@@ -1,0 +1,219 @@
+<!--/***********************************************************************
+**
+** Filename:  commnetsWin.htm
+**
+** File Description:  This file is the user interface for the Admin to add
+**                    comments from the LMS.
+**
+**
+** Author: ADLI Project
+**
+** Company Name: Concurrent Technologies Corporation
+**
+** Module/Package Name:  none
+** Module/Package Description: none
+**
+** Design Issues:
+**
+** Implementation Issues:
+** Known Problems:
+** Side Effects:
+**
+** References: ADL SCORM
+**
+***************************************************************************
+
+ADL SCORM 2004 4th Edition Sample Run-Time Environment
+
+The ADL SCORM 2004 4th Ed. Sample Run-Time Environment is licensed under
+Creative Commons Attribution-Noncommercial-Share Alike 3.0 United States.
+
+The Advanced Distributed Learning Initiative allows you to:
+  *  Share - to copy, distribute and transmit the work.
+  *  Remix - to adapt the work. 
+
+Under the following conditions:
+  *  Attribution. You must attribute the work in the manner specified by the author or
+     licensor (but not in any way that suggests that they endorse you or your use
+     of the work).
+  *  Noncommercial. You may not use this work for commercial purposes. 
+  *  Share Alike. If you alter, transform, or build upon this work, you may distribute
+     the resulting work only under the same or similar license to this one. 
+
+For any reuse or distribution, you must make clear to others the license terms of this work. 
+
+Any of the above conditions can be waived if you get permission from the ADL Initiative. 
+Nothing in this license impairs or restricts the author's moral rights.
+
+*************************************************************************-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <title>Comments From LMS Admin User Interface</title>
+   <link href="../includes/sampleRTE_style.css" rel="stylesheet" type="text/css" />
+   <script type = "text/javascript">
+	//<!-- [CDATA[
+   var myCommentsFromLMS = "";
+
+   //*********************************************************************
+   // Function: initPage()
+   //
+   // Description: This function clears the comments from LMS form.
+   //
+   //*********************************************************************
+   function initPage()
+   {
+      document.getElementById("comment").focus();
+   }
+
+   //*********************************************************************
+   // Function: addToCollectionOfLMSComments()
+   //
+   // Description: This function collects the data entered by the user and
+   //              builds the final result to be sent back to the Test Suite
+   //              Instructions.
+   //
+   //*********************************************************************
+   function addToCollectionOfLMSComments()
+   {
+      var UPPER_LIMIT = 10;
+      var commentEntered =  document.getElementById("comment").value;
+      var locationEntered = document.getElementById("location").value;
+      clearForm();
+
+      // Get the date via JavaScript
+      currentDate = new Date();
+      year = currentDate.getYear();
+      month = currentDate.getMonth() + 1;
+      day = currentDate.getDate();
+      hours = currentDate.getHours();
+      mins = currentDate.getMinutes();
+      secs = currentDate.getSeconds();
+
+      if ( month < UPPER_LIMIT )
+      {
+         month = "0" + month;
+      }
+
+      if ( day < UPPER_LIMIT )
+      {
+         day = "0" + day;
+      }
+
+      if ( hours < UPPER_LIMIT )
+      {
+         hours = "0" + hours;
+      }
+
+      if ( mins < UPPER_LIMIT )
+      {
+         mins = "0" + mins;
+      }
+
+      if ( secs < UPPER_LIMIT )
+      {
+         secs = "0" + secs;
+      }
+
+      currentTime = year + "-" + month + "-" + day + " " + hours + ":" + mins + 
+                    ":" + secs;
+
+      document.getElementById("comment").value = "";
+      document.getElementById("location").value= "";
+
+      window.opener.refresh(commentEntered,currentTime,locationEntered);
+
+   }
+
+   //*********************************************************************
+   // Function: clearForm()
+   //
+   // Description: This function clears the comments from LMS form.
+   //
+   //*********************************************************************
+   function clearForm()
+   {
+      document.getElementById("comment").value="";
+   }
+
+   //*********************************************************************
+   // Function: done()
+   //
+   // Description: This function reports the comments collected back to
+   //              the opener window (Instructions page of the SCO Test
+   //              Suite)
+   //
+   //*********************************************************************
+   function done()
+   {
+      window.close();
+   }
+  //]]--> 
+   </script>
+
+</head>
+
+   <body onload="initPage()">
+
+   <p class="font_header">
+   <b>Add Comments Window</b>
+   </p>
+
+   <form id="comments_from_lms" action ="">
+      <div id="comments_from_lms2">
+         <table border="0">
+            <tr>
+               <td colspan="3" class="white_text"><b>Enter 
+                                  comment and location.</b></td>
+            </tr>
+            <tr>
+               <td>
+                  <label class="products" for="comment">
+                  Comment:
+                  </label>
+               </td>
+               <td>
+                  <input type="text" size="75" id="comment" name="comment" />
+               </td>
+            </tr>
+            <tr>
+               <td>
+                  <label class="products" for="location">
+                  Location *:    
+                  </label>
+               </td>
+               <td>
+                  <input type="text" size="75" id="location" name="location" />
+               </td>
+            </tr>
+            <tr>
+               <td colspan="2" align="left">
+                  <label class="products">
+                  * optional
+                  </label>
+               </td>
+            </tr>
+            <tr>
+               <td colspan="2" align="left">
+                  <input type="button" id="addCommentFromLMS"
+                         name="addCommentFromLMS"
+                         value="Add Comment"
+                         onclick="addToCollectionOfLMSComments()" />
+
+                  <input type="button" id="doneAddingCommentFromLMS"
+                         name="doneAddingCommentFromLMS"
+                         value="Close"
+                         onclick="done()" />
+               </td>
+            </tr>
+         </table>
+      <br />
+      </div>
+   </form>
+ 
+
+   </body>
+</html>

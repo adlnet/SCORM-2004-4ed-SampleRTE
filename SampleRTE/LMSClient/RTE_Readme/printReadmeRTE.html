@@ -1,0 +1,1738 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>SCORM 2004 4th Edition Sample Run-Time Environment Version 1.1.1 Readme</title>
+   <link rel="stylesheet" href="README.css" type="text/css" />
+</head>
+<body>
+<!-- Masthead -->
+<div class="SubTitle">
+   Sharable Content Object Reference Model (SCORM<sup>&reg;</sup>) 2004 4<sup>th</sup> Edition
+   <br />
+   Sample Run-Time Environment (SRTE) Version 1.1.1 Readme File
+</div>
+<div class="SubTitleSmall">
+   Last updated: October 23, 2009
+   <br />
+   Send questions and/or comments regarding the SCORM 2004 4<sup>th</sup> Ed. SRTE Version 1.1.1
+   <br />
+   to the ADL Technical Team through <a href="mailto:scormhelpdesk@adlnet.gov">Ask The Experts</a>&nbsp;on the 
+   <a href="http://www.adlnet.gov/" onclick="window.open(this.href);return false">
+      ADLNet.gov
+   </a> Web site.
+</div>
+<div class="bg" id="toc.html">
+<div><br /></div>
+<table width="100%" cellpadding="3">
+   <tr>
+   
+      <td class="stagebar">
+     		Table of Contents
+      </td>
+   </tr>
+</table>
+<!-- Page Body -->
+<table border="0" cellspacing="3" cellpadding="0" width="100%">
+   <!-- Navigation Controls -->
+   <tr><!-- width="235" removed -->
+      <td align="left" valign="top">
+         <p>
+         
+            <br />
+            <a href="#rteIntroduction" 
+            	title="RTE Introduction">
+            	SRTE Introduction
+            </a>
+         </p>
+         <p>
+            <b>Installation Instructions</b>
+            <br />
+            <a href="#prereqs" 
+            	title=" Prerequisites ">
+            	Prerequisites
+            </a>
+            <br />
+            <a href="#constraints" 
+            	title=" Constraints ">
+            	Constraints
+            </a>
+            <br />
+            <a href="#installation" 
+            	title=" Installation ">
+            	Installation
+            </a>
+            <br />
+            <a href="#config" 
+            	title=" Configuration ">
+            	Configuration
+            </a>
+            <br />
+            <a href="#uninstalling"
+              title=" Uninstalling ">
+              Uninstalling
+            </a>
+            <br />
+         </p>
+         <p>
+            <b>Revisions</b>
+            <br />
+            <a href="#revisionsTo4thEdRTE1.1.1" 
+               title="Revisions">
+               4th Ed. SRTE Version 1.1.1
+            </a>
+            <br />
+            <a href="#revisionsTo4thEdRTE1.1" 
+            	title="Revisions">
+               4th Ed. SRTE Version 1.1
+            </a>
+            <br />
+            <a href="#revisionsTo4thEdRTE1.0" 
+                title="Revisions">
+               4th Ed. SRTE Version 1.0
+            </a>
+         </p>
+         <p>
+            <b>Running the SRTE</b>
+            <br />
+            <a href="#runSampleRTE" 
+            	title=" Running the SRTE ">
+            		Instructions
+            </a>
+            <br />
+         </p>
+         <p>
+            <b>Design Information </b>
+            <br />
+            <a href="#rteServerComponent" 
+            	title=" Server Component ">
+            		Server Component 
+            </a>
+            <br />
+            <a href="#rteClientComponentJava" 
+            	title=" Client Component (Java Files)  ">
+               	Client Component (Java Files)
+            </a>
+            <br />
+            <a href="#rteClientComponentWeb" 
+            	title=" Client Component (Web Files)  ">
+               	Client Component (Web Files)
+            </a>
+            <br />
+            <a href="#thirdPartyComponents" 
+               title=" Third Party Components ">
+               	Third Party Components
+            </a>
+            <br />
+            <a href="#buildingTheRTE" 
+               title=" Building the Sample RTE ">
+               	Building the SRTE
+            </a>
+            <br />
+         </p>
+         <p>
+            <b>Additional Information</b>
+            <br />
+            <a href="#knownIssuesRTE" 
+            	title=" Known Issues ">
+            	 Known Issues
+            </a>
+            <br />
+            <a href="#implementationDecisions" 
+               title=" Implementation Decisions ">
+               	Implementation Decisions
+            </a>
+            <br />
+            <a href="#environmentVariableRTE" 
+               title="Environment Variable">
+            	Environment Variable
+            </a>
+            <br />
+            <a href="#odbcConnectionsRTE" 
+               title="ODBC Connections">
+            	ODBC Connections
+            </a>
+            <br />
+            <a href="#systemRequirementsRTE" 
+               title="System Requirements">
+            	System Requirements
+            </a>    
+            <br />
+            <a href="#licenseCopyright" 
+               title=" Licenses and Copyrights">
+               	Licenses and Copyrights
+            </a>
+            <br />
+            <br />
+				<br />
+         </p>
+      </td>
+   </tr>
+</table>
+</div>
+<div class="bg" id="rteIntroduction.html">
+<div>
+<a name="rteIntroduction"></a>
+</div>
+<table width="100%" cellpadding="3">
+   <tr>
+      <td class="stagebar">
+      	<strong>
+      		SRTE
+      	</strong>
+      </td>
+   </tr>
+</table>
+
+   <table>
+      <tr>
+         <td valign="top">
+         	<div><br /></div>
+         	<h5 class="title">Introduction</h5>
+            <p>
+            Welcome to the Sharable Content Object Reference Model (SCORM) 2004 
+            4<sup>th</sup> Ed. SRTE Version 1.1.1.  The SRTE provides an example
+            implementation of the concepts described in SCORM. Specifically, it
+            provides an example of the SCORM Run-Time Environment (Application 
+            Programming Interface (API) and Data Model) and 
+            SCORM Sequencing and Navigation as they might be applied in a 
+            learning management system (LMS) environment.  Robust exception and 
+            error handling are not included in this sample code, nor were
+            performance optimizations considered.
+            </p>
+   
+            <p>
+            Even though there are a number of valid web-enabled SCORM
+            implementations, this version of the SRTE was implemented as a
+            web-based client/server application using HTML, JavaScript,
+            JavaServer Pages (JSP), Java Applets and Java Servlets.  Refer to
+            the &quot;Design Information&quot; section of this Readme for 
+            additional SRTE design information.
+            </p>
+         </td>
+      </tr>
+   </table>
+</div>
+<div class="bg" id="rteInstallation.html">
+<div><a name="rteInstallation"></a></div>
+<table width="100%" cellpadding="3">
+   <tr>
+      <td class="stagebar">Installation</td>
+   </tr>
+</table>
+
+   <table>
+	   <tr>
+	      <td valign="top">
+	         <p><br />
+	         <a name="prereqs"></a>
+	         </p>
+
+		         <h5 class="title">Prerequisites</h5>
+
+	         <p>
+		          <strong>IMPORTANT: Read ALL of the Installation
+		          Instructions BEFORE beginning installation.</strong><br /><br />
+	         
+            This release of the SRTE requires the Java Development Kit (JDK)
+        from any one of the following Java versions:
+        </p>
+        <ul>
+          <li>Java SE 6, Update 1 or later</li>
+        </ul>
+        <p>
+        The latest version of this software can be downloaded free of charge at
+        <a href="http://java.sun.com/javase/downloads/index.jsp"
+        onclick="window.open(this.href);return false">
+        http://java.sun.com/javase/downloads/index.jsp</a>.
+        Archived versions are available at 
+         <a href="http://java.sun.com/products/archive"
+         onclick="window.open(this.href);return false">
+         http://java.sun.com/products/archive/</a>.   
+         Refer to this site for a list of specific Java versions verified.
+	         </p>
+	         
+	         <div><a name="notes"></a></div>
+	         <p>
+	            <b>Notes:</b>
+	            </p>
+               <ul>
+                  <li>
+                     <strong>
+                        The SRTE requires the full Java Development Kit.  The 
+                        Java Runtime Environment (JRE) alone is NOT sufficient for this software.
+                     </strong>
+                  </li>
+                  <li>
+                     <strong>
+                        The SRTE client may be accessed from a machine 
+                        other than the one on which it is installed using 
+                        Microsoft<sup>&reg;</sup> Internet Explorer<sup>&reg;</sup>.  In this case, the Java 
+                        Runtime Environment must be installed on the second machine. 
+                     </strong>
+                  </li>
+                  
+               </ul>
+               
+                              
+	           After installing the Java Development Kit, you must:
+	            <ol style="margin-bottom: 0;">
+	               <li>
+	                  Create an environment variable named &quot;JAVA_HOME&quot; and set 
+	                  its value to the root directory of the Java Development Kit.
+	                  <ul style="margin-bottom: 0;">
+	                     <li>
+	                        For Windows XP: Right click &quot;My Computer&quot;,
+	                        select &quot;Properties&quot;, select the &quot;Advanced&quot; tab and then
+	                        click &quot;Environment Variables&quot;. Add a JAVA_HOME entry
+	                        in the User or System Variables that points to the
+	                        location where you installed the Java Development Kit.
+	                     </li>
+	                     <li>
+	                        For Windows Vista: Open the &quot;Start&quot; menu and right click 
+	                        &quot;Computer&quot;, select &quot;Properties&quot;, select the &quot;Advanced 
+	                        System Settings&quot; link on the left navigation menu, and 
+	                        then click <strong>Environment Variables</strong>. Add a JAVA_HOME 
+	                        entry in the User or System Variables that points to the 
+	                        location where you installed the Java Development Kit.<br /><br />
+	                     </li>
+	                  </ul>
+	               </li>
+	               <li>
+	                  Add the full path of the Java Development Kit bin directory (where the
+	                  java.exe is located) to the PATH environment variable.
+	                  <ul style="margin-bottom: 0;">
+	                     <li>
+	                        For Windows XP: Right click &quot;My Computer&quot;,
+	                        select &quot;Properties&quot;, select the &quot;Advanced&quot; tab and then
+	                        click &quot;Environment Variables&quot;. Add the Java Development Kit bin
+	                        directory to the Path by adding a semicolon followed by
+	                        a reference to the JAVA_HOME environment variable
+	                        followed by &quot;\bin&quot; (i.e., %JAVA_HOME%\bin).
+	                     </li>
+	                     <li>
+	                        For Windows Vista: Open the &quot;Start&quot; menu and right click 
+	                        &quot;Computer&quot;, select &quot;Properties&quot;, select the &quot;Advanced 
+	                        System Settings&quot; link on the left navigation menu, and 
+	                        then click <strong>Environment Variables</strong>. Add the Java Development Kit 
+	                        bin directory to the Path by adding a semicolon followed 
+	                        by a reference to the JAVA_HOME environment variable 
+	                        followed by &quot;\bin&quot; (i.e., %JAVA_HOME%\bin).
+	                     </li>
+	                  </ul>
+	               </li>
+	            </ol>         
+	         <div>
+	         <a name="constraints"></a>
+	         </div>
+	         
+	            <h5 class="title">Constraints</h5>
+	         
+	         <p>
+	            As of this release, the SRTE was tested on the Intel<sup>&reg;</sup> 
+	            Pentium<sup>&reg;</sup> PC platform running Microsoft<sup>&reg;</sup> 
+	            Windows<sup>&reg;</sup> Vista SP1 and XP Professional SP3.  
+	            Microsoft Internet Explorer 7.0 and Internet Explorer 8.0 were also
+	            tested with the SRTE.  The SRTE was not formally tested with any other 
+	            browsers on any other platforms than those indicated above.
+	         </p>
+		         
+	         <div><a name="installation"></a></div>
+	         
+	            <h5 class="title">Installation</h5>
+	         
+	         <p>
+	            <strong>
+	               IMPORTANT:  Only install the SRTE after installing the 
+	               Java Development Kit as described in the Prerequisites.
+	            </strong>
+	         </p>
+	         <p>
+	            The SRTE is available for download as a self-extracting
+	            executable install file. Once you have completed 
+	            downloading the file, perform the following steps:
+	         </p>
+	            <ol>
+	               <li>
+	                  Double-click the downloaded self-extracting executable 
+	                  file to begin the installation process.
+	               </li>
+	               <li>
+	                  Click <strong>Next</strong> to continue from the &quot;Welcome&quot; page.
+	               </li>
+	               <li>
+	                  Read the &quot;License Agreement&quot;
+	                  <ul>
+	                     <li>
+	                        Click <strong>Yes</strong> to agree and continue with the install.
+	                     </li>
+	                     <li>
+	                        Click <strong>No</strong> if you do not agree with the terms 
+	                        of the license and wish to exit the install.
+	                     </li>
+	                  </ul>
+	               </li>
+	               <li>
+	                  Choose whether you would like the SRTE to be installed
+	                  for <i>Anyone who uses this computer (all users)</i> or <i>Only me</i>.
+	               </li>
+	               <li>
+	                  The recommended root installation directory
+	                  is &quot;C:\ADL&quot;. You may choose
+	                  another root installation directory, but the SRTE
+	                  install will always append the 
+	                  &quot;\ADL\SCORM_2004_4th_Ed_Sample_RTE_V1.1.1&quot; sub-directory to the
+	                  specified root installation directory.  The remainder 
+	                  of this Readme document assumes that the SRTE will be
+	                  installed to &quot;C:\ADL\SCORM_2004_4th_Ed_Sample_RTE_V1.1.1&quot;.  
+	                  This is referred to as 
+	                  &quot;&lt;drive&gt;:\&lt;install_directory&gt;&quot;. If 
+	                  you override the default to use a different root 
+	                  installation directory, please remember the directory you selected 
+	                  when reading the remainder of this Readme.
+	               </li>
+	               <li>Click <strong>Next</strong></li>
+	               <li>Click <strong>Install</strong> to begin the installation</li>
+	               <li>
+	                  You will have the option to view a copy of this Readme document.
+	                  <ul>
+	                     <li>
+	                        Check &quot;Show the Readme file&quot; to view the Readme.
+	                     </li>
+	                     <li>
+	                        Uncheck &quot;Show the Readme file&quot; to skip viewing the Readme.
+	                     </li>
+	                  </ul>
+	               </li>
+	               <li>
+	                  Click <strong>Finish</strong> to complete the installation.
+	               </li>
+	            </ol>
+	            <strong>Note:</strong> This installation will not remove or un-install 
+	            previous versions of the SRTE.
+	            <br /><br />
+	         
+	         <p>
+	            <strong>Note:</strong> The apache-tomcat-5.5.20 servlet engine and web server
+	            will be installed and pre-configured to bind to port 8080.
+	         </p>
+	         
+	         <div><a name="config"></a></div>
+	         
+	            <h5 class="title">Configuration</h5>
+	         
+	         After installation, perform the following actions to ensure 
+             that the SRTE runs properly:
+	         <ul>
+	           	<li>
+	              	The Internet Explorer browser must be set to check
+	              	for a new page every visit to the page.  To configure the
+	              	browser:
+	              	<ul>
+		              	<li>
+		              	Using Microsoft Internet Explorer 6.0 Service Pack 2
+		              	<ol>	              		
+		                 	<li>Open a Microsoft Internet Explorer browser</li>
+		                 	<li>Go to &quot;Tools&quot; and select &quot;Internet Options&quot;</li>
+		                 	<li>
+		                 		Select the &quot;General&quot; tab, then under 
+		                 		&quot;Temporary Internet files&quot;, click <strong>Settings</strong>
+		                 	</li>
+		                 	<li>
+		                 		Select the &quot;Every visit to the page&quot; radio button
+		                  	if it is not already selected
+		                 	</li>
+		                 	<li>
+		                  	Click <strong>OK</strong> and then <strong>OK</strong> again.
+		                 	<br /><br />
+		                 	</li>
+		              	</ol>
+		              	</li>		              	
+		              	<li>
+		              	Using Microsoft Internet Explorer 7 and 8
+		              	<ol>	              		
+		                 	<li>Open a Microsoft Internet Explorer browser</li>
+		                 	<li>Go to &quot;Tools&quot; and select &quot;Internet Options&quot;</li>
+		                 	<li>
+		                 		Select the &quot;General&quot; tab, then under &quot;Browsing History&quot;, click <strong>Settings</strong>
+		                 	</li>
+		                 	<li>
+		                 		Select the &quot;Every time I visit the page&quot; radio button
+		                  	if it is not already selected
+		                 	</li>
+		                 	<li>
+		                  	Click <strong>OK</strong> and then <strong>OK</strong> again.<br /><br />
+		                 	</li>
+		              	</ol>
+		              	</li>
+	              	</ul>
+	            </li>                
+	            <li>
+	               The Java Plug-in must be configured to disable caching.  To
+	               disable the Java Plug-in cache:
+	               <ul>
+				      <li>For Java SE 6				      
+				      <ol>
+					     <li>Open the Windows &quot;Control Panel&quot;</li>
+					     <li>Double click the &quot;Java&quot; icon</li>
+					     <li>Select the &quot;General&quot; tab</li>
+					     <li>Under the &quot;Temporary Internet Files&quot; section, 
+                              click <strong>Settings</strong></li>
+					     <li>Uncheck the &quot;Keep Temporary Files on my computer.&quot; if it is checked.</li>					     
+				      </ol>
+				      </li>
+			       </ul>
+            	</li>
+	            <li>
+	               Set the Sun Java Plug-in as the default Java Environment for the 
+	               Microsoft Internet Explorer browser by doing the following:
+	               <ul>
+	               	   <li>For Java SE 6
+		               <ol>	               
+		                  <li>Open the Windows &quot;Control Panel&quot;</li>
+					      <li>Double click the &quot;Java&quot; icon</li>
+		                  <li>Select the &quot;Advanced&quot; tab</li>
+		                  <li>Expand the &quot;Default Java for Browsers&quot; section</li>
+		                  <li>
+		                  	Select the checkbox next to the browser you are
+		                     using to run the SRTE
+		                     </li>
+		                  <li>Click <strong>Apply</strong>.</li>		                  
+	               	   </ol>
+	               	   </li>
+               	   </ul>
+	            </li>	                            
+	            <li>
+	               Perform these additional actions if you are using Windows XP SP2 or Vista:
+	               <ul>
+	                  <li>
+	                     Allow JavaScript to run by:
+	                     <ol>
+	                        <li>Opening a Microsoft Internet Explorer browser</li>
+	                        <li>Clicking &quot;Tools&quot; and then &quot;Internet Options&quot;</li>
+	                        <li>
+	                           On the &quot;Advanced&quot; tab under the &quot;Security&quot; section, 
+	                           check the box that states &quot;Allow active content to 
+	                           run in files on My Computer&quot;
+	                        </li>
+	                     </ol>
+	                  </li>
+	                  <li>
+	                     Allow the SRTE to pop-up windows by either
+	                     disabling pop-up blocking or exclude the SRTE
+	                     from pop-up blocking.
+	                  </li>
+	               </ul>
+	            </li>
+	         </ul>
+	         <p>
+	            This completes the installation of the SRTE.
+	         </p>
+	         
+	         <div><a name="uninstalling"></a></div>
+	         
+	            <h5 class="title">Uninstalling the SRTE</h5>
+	         <p>
+	         Use one of two possible methods to uninstall the SRTE:
+	         </p>
+	         
+           <ul>
+	              <li> For Windows XP, use the Windows Control Panel &quot;Add/Remove 
+	              Programs&quot; feature:
+	                 <ol>	                    
+	                    <li>Open the Windows &quot;Control Panel&quot;</li>
+	                    <li>Double-click the &quot;Add or Remove Programs&quot; icon</li>
+	                    <li>Highlight &quot;SCORM 2004 4th Ed. Sample Run-Time 
+	                    Environment Version 1.1.1&quot;</li>
+	                    <li>Click <strong>Remove</strong> and follow the instructions</li>
+	                 </ol>
+	              </li>
+	              <li>For Windows Vista, use the Windows Control Panel &quot;Programs and 
+	              Features&quot; option:
+	                 <ol>	                    
+	                    <li>Open the Windows &quot;Control Panel&quot;</li>
+	                    <li>Double-click &quot;Programs and Features&quot;</li>
+	                    <li>Highlight &quot;SCORM 2004 4th Ed. Sample Run-Time 
+	                    Environment Version 1.1.1&quot;</li>
+	                    <li>Click <strong>Uninstall</strong> on the toolbar above the list and follow the instructions</li>	                    
+	                 </ol>
+	              </li>
+              <li>If this version of the SRTE is already installed, running the install 
+                 again will uninstall the software. This method will not re-install 
+                 the SRTE. You will need to run the install a third
+                 time to accomplish a re-installation.</li>
+              </ul>
+           <strong>Note:</strong> The Sample Run-Time Environment may not appear 
+           in the &quot;Add/Remove Programs&quot; menu. If it does not appear, use the 
+           second method to uninstall it.
+           <br /><br />
+           
+           These methods of uninstalling will not remove files or directories that
+           have been altered in the course of running the SRTE.  To complete the 
+           process of uninstalling the SRTE, the follow these steps:
+           
+           <ol>
+              <li>Delete the directory that the SRTE was installed to
+                  (&lt;drive&gt;:\&lt;Install Directory&gt;\SCORM_2004_4th_Ed_Sample_RTE_V1.1.1 by default) along with any
+                  files or directories contained within it</li>
+              <li>Delete the &lt;drive&gt;:\SCORM4EDSampleRTE111Files directory</li>
+           </ol>
+           
+	     </td>
+	  </tr>
+   </table>
+
+</div>
+<div class="bg" id="revisionsToRTE.html">
+
+<!-- Page Content -->
+<div>
+<a name="revisionsTo4thEdRTE1.1.1"></a>
+</div>
+
+<table width="100%" cellpadding="3">
+   <tr>
+      <td class="stagebar">Revisions</td>
+   </tr>
+</table>
+
+<table width="100%" cellpadding="3">
+   <tr>
+      <td>
+   
+         <!-- align="left" removed -->
+         <h5 class="title">Changes from SCORM 2004 4<sup>th</sup> Ed. Sample RTE Version 1.1 
+         to SCORM 2004 4<sup>th</sup> Ed. Sample RTE Version 1.1.1</h5>      
+      </td>
+   </tr>
+   <tr>
+      <td>
+        <ul>
+        <li>
+           The SRTE course import process was updated to enforce the following rules:
+           <ul>
+              <li><!--  Ticket #273 --> 
+                 Parents of a given element are correct in both name and XML namespace.
+              </li>
+              </ul>
+            </li>
+          <li>
+               The SRTE was also updated to:
+               <ul>              
+               <li><!--  Ticket #229 -->
+                     Correctly display user status information when no courses exist. 
+                </li>
+               <li><!--  Ticket #239, 240 -->
+                     Provide the user with the options to reset or sort courses. 
+               </li>
+            </ul>
+          </li>
+        </ul>     
+     </td>
+   </tr>
+   
+   <tr>
+      <td>
+         <div>
+            <a name="revisionsTo4thEdRTE1.1"></a>
+         </div>
+        <!-- align="left" removed -->
+        <h5 class="title">Changes from SCORM 2004 4<sup>th</sup> Ed. Sample RTE Version 1.0 
+        to SCORM 2004 4<sup>th</sup> Ed. Sample RTE Version 1.1</h5>      
+      </td>
+   </tr>
+   <tr>
+      <td>
+        <ul>
+            <li>
+                The SRTE course import process was updated to enforce the following rules:
+                <ul>
+                    <li><!--  Issue 159: Location of <imsss:sequencing> Children  --> 
+                        Children of the &lt;imsss:sequencing&gt; element must exist only under 
+                        an &lt;imsss:sequencing&gt; element.  
+                    </li>
+                </ul>
+            </li>          
+            <li>
+                The SRTE Sequencer was updated to:
+                <ul>              
+                    <li><!-- 1121: Data Stores Not Properly Managed -->
+                        Determine if the root was suspended before deleting the Data Store objects.
+                    </li>
+                    <li><!-- Issue 124: Sample RTE evaluates a post condition rule on a suspended activity -->
+                        Check the state of each activity before performing post condition evaluations.
+                    </li>
+                    <li><!-- Issue 133: adl.nav.request_valid.xxx returning unknown values -->
+                        Correctly process &quot;adl.nav.request_valid&quot; GetValue() and SetValue() requests.
+                    </li>
+                    <li><!-- Issue 134: Incorrect Value Returned when "not attempted" Set on Secondary Objectives -->
+                        Store and return &quot;incomplete&quot; when &quot;not attempted&quot; is set on secondary 
+                        objectives and later retrieved via a shared global objective.
+                    </li>
+                </ul>
+            </li>
+            <li>
+                The SRTE was also updated to:
+                <ul>                   
+                    <li><!--  10 -->
+                        Handle all course management activities from one central Home Page.  Course import,
+                        registration, launching, and status viewing were combined into one central location
+                        which also contains links to administrative options and user management options. 
+                    </li>
+                </ul>
+            </li>          
+        </ul>     
+     </td>
+   </tr>
+   
+   <tr>
+      <td>
+      <div>
+        <a name="revisionsTo4thEdRTE1.0"></a>
+      </div>
+      	<!-- align="left" removed -->
+      	<h5 class="title">Changes from SCORM 2004 3rd Edition Sample RTE Version 1.0.2 
+      	to SCORM 2004 4<sup>th</sup> Ed. Sample RTE Version 1.0</h5>      
+      </td>
+   </tr>
+   <tr>
+      <td>
+        <ul>
+		    <li>
+					The SRTE course import process was updated to enforce the following rules:
+					<ul>
+						<li><!--  Ticket #11362 --> 
+							If the &quot;xsi:schemaLocation&quot; attribute is used, then  
+							every namespace used in the XML instance must be listed in that attribute.
+						</li>
+
+	      		<li><!--  Ticket #11364 -->
+							If the &quot;xsi:schemaLocation&quot; attribute is used, the 
+							actual locations of the attribute must be checked, even if they are not 
+							in the root.
+		    		</li>	
+		    		<li><!--  Ticket #11365 -->
+							The &lt;adlnav:presentation&gt; element must have a parent that has 
+							an &quot;identifierref&quot; attribute that refers to a 
+							resource with &quot;scormtype&quot; attribute equal to &quot;sco&quot; 
+							or &quot;asset&quot;. 
+		    		</li>
+		    		<li><!--  Ticket #11367 -->
+							The &lt;adlcp:timeLimitAction&gt;, &lt;adlcp:completionThreshold&gt;,  
+							and &lt;adlcp:dataFromLMS&gt; elements shall only be used with &lt;item&gt;  
+							elements that reference resources with the &quot;scormtype&quot; 
+							attribute equal to &quot;sco&quot;.
+		    		</li>
+                    <li><!-- Ticket #11368 -->
+         			        All extension elements must be valid against the controlling documents(XSDs) provided.
+                             
+				    </li>  
+				    <li><!--  Ticket #11371 -->
+							The correct multiplicity on the &lt;ruleCondition&gt; element beneath 
+							any of the  &lt;preConditionRule&gt;,&lt;postConditionRule&gt;,
+							&lt;exitConditionRule&gt; elements must be one and only one.
+				    </li>
+			         <li><!--  Ticket #11372 -->
+							An &quot;ID&quot; attribute cannot be allowed on a &lt;sequencing&gt; 
+							element that is a child of an &lt;item&gt; or &lt;organization&gt; element.
+				    </li>
+						<li><!--  Ticket #11402 -->
+							The &lt;targetObjectiveID&gt; element must not contain only white 
+							space characters. 
+				    </li>   
+						<li><!--  Ticket #11535 -->
+							Packages that contain (sub)manifests in the 
+							&lt;manifest&gt; element (or its children) will fail to import when Validation 
+                            is enabled. In 
+							cases that a (sub)manifest exists, but isn't referenced from the &lt;manifest&gt; 
+							element, it will be ignored during execution. 
+				    </li>
+						<li><!--  Ticket #12187 -->
+							Packages containing &lt;resource&gt; 
+							&quot;href&quot; attributes that reference external URLs will fail to import. 
+				    </li>
+						<li><!--  Ticket #12191 -->
+							Packages that contain sequencing information (The use 
+							of &quot;flow&nbsp;=&nbsp;false&quot; and &quot;choice&nbsp;=&nbsp;false&quot; Control Modes on the 
+							package root with no reachable children) which will result in no reachable 
+							activities at the time of course launch will fail to import. 
+				    </li>  
+                    <li><!-- 12168 May 08 TWG Issue #16: Case sensitivity test missing in LMSTestPackage manifests  -->
+                            Objective IDs which differ only in case must be treated as unique objective IDs. 
+                            (ex: &quot;OBJ1&quot; is a different ID than &quot;obj1&quot;)
+                     </li>
+               </ul>
+		    </li>          
+          <li>
+               The SRTE Sequencer was updated to:
+            <ul>
+              
+               <li><!-- 11386 & 12169 May 08 TWG Issue #22: Correct processing of SequencingCollections -->
+                  If an &lt;item&gt; contains a &lt;imsss:sequencing&gt; element that has an IDRef to a 
+                  &lt;imsss:sequencing&gt; element in an &lt;imsss:sequencingCollection&gt; then the 
+                  elements in the sequencingCollection are now properly merged into the sequencing 
+                  information for the item.
+               </li>
+               <li><!-- 12185 ConstraintedChoice = true on organization produces ERROR page -->
+                  Behave correctly regarding the use of the &quot;constrainChoice&nbsp;=&nbsp;true&quot; 
+                  attribute on the &lt;adlseq:constrainedChoiceConsiderations&gt; element on 
+                  the root of the course.
+               </li>
+               <li><!-- 12200 12215  Additional May 08 TWG Issue #34 LMS Test Content Packages -->
+                  Correctly initializes a cluster
+                  activity and process the default Rollup Rules.
+                </li>
+                <li><!-- 12214 evaluating an objective not satisfied sequencing rule condition -->
+                   Correctly handle Activity status &quot;unknown&quot; so that this invalid 
+                   state does not cause a Not &quot;Satisfied&quot; or Not &quot;Completed&quot; 
+                   rule from triggering in the LMS.
+                </li>       
+               
+             </ul>
+          </li>
+          
+		    <li>
+					The SRTE was also updated to:
+					<ul>				   
+			      <li><!--  Ticket #11496 -->
+							Properly process Extended Rollup based on status changes to 
+                            the secondary objectives. 
+				    </li>
+			      <li><!--  Ticket #11497 -->
+							Allow the &quot;Quit&quot; button to properly persist &quot;
+							completion status&quot; and &quot;success status&quot; data. 
+			      </li>
+			      <li><!--  Ticket #11524 -->
+							Directly launch the single
+					 		leaf Activity in content packages that contain only a single SCO.
+				  </li>
+			      <li><!--  Ticket #no ticket -->
+							Disable all Navigation Controls while the course content is being loaded or unloaded.
+				  </li>
+                  <li><!-- 12167 RTE does not correctly handle all whitespace values -->
+                           Correctly process the whitespace component of identifier, 
+                           indentifierref, ID, and IDRef attributes based on the defined 
+                           datatypes of those attributes.                       
+                  </li>                 
+		    	</ul>
+		    </li>
+	     </ul>     
+     </td>
+   </tr>
+   
+   <tr>
+     <td>&nbsp;</td>
+   </tr>
+</table>
+
+<div></div>
+
+</div>
+<div class="bg" id="runSampleRTE.html">
+<div><a name="runSampleRTE"></a></div>
+<table width="100%" cellpadding="3">
+   <tr>
+      <td class="stagebar">
+     		Running the SRTE
+      </td>
+   </tr>
+</table>
+   <table>
+	   <tr>
+	   	 <td>
+	     	<br />
+	         <h5 class="title">Instructions</h5>
+	      
+	      </td>
+	   </tr>
+	   <!-- End Major Heading Row -->
+	   <!-- Begin Text Row -->
+	   <tr>
+	      <td valign="top">
+	         <p>
+		         These instructions are for running the SRTE on a 
+		         Windows platform.  Windows is the only platform on which the software 
+		         has been tested and for which instructions are provided.
+	         </p>
+	         <p>
+	         	<strong>To Run the SRTE:</strong>
+	         </p>
+	         <p>
+		         Ensure that your default browser is Microsoft Internet Explorer 6.0 
+		         or greater and then start the apache&#45;tomcat&#45;5.5.20 servlet 
+		         container and Web server that is provided with this installation by:
+		     </p>
+	         	<ol>
+		            <li>
+			            Clicking the shortcut at Start Menu &#45;> All Programs &#45;> ADL &#45;> 
+			            SCORM_2004_4th_Edition_Sample_Run&#45;Time_Environment_version_1.1.1 &#45;> 
+			            Start Server.  A command prompt window will appear and show several 
+			            lines of textual information.  This window will remain open until 
+			            you stop the server.
+		            </li>
+		            <li>
+			            Clicking the Start Menu &#45;> All Programs &#45;> ADL &#45;> 
+                  SCORM_2004_4th_Edition_Sample_Run&#45;Time_Environment_version_1.1.1 &#45;> 
+                  SCORM 2004 4th Edition Sample Run&#45;Time Environment version 1.1.1 
+                  will launch the SRTE Main Page. 
+                </li> 
+                <li>  
+                  Log in using
+                  <ul>
+                  	<li> username: &quot;admin&quot;</li>
+                  	<li>password: &quot;admin&quot;</li> 
+                  </ul>
+		            </li>
+	        	</ol>
+	        	
+	        	<p>
+	           	Online help pages are available once the SRTE is started.
+	           	&quot;Help&quot; links will typically be located on the top right
+	           	of each page.
+	        	</p>
+	        	<p>
+	          	To close the SRTE, first close the browser in which it is 
+              running.  To stop the apache&#45;tomcat&#45;5.5.20 servlet container 
+              and Web server, click  Start Menu &#45;> All Programs &#45;> ADL &#45;> 
+              SCORM_2004_4th_Edition_Sample_Run&#45;Time_Environment_version_1.1.1 &#45;> 
+              Stop Server.
+	        	</p>
+	        	<p>
+	           	To return the SRTE to a &quot;clean&quot; state, log into the SRTE and from 
+	           	the home page choose &quot;Clear Database&quot;.  This will remove all 
+	           	of the imported course files as well as any information associated with 
+	           	them.  It will also remove all user registration information and all Global 
+	           	Objective information.
+	        	</p>
+	        	<p>
+	         	   <strong>Course Navigation User Interface</strong>
+	          </p>
+		        <p>
+			        In addition to any User Interface (UI) controls provided within course 
+			        content, the SRTE provides several mechanisms for navigating through 
+			        a course that complies with Section 2.1.7 of the SCORM 2004 4<sup>th</sup> Ed. 
+			        Testing Requirements.  These mechanisms include the navigation 
+			        buttons in the top frame of the SRTE, such as the Quit, Suspend, 
+			        Previous, and Continue buttons, and the Table of Contents provided in 
+			        the left&#45;hand frame.
+		        </p>
+	         
+		        <p>
+		          <strong>Navigation Buttons</strong>
+		        </p>
+		        
+		        <p>
+		           The navigation buttons provided by the SRTE in the top frame 
+		           will be visible when they are not explicitly &quot;hidden&quot; by an activity 
+		           via the &quot;hideLMSUI&quot; element within the manifest.  When an activity 
+		           explicitly hides any of the buttons, they will not appear in the 
+		           top frame.
+		        </p>
+		        
+		        <p>
+		           The following section describes the behavior of the navigation buttons when 
+		           they are not hidden:
+		        </p>
+		        
+		      
+			        <ul>
+			           <li>
+			              Quit &#45; This button will issue an Exit All navigation request 
+			              to the SRTE's Sequencer; the SRTE will end a user's current 
+			              attempt on a course.  The user's progress and course status 
+			              information for the current attempt will no longer be available 
+			              if  the user makes another attempt on the course.
+			           </li>
+			           <li>
+			              Suspend &#45; This button will issue a Suspend All navigation request 
+			              to the SRTE's Sequencer; the SRTE will end a user's 
+			              current attempt on a course and will also 'bookmark' the user's 
+			              position within the course.  The user's progress and course status 
+			              information will persist.  When the user starts the course 
+			              again, the course will resume with the same content where they 
+			              triggered the suspend.
+			           </li>
+			           <li>
+			              Previous &#45; This button will issue a Previous navigation request 
+			              to the SRTE's Sequencer, resulting in launching the activity 
+			              identified prior to the current activity in the course's activity 
+			              tree.
+			           </li>
+			           <li>
+			              Continue &#45; This button will issue a Continue navigation request 
+			              to the SRTE's Sequencer, resulting in launching the  
+			              activity identified after the current activity in the 
+			              course's activity tree.
+			           </li>
+			        </ul>
+		        
+		        
+		        <p>
+		          <strong>Table of Contents</strong>
+		        </p>
+		        
+		        <p>
+		           A table of contents (ToC) will be provided by the SRTE when 
+		           a course includes  Choice equal to &quot;true&quot; anywhere within its 
+		           activity tree.  When a course includes Choice equal to &quot;false&quot; at 
+		           every level of its activity tree, the table of contents will not 
+		           appear.
+		        </p>
+		        
+		        <p>
+		           The following describes the items in the ToC when Choice is set to 
+		           &quot;true&quot; in the course:
+		        </p>
+		        
+		       
+			        <ul>
+			           <li>
+			              Selectable &#45; Items that are selectable will be indicated with 
+			              black text and the cursor will change as the user moves an input 
+			              device over them.
+			           </li>
+			           <li>
+			              Not Selectable &#45; Items that are not selectable will be indicated 
+			              by gray text or  black text and a cursor that does not change 
+			              when the user moves an input device over them.
+			           </li>
+			        </ul>
+				</td>
+	  	</tr>
+   </table>
+</div>
+<div class="bg" id="rteServerComponent.html">
+<div>
+<a name="rteServerComponent"></a>
+</div>
+<table width="100%" cellpadding="3">
+   <tr>
+      <td class="stagebar">
+     		Design Information
+      </td>
+   </tr>
+</table>
+   <table>
+	   <tr>
+	      <td valign="top">
+	         <p>
+	         <br />
+	            The SRTE Version 1.1.1 is composed of two 
+	            distinct and separate components:
+	         </p>
+	         
+		         <ol style="margin-bottom: 0;">
+		            <li>
+		               SRTE Server Component: Implemented using 
+		               Java Applications and Java Servlets.
+		            </li>
+		            <li>
+		               SRTE Client Component: Implemented using JSP,
+		                Java Applets, HTML and JavaScript.
+		                
+	         	<br />
+	         	<br /><br />
+		            </li>
+		         </ol>
+		         
+	         	<h5 class="title">SRTE Server Component</h5>
+	         
+	         <p>
+		         The SRTE Server Component is implemented using 
+		         Java Servlets and Java Applications. The Servlets respond to 
+		         requests from the Run-time Environment Client Component and are 
+		         responsible for data model persistence as well as sequencing and 
+		         parsing logic.  The source files for the server component are located
+		         in the Sample_RTE\source\src directory.  In addition, the JavaDoc
+		         associated with the source files is located at Sample_RTE\api\index.html.
+		         The modules that make up the Server Component are listed below:
+	         </p>
+	         <ul>
+	            <li>
+	               <i>ADL Validator</i>: This module validates
+	               the imsmanifest.xml file required by SCORM Content
+	               Aggregation Content Packages.  The ADL 
+                   Validator also parses the XML file and 
+                   returns a DOM tree representation to the SRTE Server 
+                   Component. <i>Refer to the JavaDoc Package, &quot;org.adl.validator&quot; 
+                   for details.</i>
+	            </li>
+	            <li>
+	               <i>Utilities</i>: This module contains general purpose 
+                   utility Java files.
+	               <i>Refer to the JavaDoc Package, &quot;org.adl.util&quot; for details.</i>
+	            </li>
+	            <li>
+	               <i>ADL Sequencer</i>: This module handles
+	               sequencing based on the IMS Simple Sequencing Specification and
+	               SCORM 2004 4<sup>th</sup> Ed. Sequencing and Navigation Version 1.1.1.
+	               It contains classes that create an initialized activity tree, 
+	               maintain the activity tree throughout the sequencing process, and 
+	               handle all sequencing logic.
+	               <i>Refer to the JavaDoc Package, &quot;org.adl.sequencer&quot; for details.</i>
+	            </li>
+	            <li>
+	               <i>SRTE</i>:  The SRTE Package is the hub of all of
+	               the Server Component packages.  It contains the logic to use
+	               the other packages when needed.  It also contains Java 
+                   classes that interact with Java Server Pages to implement
+                   server side functionality.
+	               <i>Refer to the JavaDoc Packages,&quot;org.adl.samplerte.server&quot; and
+	               &quot;org.adl.samplerte.util&quot; for details.</i>
+	            </li>
+	            <li>
+	               <i>Data Models</i>:  This package contains the classes that
+	               maintain the SCORM Run-Time Environment Data Model and the 
+                   Navigation Data Model. <i>Refer to the JavaDoc Package 
+                   &quot;org.adl.datamodels&quot; for details.</i>
+	            </li>
+	         </ul>
+	     	</td>
+	  	</tr>
+   </table>
+</div>
+<div class="bg" id="rteClientComponentJava.html">
+<div>
+<a name="rteClientcomponentJava"></a>
+</div>
+
+   <table>
+	   <tr>
+	     	<td valign="top">
+	        
+	         	<h5 class="title">
+	         		SRTE Client Component (Java Files)
+	         	</h5>
+	         
+	         <p>
+		         The SRTE Client Component consists of a sample 
+		         user interface implemented in HTML and JavaScript and the 
+		         SRTE API Instance implemented as a Java Applet. 
+		         The Applet is downloaded to the client when the user accesses 
+		         the SRTE page through a Web browser. This Applet 
+		         provides the communication to the SRTE Server Component for 
+		         data model element persistence.  Refer to the JavaDoc Package, 
+		         &quot;org.adl.samplerte.client&quot;, for details.
+	         </p>
+	     	</td>
+	  	</tr>
+   </table>
+</div>
+<div class="bg" id="rteClientComponentWeb.html">
+<div><a name="rteclientComponentWeb"></a></div>
+
+   <table>
+	   <tr>
+	      <td>
+	         
+	         	<h5 class="title">
+	         		SRTE Client Component (Web Files)
+	         	</h5>
+	         <p>
+	         	The SRTE Client Component is comprised of the following modules
+	         	located in the Sample_RTE\source\SampleRTE\LMSClient directory:
+	         </p>
+	         <ul>
+	            <li>
+	               <i>Administrative</i>: This module contains files that change
+	               passwords, delete courses, manage global objectives, create or
+	               delete users, delete courses and clear the SRTE database.
+	               The files that make up the Administrative module are located 
+                   in the &quot;admin&quot; directory.
+	            </li>
+	            <li>
+	               <i>Help</i>: This module contains information pages on how to
+	               use the SRTE.  The files that make up the Help module 
+                   are located in the &quot;help&quot; directory.
+	            </li>
+	            <li>
+	               <i>Import</i>: This module is responsible for managing the course
+	               import process.  These files use the SRTE Server side 
+	               Java Component to handle parsing, validation and database access. 
+	               The files that make up the Import module are located in the 
+	               &quot;import&quot; directory.
+	            </li>
+	            <li>
+	               <i>Includes</i>:  The SRTE uses a style sheet (*.css)
+	               that handles the interface look and feel.  See
+	               sampleRTE_style.css for details.  This file is located in the
+	               &quot;includes&quot; directory.
+	            </li>
+	            <li>
+	               <i>Run-Time</i>:  This module contains the files used to deliver
+	               a SCORM-conformant Content Aggregation Content Package and the SCORM API.  
+	               All images used in 
+                 the SRTE menu are located in the &quot;menu-images&quot; directory 
+                 of this module.  The files that make up the Run-Time 
+                 module are located in the &quot;runtime&quot; directory.
+	            </li>
+	            <li>
+	               <i>Special State</i>: This module contains information pages that
+	               describe special sequencing states.  Content
+	               may not be delivered as a result of a sequencing request.  In that
+	               event these pages inform the user about what state the sequencer
+	               is in. <strong>Note:</strong> These pages are included to help debug sequencing
+	               in content.  SCORM does not require the presence of these pages.  LMSs may handle sequencing states in their
+	               own manner.  The files that make up the Special State 
+	               module are located in the &quot;specialstate&quot; directory.
+	            </li>
+	         </ul>
+      	</td>
+  		</tr>
+  	</table>
+</div>
+<div class="bg" id="thirdPartyComponents.html">
+<div>
+<a name="thirdPartyComponents"></a>
+</div>
+   <table>
+	   <tr>
+	      <td valign="top">
+	         
+	         	<h5 class="title">Third Party Components</h5>
+	         
+	         <p>
+		         The SRTE uses the following third party tools:
+	         </p>
+	         <ul>	           	
+		         <li>
+		          	<strong><em>Morten's JavaScript Tree Menu</em></strong>
+		          	<br />
+		          	<br />
+		            	The Table of Contents Menu is used when the Sequencing 
+                        Control Choice mode is enabled.  The menu is presented 
+                        in the left SRTE frame.
+		            <br />
+		            <br />
+		            Morten's JavaScript Tree Menu version 2.3.0, dated 2001-04-30
+		            http://www.treemenu.com/
+						<br />	
+		            Copyright (c) 2001, Morten Wang &amp; contributors
+		            All rights reserved.
+		            <br />
+		            <br />
+		         </li>
+					<li>
+						<strong><em>Apache Software</em></strong>
+						<br />
+						<br />
+		            This product includes software developed by the Apache Software
+		            Foundation 
+		            <a href="http://www.apache.org" target="_blank">
+		               http://www.apache.org/</a>		             
+		            <br />
+		            <br />
+		            <ul>
+							<li>
+								<strong>
+									<em>Apache's Apache-Tomcat Server Version 5.5.20</em>
+								</strong>
+		            	
+								Licensed under the Apache License, Version 2.0 
+								(the &quot;License&quot;); you may not use this file except in 
+								conformance with the License.  You may obtain a copy of the 
+								License at
+				            <a href="http://www.apache.org/licenses/LICENSE-2.0" 
+				                target="_blank">
+				                http://www.apache.org/licenses/LICENSE-2.0</a>
+				            <br />
+				            Unless required by applicable law or agreed to in writing,
+				            software distributed under the License is distributed on an 
+				            &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY 
+				            KIND, either express or implied. See the License for the 
+				            specific language governing permissions and limitations 
+				            under the License.
+				            <br />
+		               </li>
+							
+		             	<li>
+		             		<strong>
+		             			<em>Apache's Xerces Version 2.9.0 Parser</em>
+		                	</strong>
+		                	<br />
+					         	The Apache Xerces XML Parser is used to validate the XML in the
+					            imsmanifest.xml file during course import.
+					         <br />
+					            Please view the Apache License Agreement at
+					            <a href= "http://www.apache.org/licenses/LICENSE-2.0" target="_blank">
+					               http://www.apache.org/licenses/LICENSE-2.0</a>.
+					         <br />
+		            	</li>
+		            	 
+		             	<li>
+		             		<strong>
+		             			<em>Apache Ant Version 1.6.2 (ant.jar)</em>
+		                	</strong>
+		                	<br />
+					         	The Apache Ant ant.jar provides access to the Apache classes 
+					         	ZipFile and ZipEntry.  The ZipFile class allows the encoding of
+					         	an incoming zip file to be specified which enables support of
+					         	certain foreign characters in filenames during import.
+					         <br />
+					            Please view the Apache License Agreement at
+					            
+					            <a href= "http://ant.apache.org/LICENSE" target="_blank">
+					               http://ant.apache.org/LICENSE
+					            </a>.	
+					            			            
+		            	</li>
+		            </ul>
+		         </li>		         
+	      	</ul>
+	      </td>
+	   </tr>
+   </table>
+</div>
+<div class="bg" id="buildingTheRTE.html">
+
+		<p>
+			<a name="buildingTheRTE"></a>
+		</p>
+
+		<h5 class="title">
+			Building the SRTE
+		</h5>
+
+		<p>
+			<strong> <strong>Note:</strong> You are not a required to
+				build the SRTE before using it. It will install as a fully
+				operational unit. You only have to build the SRTE if
+				the source code has been changed. </strong>
+		</p>
+		<p>
+			<em>Complete the SRTE full installation
+				instructions before compiling the SRTE.</em> The SRTE build file
+			depends on a full apache-tomcat-5.5.20 install, along with resources
+			provided in the installation of the SRTE. When the SRTE is built, 
+			it overwrites the previously installed SRTE. To revert back to the original 
+			SRTE, execute the un-install and then rerun the downloaded self-extracting
+			executable.
+		</p>
+		<p>
+			Apache Ant must be installed before building the SRTE.</b>  For information 
+			about and downloads of Ant, refer to
+			<a href="http://ant.apache.org/" target="_blank">http://ant.apache.org/</a>.
+			<br />
+			<em> To build the SRTE: </em>
+		</p>
+
+
+		<ol>
+			<li>
+				Open a command prompt and navigate to the directory where the SRTE is 
+				installed (Default: C:\ADL\SCORM_2004_4th_Ed_Sample_RTE_V1.1.1)
+			</li>
+			<li>
+				Navigate to the Sample_RTE\source directory
+			</li>
+			<li>
+				At the prompt type &quot;ant&quot;.
+			</li>
+		</ol>
+
+		<p>
+			The XML Ant build files will compile all Java class and jar files
+			needed by the SRTE. In addition the files will be installed to
+			apache-tomcat. (
+			<strong>Note:</strong> Restart the Tomcat server for changes to take effect. 
+			This completes the compilation of the SRTE.
+		</p>
+
+		<p>
+			<em>Source File Locations</em>
+		</p>
+		<ul>
+			<li>
+				All JSP, HTML, and JavaScript files are located at
+				&lt;drive&gt;:\&lt;install_directory&gt;\Sample_RTE\source\SampleRTE\LMSClient.
+			</li>
+			<li>
+				The SRTE Java files are located in their respective package
+				locations. For example the data model classes are located at
+				&quot;org\adl\datamodels&quot;. The root of the Java source directory is
+				&lt;drive&gt;:\&lt;install_directory&gt;\Sample_RTE\source\src. There
+				you will find the build script and the root &quot;org&quot; directory.
+			</li>
+		</ul>
+
+
+</div>
+<div class="bg" id="knownIssuesRTE.html">
+		<p>
+			<a name="knownIssuesRTE"></a>
+		</p>
+		<table width="100%" cellpadding="3">
+			<tr>
+				<td class="stagebar">
+					Additional Information
+				</td>
+			</tr>
+		</table>
+
+		<table>
+			<tr>
+				<td valign="top">
+					<div><br /></div>
+					<h5 class="title">
+						Known Issues
+					</h5>
+					
+					<ol style="margin-bottom: 0;">
+						<li>
+							If a package manifest contains references to Sharable Content
+							Objects (SCOs) that are located on an external web site, a
+							cross-domain JavaScript security error will occur. This may
+							prevent the SCOs from communicating with the SRTE provided
+							API.
+							<br />
+							<br />
+						</li>
+
+						<li>
+							The Internet Explorer browser must be set to check for a new page
+							every visit to the page. To configure the browser:
+							<ol>
+								<li>
+									Open a Microsoft Internet Explorer Browser
+								</li>
+								<li>
+									Click on &quot;Tools&quot; then &quot;Internet Options&quot;
+								</li>
+								<li>
+									On the &quot;General&quot; tab, if using Internet Explorer 6 
+                                    under &quot;Temporary Internet Files&quot; or under the &quot;Browsing 
+                                    History&quot; section if using Internet Explorer 7,
+									click <strong>Settings</strong>
+								</li>
+								<li>
+									Select the &quot;Every visit to the page&quot; radio button if 
+									it is not already selected
+								</li>
+								<li>
+									Click <strong>OK</strong> and then <strong>OK</strong> again.
+								</li>
+							</ol>
+							<br />
+						</li>
+
+						<li>
+							Switching between different versions of the
+							SRTE may cause an Applet Error if Applet Caching is
+							enabled. If this occurs, follow these steps to correct the issue:
+
+							<ul>
+								<li>
+									For Java SE 6
+									<ol>
+										<li>
+											Open the Windows &quot;Control Panel&quot;
+										</li>
+										<li>
+											Double click the &quot;Java&quot; icon
+										</li>
+										<li>
+											Click the &quot;General&quot; tab at the top of the dialog box
+										</li>
+										<li>
+											Under the &quot;Temporary Internet Files&quot; section, click 
+											<strong>Settings</strong>
+										</li>
+										<li>
+											Ensure that the check box labeled &quot;Keep temporary files on my
+											computer&quot; is unchecked.
+											<br /><br />
+										</li>
+									</ol>
+								</li>
+							</ul>
+						</li>
+					</ol>
+
+				</td>
+			</tr>
+		</table>
+
+
+</div>
+<div class="bg" id="implementationDecisions.html">
+
+<p>
+<a name="implementationDecisions"></a>
+ </p>
+	<table>
+	   <tr>
+	      <td valign="top">
+	      	 <h5 class="title">Implementation Decisions</h5>	      	 
+	         <strong>Case Sensitive URLs</strong>
+	        
+	            <ul style="margin-bottom: 0;">
+	               <li>
+	               	    URLs that are located in the imsmanifest.xml file and that 
+                        identify launch locations and other hrefs are case sensitive in 
+                        the SRTE.
+                        For example, sco.html is different from SCO.HTML and from Sco.html.
+                        If the case used to specify a file name does not match the case 
+                        of the actual file, an error will result while running the course.
+	               <br />
+	               <br />
+	               </li>	               
+	            </ul>
+	      	<p>
+	      	<strong>Maximum Allowable Course Size</strong>
+	         </p>
+	            <ul style="margin-bottom: 0;">
+	               <li>
+	               	    The maximum allowable size for a course imported into the SRTE is approximately 2.0 gigabytes.  
+                         Courses exceeding 2.0 gigabytes may not import correctly.
+	               <br />
+	               <br />
+	               </li>
+	               
+	            </ul>
+	      	<p>
+	      	<strong>Manifest Encodings</strong>
+	         </p>
+	            <ul style="margin-bottom: 0;">
+	               <li>
+	               	    Any course imported into the SRTE that
+	               	    contains foreign characters in the manifest, must have the
+	               	    imsmanifest.xml file encoded in either UTF-8 or UTF-16 (Big Endian
+	               	    or Little Endian). 
+	                <br />
+	               <br />
+	               </li>
+	              
+	            </ul>
+	      	
+	   	</td>
+	   </tr>
+   	<tr>
+	      <td valign="top">
+	         <strong>Supported Java Versions</strong>
+	         <ul style="margin-bottom: 0;">
+	         	<li>
+                  The following Java Development Kit versions have been 
+	               tested with the SRTE as of the date of this release:
+                  <ul>
+                     <li>Java SE 6, Update 1 or later</li>
+                     <br />
+                  <br /></li>
+                  </ul>
+                  
+               </li>
+	         </ul>
+	   	</td>
+   	</tr>
+	</table>
+</div>
+<div class="bg" id="environmentVariableRTE.html">
+		<p>
+			<a name="environmentVariableRTE"></a>
+		</p>
+		<table>
+			<tr>
+				<td valign="top">
+					<h5 class="title">
+						Environment Variable
+					</h5>
+					
+					<ul>
+						<li>
+							The Environment Variable will be set when the SRTE
+                            is installed. If it must be manually reset, please do the following:
+							<ol>
+								<li>
+									Right-click &quot;My Computer&quot; and select &quot;Properties&quot;
+								</li>
+								<li>
+									Click the &quot;Advanced&quot; tab
+								</li>
+								<li>
+									Click <strong>Environment Variables</strong>
+								</li>
+								<li>
+									Click <strong>New</strong>
+								</li>
+								<li>
+									Set the variable name to SCORM4ED_SRTE111_HOME
+								</li>
+								<li>
+									Set the variable value to
+									&lt;drive&gt;:\&lt;install_directory&gt;
+								</li>
+								<li>
+									Click <strong>OK</strong> on the New Variable window
+								</li>
+								<li>
+									Click <strong>OK</strong> on the Environment Variables window
+								</li>
+								<li>
+									Click <strong>OK</strong> on the Systems Properties window
+								</li>
+							</ol>
+							<br />
+							<br />
+						</li>
+					</ul>					
+				</td>
+			</tr>
+		</table>
+</div>
+<div class="bg" id="odbcConnectionsRTE.html">
+		<p>
+			<a name="odbcConnectionsRTE"></a>
+		</p>
+		<table>
+			<tr>
+				<td valign="top">
+					<h5 class="title">
+						ODBC Connections
+					</h5>
+					<ul>
+						<li>
+							The ODBC Connections will be set when the SRTE
+                            is installed. If for any reason they must be
+							manually reset, please do the following:
+							<ol>
+								<li>
+									Open the Windows &quot;Control Panel&quot;
+								</li>
+								<li>
+									Double-click &quot;Administrative Tools&quot;
+								</li>
+								<li>
+									Double-click &quot;Data Sources (ODBC)&quot;
+								</li>
+								<li>
+									If you are an Administrator, choose the &quot;System DSN&quot; tab
+								</li>
+								<li>
+									If you are a user, choose the &quot;User DSN&quot; tab
+								</li>
+								<li>
+									Click <strong>Add...</strong>
+								</li>
+								<li>
+									Choose &quot;Microsoft Access Driver&quot; (*.mdb), and click <strong>Finish</strong>
+								</li>
+								<li>
+									Enter SCORM4EDGlobalObjs111 for Data Source Name:
+								</li>
+								<li>
+									Click <strong>Select</strong> and browse to
+									&lt;drive&gt;:\&lt;install_directory&gt;\Sample_RTE\database\
+								</li>
+								<li>
+									Select the GlobalObjectives.mdb database and click <strong>OK</strong>
+								</li>
+								<li>
+									Repeat steps 6 through 10 using the Data Source Name
+									SCORM4EDSRTE111 matched to the SampleRTE.mdb database
+								</li>
+								<li>
+									Click <strong>OK</strong> on the ODBC Data Source Administrator window
+								</li>
+							</ol>
+						</li>
+					</ul>
+				</td>
+			</tr>
+		</table>
+</div>
+<div class="bg" id="systemRequirementsRTE.html">
+<p><a name="systemRequirementsRTE"></a>
+</p>
+	<table>
+   	<tr>
+	      <td valign="top">
+	         <h5 class="title">System Requirements</h5>
+	        
+	           <ul>
+               <li>
+                  Minimum System Requirements for operation of the SRTE:
+                  <ul>
+                     <li>Windows XP or Windows Vista (32-bit)</li>
+                     <li>2 GHz Processor</li>
+                     <li>1 GB of RAM</li>
+                     <li>50 MB of free disk space </li>
+                  </ul>
+               <br /> 
+               </li>
+                             
+               <li>
+                  Recommended System Requirements for operation of the SRTE:
+                  <ul>
+                     <li>Windows XP or Windows Vista (32-bit)</li>
+                     <li>4 GHz Processor</li>
+                     <li>2 GB of RAM</li>
+                     <li>60 MB of free disk space </li>
+                  </ul>
+               </li>
+            </ul>	          	
+	   	</td>
+	   </tr>
+   </table>
+</div>
+<div class="bg" id="licenseCopyright.html">
+
+		<p>
+			<a name="licenseCopyright"></a>
+		</p>
+		<table>
+			<tr>
+				<td valign="top">
+
+					<h5 class="title">
+						Licenses and Copyrights
+					</h5>
+ 					  
+  
+<p><strong>ADL SCORM 2004 4<sup>th</sup> Edition Sample Run-Time Environment</strong>
+<p>
+The ADL SCORM 2004 4<sup>th</sup> Ed. Sample Run-Time Environment is licensed under
+Creative Commons Attribution-Noncommercial-Share Alike 3.0 United States.
+</p>
+The Advanced Distributed Learning Initiative allows you to:
+<ul><li class="agreement"><strong>Share</strong> &#45; to copy, distribute and transmit the work.</li>
+  <li class="agreement"><strong>Remix</strong> &#45; to adapt the work.</li>
+</ul>
+<p>
+<strong>Under the following conditions:</strong>
+</p>
+<ul>
+  <li class="agreement"><strong>Attribution</strong>. You must attribute the work in the manner specified by the author or
+     licensor (but not in any way that suggests that they endorse you or your use
+     of the work).</li>
+  <li class="agreement"><strong>Noncommercial</strong>. You may not use this work for commercial purposes.</li> 
+  <li class="agreement"><strong>Share Alike</strong>. If you alter, transform, or build upon this work, you may distribute
+     the resulting work only under the same or similar license to this one.</li>
+     </ul> 
+<p>
+For any reuse or distribution, you must make clear to others the license terms of this work. 
+</p><p>
+Any of the above conditions can be waived if you get permission from the ADL Initiative. 
+Nothing in this license impairs or restricts the author's moral rights.
+</p>
+
+
+				</td>
+			</tr>
+         <tr>
+            <td>
+            <p><br /><br />
+            <strong><em>Apache Software</em></strong></p><p>
+            This product includes software developed by the Apache Software Foundation 
+            (<a href="http://www.apache.org">http://www.apache.org</a>)</p><p>
+            Refer to the Apache License Agreement below at <br /> 
+            <a href="http://www.apache.org/licenses/LICENSE-2.0">
+            http://www.apache.org/licenses/LICENSE-2.0.</a></p>
+            </td> 
+         </tr>
+		</table>
+</div>
+</body>
+</html>

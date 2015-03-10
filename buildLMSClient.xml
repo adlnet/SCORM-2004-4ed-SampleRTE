@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<project name="ADL" default="buildLMSClient" >
+<description>Compiles code for the lmsclient.jar</description>
+
+<target name="init"></target>   
+
+    <target name="compile" depends="init">
+       <javac destdir="${buildDir}" srcdir="${src}" includes="org/adl/api/" >
+           <classpath>
+               <pathelement location="${lib}/java40.jar" />
+               <pathelement location="${lib}/debug.jar"/>
+               <pathelement location="${lib}/sequencer.jar"/>
+               <pathelement location="${lib}/cmidatamodel.jar"/>
+               <pathelement location="${lib}/adlvalidator.jar"/>
+               <pathelement location="${CATALINA_HOME}/common/lib/servlet-api.jar"/>
+           </classpath>
+       </javac>
+
+        <javac destdir="${buildDir}" srcdir="${src}" includes="org/adl/samplerte/" >
+            <classpath>
+                <pathelement location="{adlDir}/api/ecmascript"/>
+                <pathelement location="${lib}/java40.jar" />
+                <pathelement location="${lib}/debug.jar"/>
+                <pathelement location="${lib}/sequencer.jar"/>
+                <pathelement location="${lib}/cmidatamodel.jar"/>
+                <pathelement location="${lib}/adlvalidator.jar"/>
+                <pathelement location="${lib}/util.jar"/>
+                <pathelement location="${lib}/jsp-api.jar"/>
+                <pathelement location="${lib}/../build/classes/util.jar" /><!-- This is here because the RTE doesnt sign the jars and therefor they dont get moved to the lib folder...this may change in the future -->
+                <pathelement location="${lib}/servlet-api.jar"/>
+                <pathelement location="${lib}/commons-fileupload-1.1.jar"/>
+                <pathelement location="${lib}/commons-io-1.2.jar"/>
+                <pathelement location="${lib}/jdom.jar"/>
+                <pathelement location="${lib}/reload-diva.jar"/>               
+            </classpath>                            
+        </javac>
+    </target>
+
+    <target name="buildLmsClientJar" depends="compile">
+        <echo message="building jar file from class files"/>
+        <jar destfile="${buildDir}/${lmsclientJar}" basedir="${buildDir}" 
+            includes="org/adl/api/ecmascript/**,
+                             org/adl/samplerte/**/**"
+        />
+    </target>
+
+    <!--.-->
+    <target name="buildLMSClient" depends="buildLmsClientJar" />
+
+</project>
+
