@@ -26,6 +26,8 @@ Nothing in this license impairs or restricts the author's moral rights.
 
 package org.adl.samplerte.server;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +63,8 @@ import org.adl.sequencer.SeqActivity;
 import org.adl.sequencer.SeqActivityTree;
 import org.adl.sequencer.SeqObjective;
 import org.adl.sequencer.SeqActivity.DataStore;
+
+import com.google.gson.Gson;
 
 /**
  * <strong>Filename:</strong> LMSCMIServletjava<br>
@@ -150,28 +155,47 @@ public class LMSCMIServlet extends HttpServlet
          }
 
          // Retrieve the current session ID
-         HttpSession session = iRequest.getSession(false);
-         if( session == null )
-         {
-            logger.severe("  ERROR - No session ID in LMSCMIServlet.");
-         }
-         else
-         {
-            logger.info("Session ID is: " + session.getId());
-         }
+//         HttpSession session = iRequest.getSession(false);
+//         if( session == null )
+//         {
+//            logger.severe("  ERROR - No session ID in LMSCMIServlet.");
+//         }
+//         else
+//         {
+//            logger.info("Session ID is: " + session.getId());
+//         }
 
-         logger.info("Checking attributes");
+//         logger.info("Checking attributes");
+//
+//         ObjectInputStream in = new ObjectInputStream(iRequest.getInputStream());
+//
+//         logger.info("Created REQUEST object INPUT stream successfully");
+//
+         oResponse.setContentType("application/json; charset=utf-8");
+         oResponse.setCharacterEncoding("UTF-8");
+         // Get the printwriter object from response to write the required json object to the output stream      
+         PrintWriter out = oResponse.getWriter();
+//         ObjectOutputStream out = new ObjectOutputStream(oResponse.getOutputStream());
+//
+//         logger.info("Created RESPONSE object OUTPUT stream successfully");
 
-         ObjectInputStream in = new ObjectInputStream(iRequest.getInputStream());
+         
+         // --------------------------- tom applet removal -------------------------//
+         
+         StringBuffer jb = new StringBuffer();
+         String line = null;
+         try {
+           BufferedReader reader = iRequest.getReader();
+           while ((line = reader.readLine()) != null)
+             jb.append(line);
+         } catch (Exception e) { /*report an error*/ }
 
-         logger.info("Created REQUEST object INPUT stream successfully");
-
-         ObjectOutputStream out = new ObjectOutputStream(oResponse.getOutputStream());
-
-         logger.info("Created RESPONSE object OUTPUT stream successfully");
-
+         Gson gson = new Gson();
+         request = gson.fromJson(jb.toString(),LMSCMIServletRequest.class);
+         // --------------------------- end tom applet removal ---------------------//
+         
          // Read the LMSCMIServletRequest object
-         request = (LMSCMIServletRequest)in.readObject();
+//         request = (LMSCMIServletRequest)in.readObject();
 
          // Set servlet state
          scoID = request.mStateID;
@@ -369,79 +393,81 @@ public class LMSCMIServlet extends HttpServlet
                // Need to return time tracking information
                // -+- TODO -+-
 
-               out.writeObject(response);
+//               out.write(response);
+               out.print(gson.toJson(gson.toJson(response, LMSCMIServletResponse.class)));
                logger.info("LMSCMIServlet processed init");
 
                break;
 
-            case LMSCMIServletRequest.TYPE_GET:
-
-               logger.info("Processing 'get' request");
-
-               response = new LMSCMIServletResponse();
-
-               // Try to open the state file
-               try
-               {
-                  fi = new FileInputStream(scoFile);
-
-                  logger.info("Created SCO data file input stream " + "successfully");
-
-                  fileIn = new ObjectInputStream(fi);
-
-                  logger.info("Created OBJECT input stream successfully");
-
-                  response.mActivityData = (SCODataManager)fileIn.readObject();
-
-               }
-               catch( FileNotFoundException fnfe )
-               {
-                  logger.fine("ERROR == State data not created");
-
-                  response.mError = "NO DATA";
-               }
-
-               fileIn.close();
-               fi.close();
-
-               out.writeObject(response);
-
-               logger.info("LMSCMIServlet processed get for SCO Data\n");
-
-               break;
-
-            case LMSCMIServletRequest.TYPE_SET:
-
-               logger.info("Processing 'set' request");
-
-               response = handleData(request.mActivityData, userID, courseID,
-                                       response, request, activityID, scoID, scoFile);
-
-               out.writeObject(response);
-
-               logger.info("LMSCMIServlet processed set.");
-
-               break;
-
-            case LMSCMIServletRequest.TYPE_TIMEOUT:
-
-               logger.info("Processing 'timeout' request");
-
-               // -+- TODO -+-
-
-               logger.info("LMSCMIServlet processed 'timeout'");
-
-               break;
-
-            default:
-
-               logger.severe("ERROR:  Bad Request Type.");
-
-               break;
+//            case LMSCMIServletRequest.TYPE_GET:
+//
+//               logger.info("Processing 'get' request");
+//
+//               response = new LMSCMIServletResponse();
+//
+//               // Try to open the state file
+//               try
+//               {
+//                  fi = new FileInputStream(scoFile);
+//
+//                  logger.info("Created SCO data file input stream " + "successfully");
+//
+//                  fileIn = new ObjectInputStream(fi);
+//
+//                  logger.info("Created OBJECT input stream successfully");
+//
+//                  response.mActivityData = (SCODataManager)fileIn.readObject();
+//
+//               }
+//               catch( FileNotFoundException fnfe )
+//               {
+//                  logger.fine("ERROR == State data not created");
+//
+//                  response.mError = "NO DATA";
+//               }
+//
+//               fileIn.close();
+//               fi.close();
+//
+//               out.writeObject(response);
+//
+//               logger.info("LMSCMIServlet processed get for SCO Data\n");
+//
+//               break;
+//
+//            case LMSCMIServletRequest.TYPE_SET:
+//
+//               logger.info("Processing 'set' request");
+//
+//               response = handleData(request.mActivityData, userID, courseID,
+//                                       response, request, activityID, scoID, scoFile);
+//
+//               out.writeObject(response);
+//
+//               logger.info("LMSCMIServlet processed set.");
+//
+//               break;
+//
+//            case LMSCMIServletRequest.TYPE_TIMEOUT:
+//
+//               logger.info("Processing 'timeout' request");
+//
+//               // -+- TODO -+-
+//
+//               logger.info("LMSCMIServlet processed 'timeout'");
+//
+//               break;
+//
+//            default:
+//
+//               logger.severe("ERROR:  Bad Request Type.");
+//
+//               break;
          }
 
          // Close the input and output streams
-         in.close();
+//         in.close();
+         out.flush();
          out.close();
 
       }
