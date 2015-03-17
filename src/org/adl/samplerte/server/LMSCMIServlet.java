@@ -53,6 +53,8 @@ import org.adl.datamodels.DMInterface;
 import org.adl.datamodels.DMProcessingInfo;
 import org.adl.datamodels.DMRequest;
 import org.adl.datamodels.SCODataManager;
+import org.adl.datamodels.ieee.SCORM_2004_DM;
+import org.adl.datamodels.nav.SCORM_2004_NAV_DM;
 import org.adl.samplerte.util.RTEFileHandler;
 import org.adl.sequencer.ADLObjStatus;
 import org.adl.sequencer.ADLSeqUtilities;
@@ -388,13 +390,26 @@ public class LMSCMIServlet extends HttpServlet
                   initializeDataStores(mSCOData, mSeqActivity.getDataStores());
                }
                
-               response.mActivityData = mSCOData;
+//               response.mActivityData = mSCOData;
 
                // Need to return time tracking information
                // -+- TODO -+-
 
 //               out.write(response);
-               out.print(gson.toJson(gson.toJson(response, LMSCMIServletResponse.class)));
+               String cmidmstr = ((SCORM_2004_DM)mSCOData.getDataModel("cmi")).toJSONString();
+               String adldmstr =  ((SCORM_2004_NAV_DM)mSCOData.getDataModel("adl")).toJSONString();
+               Gson gsondm = new Gson();
+               HashMap<String, String> cmiobj = gsondm.fromJson(cmidmstr, HashMap.class);
+               cmiobj.putAll(gsondm.fromJson(adldmstr, HashMap.class));
+               StringBuilder sb = new StringBuilder();
+               sb.append("{\"elems\":");
+               sb.append(gsondm.toJson(cmiobj));
+               sb.append(",\"validrequests\":");
+               sb.append(gson.toJson(response, ADLValidRequests.class));
+               sb.append("}");
+               out.print(sb.toString());
+               
+//               out.print(gson.toJson(gson.toJson(response, LMSCMIServletResponse.class)));
                logger.info("LMSCMIServlet processed init");
 
                break;

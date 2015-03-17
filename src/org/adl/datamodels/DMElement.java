@@ -394,6 +394,11 @@ public abstract class DMElement implements Serializable
       return result;
    }
    
+   /**
+    * Provides the internal value stored for the data model element.
+    * 
+    * @return  The element's internal value
+    */
    public String getInternalValue()
    {
       return mValue;
@@ -404,7 +409,14 @@ public abstract class DMElement implements Serializable
       String jsonstr = "";
       if (mValue != null && isInitialized())
       {
-         jsonstr = "\"" + prefix + "." + mDescription.mBinding + "\": \"" + mValue + "\",\n";
+         String delim = "";
+         for (int i = 0; mDelimiters !=null && i < mDelimiters.size(); i++) 
+         {
+            DMDelimiter dd = (DMDelimiter)mDelimiters.get(i);
+            if (dd.mValue != null)
+               delim += "{" + dd.mDescription.mName + "=" + dd.mValue + "}";
+         }
+         jsonstr = "\"" + prefix + "." + mDescription.mBinding + "\": \"" + delim + mValue + "\",\n";
       }
       StringBuilder sb = new StringBuilder();
       if (mRecords != null && mRecords.size() > 0)
@@ -419,10 +431,7 @@ public abstract class DMElement implements Serializable
          Enumeration<String> keys = mChildren.keys();
          while (keys.hasMoreElements())
          {
-            DMElement child = (DMElement)mChildren.get(keys.nextElement());
-            String pre = prefix + "." + mDescription.mBinding;
-            sb.append(child.toJSONString(pre));
-//            sb.append(((DMElement)mChildren.get(i)).toJSONString(prefix + "." + mDescription.mBinding + "." + i));
+            sb.append(((DMElement)mChildren.get(keys.nextElement())).toJSONString(prefix + "." + mDescription.mBinding));
          }
       }
       

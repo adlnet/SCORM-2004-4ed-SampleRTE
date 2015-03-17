@@ -1429,27 +1429,11 @@ public class SCORM_2004_DM extends DataModel implements Serializable
       StringBuilder sb = new StringBuilder();
       Enumeration<String> key = mElements.keys();
       sb.append("{\n");
+      sb.append("\"" + mBinding + "._version\": \"1.0\",\n");
       while (key.hasMoreElements()) {
          String k = key.nextElement();
          DMElement val = (DMElement)mElements.get(k);
-         
-//         System.out.println(val.getDotNotation(this));
-//         if (val.getInternalValue() != null)
-//         {
-//            sb.append("\"" + mBinding + "." + k + "\": \"" + val.getInternalValue() + "\",\n");
-//         }
-//         else 
-//         {
-            if ("_version".equals(k)) 
-            {
-               sb.append("\"" + mBinding + "." + k + "\": \"1.0\",\n");
-            }
-//            else
-//            {
-////               sb.append(extractChildren(k, val));
-//               sb.append(val.toJSONString(mBinding));
-//            }
-//         }
+
          sb.append(val.toJSONString(mBinding));
       }
       sb.deleteCharAt(sb.length() -2);
