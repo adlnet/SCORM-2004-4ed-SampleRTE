@@ -297,7 +297,7 @@ var SRTE_CLIENT = (function () {
        _previousButtonPushed = false,
        _nextButtonPushed = false,
        _TOCPushed = false,
-       _userNavRquest = "_none_",
+       _userNavRequest = "_none_",
        _servletURL = window.location.protocol + "//" + window.location.host + "/adl/lmscmi",
        _activityID = "",
        _stateID = "",
@@ -305,7 +305,7 @@ var SRTE_CLIENT = (function () {
        _userName = "",
        _courseID = "",
        _numAttempts = 0,
-       _errorManager = SRTEErrorManager
+       _errorManager = SRTEErrorManager,
        _comm = new srte_xhr(_servletURL);
    
    function isInitialized() { return _initializedState; }

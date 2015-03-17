@@ -475,10 +475,10 @@ public class SCORM_2004_DMElement extends DMElement implements Serializable
     * @return  The element's internal value
     */
    /* package */
-   String getInternalValue()
-   {
-      return mValue;
-   }
+//   String getInternalValue()
+//   {
+//      return mValue;
+//   }
 
    /**
     * Processes a data model request on this data model element.  This method

@@ -90,6 +90,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 		<link href="../includes/sampleRTE_style.css" rel="stylesheet"
 			type="text/css" />
 		<script type="text/javascript" src="BrowserDetect.js"></script>
+		
 		<script type="text/javascript">
                //<!-- [CDATA[
             
@@ -99,8 +100,8 @@ Nothing in this license impairs or restricts the author's moral rights.
             
             var _Debug = false;
             
-            var API_1484_11 = null;            
-           
+            var API_1484_11 = top.API_1484_11;
+            var SRTE_CLIENT = top.SRTE_CLIENT;
             
             /****************************************************************************
             **
@@ -210,15 +211,8 @@ Nothing in this license impairs or restricts the author's moral rights.
                var scoWinType = typeof(window.parent.frames['Content'].scoWindow);
                var theURL = 'http://'+ window.document.location.host + '/adl/runtime/pleaseWait.jsp?button=next';
               
-               if( !IE)
-               {
-                	API_1484_11 = document.getElementById('NNAPIAdapter'); 
-               }
-               else
-               {
-                  API_1484_11 = document.getElementById('APIAdapter');
-               }
-               API_1484_11.nextButtonPushed();
+               
+               SRTE_CLIENT.setWasNextButtonPushed(true);
               
                if (scoWinType != "undefined" && scoWinType != "unknown")
                {
@@ -297,16 +291,9 @@ Nothing in this license impairs or restricts the author's moral rights.
                 top.frames['log'].document.getElementById('log_span').innerHTML = mlog;
                 
                 
-                if( !IE)
-                {
-                	 API_1484_11 = document.getElementById('NNAPIAdapter');
-                }
-                else
-                {
-                    API_1484_11 = document.getElementById('APIAdapter');
-                }
                 
-                API_1484_11.resetLoggingVariable();
+                
+                SRTE_CLIENT.resetLoggingVariable();
             }       
             
             /****************************************************************************
@@ -356,19 +343,8 @@ Nothing in this license impairs or restricts the author's moral rights.
             ***************************************************************************/
             function  invokeSuspendAll()
             {   
-            	/*if(_Debug){
-               		System.out.println("LMSFrame.jsp: In invokeSuspendAll");
-               	}*/
-            
-                if( !IE)
-                {
-                	API_1484_11 = document.getElementById('NNAPIAdapter');      
-                }
-                else
-                {
-                    API_1484_11 = document.getElementById('APIAdapter');
-                }
-               API_1484_11.suspendButtonPushed();
+            	
+               SRTE_CLIENT.setWasLmsSuspendAllPushed(true);
                doNavEvent( 'suspendAll' );
             }
             
@@ -385,19 +361,8 @@ Nothing in this license impairs or restricts the author's moral rights.
             ***************************************************************************/
             function  invokeQuit()
             {   
-            	/*if(_Debug){
-               		System.out.println("LMSFrame.jsp: In invokeQuit");
-               	}*/
             
-                if( !IE)
-                {
-                	 API_1484_11 = document.getElementById('NNAPIAdapter'); 
-                }
-                else
-                {
-                    API_1484_11 = document.getElementById('APIAdapter');
-                }
-               API_1484_11.quitButtonPushed();
+               SRTE_CLIENT.setWasQuitButtonPushed(true);
                doNavEvent( 'exitAll' );
             }
             
@@ -547,15 +512,8 @@ Nothing in this license impairs or restricts the author's moral rights.
                var scoWinType = typeof(window.parent.frames['Content'].scoWindow);
                var theURL = 'http://'+ window.document.location.host + '/adl/runtime/pleaseWait.jsp?button=prev';
                
-               if( !IE)
-               {
-                	API_1484_11 = document.getElementById('NNAPIAdapter'); 
-               }
-               else
-               {
-                  API_1484_11 = document.getElementById('APIAdapter');
-               }
-               API_1484_11.previousButtonPushed();
+               
+               SRTE_CLIENT.setWasPreviousButtonPushed(true);
                
                if (scoWinType != "undefined" && scoWinType != "unknown")
                {
@@ -673,21 +631,7 @@ Nothing in this license impairs or restricts the author's moral rights.
             function init()
             {
             	DetectBrowser();
-            	/*
-            	if(_Debug){
-               		java.lang.System.out.println("LMSFrame.jsp: In init");
-               	}*/
-            
-                if( !IE)
-                {
-                	//API_1484_11 = this.document.NNAPIAdapter;//seems to work
-                	API_1484_11 = document.getElementById('NNAPIAdapter');//works ok - preferred method
-                	//window.setTimeout( "API_1484_11 = document.getElementById('NNAPIAdapter')", 200);//works ok - unnecessary      
-                }
-                else
-                {
-                    API_1484_11 = this.document.APIAdapter;
-                }
+            	
                 
                window.top.frames['LMSFrame'].document.forms['buttonform'].next.style.visibility = "hidden"; 
                window.top.frames['LMSFrame'].document.forms['buttonform'].previous.style.visibility = "hidden";
@@ -766,48 +710,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 				
 			<!-- ClientRTS -->
 				
-			<!--[if !IE]> Firefox and others will use outer object -->
-			<object classid="java:org/adl/samplerte/client/ClientRTS.class"
-					height="2" width="2"
-					id="NNAPIAdapter"
-					name="NNAPIAdapter" 
-					codetype="application/x-java-applet" 
-					archive="util.jar,cmidatamodel.jar,lmsclient.jar,debug.jar,sequencer.jar,joda-time-1.1.jar"
-		    >			
-					<param name="MAYSCRIPT" value="true" />					
-					<param name="java_codebase" value="../../adl" />
-					<param name="archive" value="util.jar,cmidatamodel.jar,lmsclient.jar,debug.jar,sequencer.jar,joda-time-1.1.jar" />
-					<param name="scriptable" value="true" />
-					<param name="java_version" value="1.5*" />
-               
-				<!--<![endif]-->
-				<!-- MSIE (Microsoft Internet Explorer) will use inner object -->
-				<object
-					classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93"
-					width="2" height="2" 
-					id="APIAdapter"
-					name="APIAdapter"
-					codebase="http://java.sun.com/update/1.5.0/jinstall-1_5_0_16-windows-i586.cab"
-					type="application/x-java-applet"
-					archive="util.jar,cmidatamodel.jar,lmsclient.jar,debug.jar,sequencer.jar,saxon8.jar,jdom.jar,xercesImpl.jar,xml-apis.jar,xmlParserAPIs.jar,xalan.jar,ant.jar,java40.jar,debug.jar,adlvalidator.jar,testsuiteutil.jar,ContentPackageTest.jar,MetadataTest.jar,SCOTest.jar,cmidatamodel.jar,joda-time-1.1.jar,jaxen-1.1.1.jar"
-               		codetype="application/x-java-applet"
-               	>				
-						<param name="code" value="org/adl/samplerte/client/ClientRTS.class" />
-						<param name="codebase" value="/adl" />
-						<param name="type" value="application/x-java-applet" />
-						<param name="scriptable" value="true" />
-						<param name="MAYSCRIPT" value="true" />						
-						<param name="archive" value="util.jar,cmidatamodel.jar,lmsclient.jar,debug.jar,sequencer.jar,joda-time-1.1.jar" />
-					
-                     <strong> This browser does not have a Java Plug-in. <br />
-						<a href="http://java.sun.com/products/plugin/downloads/index.html">
-							Get the latest Java Plug-in here. </a> </strong>
-				</object>
-
-
-				<!--[if !IE]> close outer object -->
-			</object>
-			<!--<![endif]-->
+			
 
 			</div>
 

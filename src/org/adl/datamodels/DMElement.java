@@ -26,6 +26,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 
 package org.adl.datamodels;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.io.Serializable;
@@ -276,7 +277,7 @@ public abstract class DMElement implements Serializable
     * Note: The string returned does not account for specific array indices,
     * instead it simply returns the placeholder 'n'.    
     */
-   protected String getDotNotation(DataModel iDM)
+   public String getDotNotation(DataModel iDM)
    {
       String name = "";
 
@@ -392,5 +393,39 @@ public abstract class DMElement implements Serializable
       }
       return result;
    }
-
+   
+   public String getInternalValue()
+   {
+      return mValue;
+   }
+   
+   public String toJSONString(String prefix) 
+   {
+      String jsonstr = "";
+      if (mValue != null && isInitialized())
+      {
+         jsonstr = "\"" + prefix + "." + mDescription.mBinding + "\": \"" + mValue + "\",\n";
+      }
+      StringBuilder sb = new StringBuilder();
+      if (mRecords != null && mRecords.size() > 0)
+      {
+         for (int i = 0; i < mRecords.size(); i++)
+         {
+            sb.append(((DMElement)mRecords.get(i)).toJSONString(prefix + "." + mDescription.mBinding + "." + i));
+         }
+      }
+      if (mChildren != null && mChildren.size() > 0)
+      {
+         Enumeration<String> keys = mChildren.keys();
+         while (keys.hasMoreElements())
+         {
+            DMElement child = (DMElement)mChildren.get(keys.nextElement());
+            String pre = prefix + "." + mDescription.mBinding;
+            sb.append(child.toJSONString(pre));
+//            sb.append(((DMElement)mChildren.get(i)).toJSONString(prefix + "." + mDescription.mBinding + "." + i));
+         }
+      }
+      
+      return jsonstr + sb.toString();
+   }
 }

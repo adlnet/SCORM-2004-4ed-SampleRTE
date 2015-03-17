@@ -73,41 +73,10 @@ Nothing in this license impairs or restricts the author's moral rights.
 			Version 1.1.1</title>
 		<link href="../includes/sampleRTE_Style.css" rel="stylesheet"
 			type="text/css" />
-		<script type="text/javascript" src="./BrowserDetect.js"></script>
-		
-		<script type="text/javascript">
-//<!-- [CDATA[
-var API_1484_11 = null;
-
-/****************************************************************************
-**
-** Function:  initAPI()
-** Input:   none
-** Output:  none
-**
-** Description:  This function sets an "API" variable equal to the API
-**               Applet.
-**
-***************************************************************************/
-function initAPI()
-{
-DetectBrowser();
-	
-	if(IE){
-		API_1484_11 = window.frames['LMSFrame'].document.getElementById('APIAdapter');
-   		//API_1484_11 = window.LMSFrame.document.APIAdapter;
-   	}
-   	else{
-   		API_1484_11 = window.frames['LMSFrame'].document.getElementById('NNAPIAdapter');
-   		//API_1484_11 = window.LMSFrame.document.NNAPIAdapter;
-   	}
-   
-}
-//]]-->
-</script>
+		<script type="text/javascript" src="scormapi.js"></script>
 	</head>
 
-	<frameset rows="150,*" onload="initAPI();">
+	<frameset rows="150,*">
 		<frame id="LMSFrame" name="LMSFrame" title="Applet Frame" scrolling="no"
 			src="LMSFrame.jsp" />
 		<frameset cols="275,*">
