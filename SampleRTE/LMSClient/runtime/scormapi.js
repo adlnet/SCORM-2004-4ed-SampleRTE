@@ -437,7 +437,7 @@ var API_1484_11 = (function (srte) {
       srte.setTerminateCalled(false);
       
       if (param !== "") srte.errorManager.setCurrentErrorCode("201");
-      else if ( srte.initializedState ) srte.errorManager.setCurrentErrorCode("103");
+      else if ( srte.isInitialized() ) srte.errorManager.setCurrentErrorCode("103");
       else {
          srte.setWasLmsSuspendAllPushed(false);
          srte.setWasQuitButtonPushed(false);

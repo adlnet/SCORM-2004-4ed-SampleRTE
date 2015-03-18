@@ -106,7 +106,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 		var codeLoc = 'http://'+ window.document.location.host + '/adl/runtime/' + 'code.jsp';
 		var _Debug = false;
 		
-		DetectBrowser();
+
 		if ( scoWinType != "undefined" && scoWinType != "unknown" && !Firefox ) 
 		{  
 		   ctrl = window.opener.top.frames['LMSFrame'].document.forms['buttonform'].control.value;

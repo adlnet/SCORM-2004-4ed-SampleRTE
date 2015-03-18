@@ -405,7 +405,7 @@ public class LMSCMIServlet extends HttpServlet
                sb.append("{\"elems\":");
                sb.append(gsondm.toJson(cmiobj));
                sb.append(",\"validrequests\":");
-               sb.append(gson.toJson(response, ADLValidRequests.class));
+               sb.append(gsondm.toJson(gsondm.fromJson(mState.toJSONString(), HashMap.class)));
                sb.append("}");
                out.print(sb.toString());
                

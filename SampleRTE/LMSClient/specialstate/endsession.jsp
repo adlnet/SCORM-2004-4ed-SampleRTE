@@ -71,14 +71,12 @@ Nothing in this license impairs or restricts the author's moral rights.
    
 </head>
 <body>
-<script type="text/javascript" src="../runtime/BrowserDetect.js"></script>
 <!--<script type="text/javascript" src="../runtime/codebase.js"></script>-->
  <script type="text/javascript">
  //<!-- [CDATA[
  	var _Debug = false;
 	var scoWinType = typeof(window.opener)
 	var codeLoc = 'http://'+ window.document.location.host + '/adl/runtime/' + 'code.jsp';
-	DetectBrowser();
    
 	window.top.frames['LMSFrame'].document.forms['buttonform'].next.style.visibility = "hidden";
 	window.top.frames['LMSFrame'].document.forms['buttonform'].previous.style.visibility = "hidden";

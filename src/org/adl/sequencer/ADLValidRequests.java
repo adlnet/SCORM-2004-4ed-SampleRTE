@@ -117,5 +117,34 @@ public class ADLValidRequests implements Serializable
     * provided during the current activity.
     */
    public Vector mTOC = null;
+   
+   public String toJSONString() 
+   {
+      StringBuilder sb = new StringBuilder("{\n");
+      sb.append("\"mStart\":" + mStart + ",\n");
+      sb.append("\"mResume\":" + mResume + ",\n");
+      sb.append("\"mContinue\":" + mContinue + ",\n");
+      sb.append("\"mContinueExit\":" + mContinueExit + ",\n");
+      sb.append("\"mPrevious\":" + mPrevious + ",\n");
+      sb.append("\"mSuspend\":" + mSuspend + ",\n");
+      // choice <string><adltoc>
+//      if (mChoice.size() > 0) {
+//         Enumeration<String> ckeys = mChoice.keys();
+//         while (ckeys.hasMoreElements())
+//         {
+//            
+//         }
+//      }
+//      else
+//      {
+//         sb.append("\"mChoice\": {}\n");
+//      }
+      
+      // mJump <string><seqactivity> ?!
+      // mTOC [adltoc]
+      sb.deleteCharAt(sb.length() -2);;
+      sb.append("}");
+      return sb.toString();
+   }
 
 }  // end ADLValidRequests
