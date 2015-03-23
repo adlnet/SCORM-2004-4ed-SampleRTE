@@ -745,7 +745,7 @@ public class SCORM_2004_NAV_DM extends DataModel implements Serializable
    public static void main(String[] args)
    {
       SCORM_2004_NAV_DM dm = new SCORM_2004_NAV_DM();
-      DMRequest nav = new DMRequest("adl.nav.request", "{target=SCO1}choice");
+      DMRequest nav = new DMRequest("adl.nav.request", "{target=SCO1}jump");
       nav.getNextToken();
       
       DMRequest did = new DMRequest("adl.data.0.id", "foo", true);
@@ -759,6 +759,7 @@ public class SCORM_2004_NAV_DM extends DataModel implements Serializable
       System.out.println(dm.setValue(dsa));
       System.out.println(dm.setValue(ds));
       System.out.println(dm.toJSONString());
+      System.out.println(dm.getJumpLocation());
    }
 
 } // end SCORM_2004_NAV_DM

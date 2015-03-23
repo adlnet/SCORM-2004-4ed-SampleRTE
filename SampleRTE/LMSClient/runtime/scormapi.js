@@ -265,11 +265,14 @@ function DM(errmgr) {
 }
 DM.prototype = {
    fromJSON : function (dmjs) {
-      this.elments = dmjs.elems;
+      this.elements = dmjs.elems;
       this.validrequests = dmjs.validrequests;
    },
    calllist : function () {
       return this.calls;
+   },
+   clearcalllist: function() {
+	   this.calls = [];
    },
    getValue : function (element) {
       if (this.elements[element]) {
@@ -447,13 +450,6 @@ var API_1484_11 = (function (srte) {
          srte.setUserNavRequest("_none_");
          
          // build request (ClientRTS:450)
-            // mActivityID = srte.getActivityID()
-            // mStateID = srte.getStateID()
-            // mStudentID = srte.getUserID()
-            // mUserName = srte.getUserName()
-            // mCourseID = srte.getCourseID()
-            // mRequestType = 1
-            // mNumAttempt = srte.getNumAttempts()
          var reqdata = {
             "mActivityID" : srte.getActivityID(),
             "mStateID" : srte.getStateID(),
@@ -478,8 +474,65 @@ var API_1484_11 = (function (srte) {
    }
    
    function Commit (param) {
-      console.log("commit");
-      return "true";
+      var result = false;
+      
+      if (srte.getTerminatedState() ) {
+    	 srte.errorManager.setCurrentErrorCode(143);
+    	 srte.log("Commit Returned Error Code " + srte.errorManager.getcurrentErrorcode());
+         return result;
+      }
+      
+      setUIState(false);
+      
+      if ( srte.getTerminatedState() ) {
+         srte.errorManager.setCurrentErrorCode(143);
+         srte.log("Commit Returned Error Code " + srte.errorManager.getCurrentErrorCode());
+         return result;
+      }
+      if ( !srte.isInitialized() ) {
+         srte.errorManager.setCurrentErrorCode(142);
+         srte.log("Commit Returned Error Code " + srte.errorManager.getCurrentErrorCode());
+         return result;
+      }
+      if (param !== "") {
+         srte.errorManager.setCurrentErrorCode("201");
+         srte.log("Commit Returned Error Code " + srte.errorManager.getCurrentErrorCode());
+         return result;
+      }
+      
+      // request type = type_set (4)
+      var reqdata = {
+         "mActivityData" : dm.calllist(),
+         "mIsFinished" : srte.getTerminateCalled(),
+         "mRequestType" : 4,
+         "mCourseID" : srte.getCourseID(),
+         "mStudentID" : srte.getUserID(),
+         "mUserName" : srte.getUserName(),
+         "mStateID" : srte.getStateID(),
+         "mActivityID" : srte.getActivityID(),
+         "mNumAttempt" : srte.getNumAttempts(),
+         "mQuitPushed" : srte.getWasQuitButtonPushed(),
+         "mSuspendPushed" : srte.getWasLmsSuspendAllPushed()
+      };
+      dm.clearcalllist();
+      // ClientRTS:1293
+      var resp = srte.send(reqdata);
+      
+      if ( resp.mError !== "OK") {
+    	  srte.errorManager.setCurrentErrorCode(101);
+      }
+      else { 
+    	  srte.errorManager.clearCurrentErrorCode();
+    	  result = "true";
+    	  dm.fromJSON(resp);
+      }
+      
+      setUIState(true);
+      refreshMenu();
+      
+      srte.log("Commit Returned Error Code " + srte.errorManager.getCurrentErrorCode());
+      
+      return result;
    }
    
    function Terminate (param) {
@@ -508,19 +561,26 @@ var API_1484_11 = (function (srte) {
           srte.getWasPreviousButtonPushed() || srte.getWasNextButtonPushed() ||
           srte.getWasTOCPushed()) {
          // set adl.nav.request to srte.getUserNavRequest()
+    	  dm.setValue("adl.nav.request", srte.getUserNavRequest());
       }
       
-      //var event = get ADL nav request
+      var event = dm.getValue("adl.nav.request");
       
-      // if event is "7" || srte.getWasLmsSuspendAllPushed()
-      //      get cmi.exit
-      //      if  get dm error code was 0 || value was "log-out"
-      //           set cmi.exit to "suspend"
+      // check if suspended, if so make sure cmi.exit is "suspend"
+      if (event === "suspendAll" || srte.getWasLmsSuspendAllPushed()) {
+            var curexitval = dm.getValue("cmi.exit");
+            if  (curexitval && curexitval !== "logout"){
+            	dm.setValue("cmi.exit", "suspend");
+            }    
+      }
       
-      // if event is not "5" or "6"
-      //      result = Commit("");
-      // else
-      //      result = "true";
+      // don't commit data on abandon: clientrts:624
+      if (event !== "abandon" && event !== "abandonAll") {
+    	  result = Commit("");
+      }
+      else {
+    	  result = "true";
+      }
       
       srte.setTerminatedState(true);
       
@@ -533,22 +593,114 @@ var API_1484_11 = (function (srte) {
       // else on ClientRTS:645
       srte.setInitializedState(false);
       // get value of exit...
-      // var dmerrorcode = 0;
-      // dmerrorcode = get cmi.exit error code
-      // exitValue = cmi.exit value
+      var exitvalue = dm.getValue("cmi.exit") || "";
+      var tempevent = "_none_";
+      var isChoice = false;
+      var isJump = false;
       
-      // if ClientRTS:659
+      // figure out event
+      tempevent = (exitvalue === "time-out" || exitvalue === "logout") ? "exitAll" : exitvalue;
+      if ( event.indexOf("}jump") > -1 ) {
+    	  try {
+    		  tempevent = /{target=(.*)}jump/.exec(foo)[1];
+    	  }
+    	  catch (e) { tempevent = "_none_"; }
+    	  isJump = true;
+      } 
+      else if ( event.indexOf("}choice") ) {
+    	  try {
+    		  tempevent = /{target=(.*)}choice/.exec(foo)[1];
+	      }
+		  catch (e) { tempevent = "_none_"; }
+    	  isChoice = true;
+      }
+      
+      // now handle the event ClientRTS:734
+      if (!(srte.getWasLmsSuspendAllPushed() || srte.getWasPreviousButtonPushed() || 
+    		  srte.getWasNextButtonPushed() || srte.getWasTOCPushed()) && 
+    		  tempevent !== "_none_") {
+    	  if ( isChoice ) doChoiceEvent(tempevent);
+    	  else if ( isJump ) doJumpEvent(tempevent);
+    	  else doNavEvent(tempevent);
+      }
+      
       
       srte.log("Terminate Returned Error Code " + srte.errorManager.getCurrentErrorCode());
       return result;
    }
    
-   function SetValue (element, value) {
-      return "true";
+   function SetValue (dmelement, value) {
+      srte.log("Called SetValue(" + dmelement + ", " + value +") ");
+      var val = "false";
+      
+      if ( srte.getTerminatedState() ) {
+          srte.errorManager.setCurrentErrorCode(133);
+          srte.log("SetValue Returned Error Code " + srte.errorManager.getCurrentErrorCode());
+          return result;
+       }
+       if ( !srte.isInitialized() ) {
+          srte.errorManager.setCurrentErrorCode(132);
+          srte.log("SetValue Returned Error Code " + srte.errorManager.getCurrentErrorCode());
+          return result;
+       }
+       
+       dm.setValue(element, value);
+       val = "true";
+      
+      srte.log("SetValue Returned " + val);
+      return val;
    }
+	   
    
    function GetValue (element) {
-      return "true";
+      srte.log("Called GetValue(" + dmelement + ") ");
+      var val = "";
+      if ( srte.getTerminatedState() ) {
+         srte.errorManager.setCurrentErrorCode(123);
+         srte.log("GetValue Returned Error Code " + srte.errorManager.getCurrentErrorCode());
+         return val;
+      }
+      if ( !srte.isInitialized() ) {
+         srte.errorManager.setCurrentErrorCode(122);
+         srte.log("GetValue Returned Error Code " + srte.errorManager.getCurrentErrorCode());
+         return val;
+      }
+      
+      srte.errorManager.clearCurrentErrorCode();
+      
+      // is a status?.. look for threshold and measure
+      if (element === "cmi.completion_status") {
+    	  var compthresh = dm.getValue("cmi.completion_threshold");
+    	  if ( srte.errorManager.getCurrentErrorCode() == 0 ) {
+    		  var progmeas = dm.getValue("cmi.progress_measure");
+    		  if ( srte.errorManager.getCurrentErrorCode() == 0 ) {
+    			  val = ( progmeas >= compthresh ) ? "completed" : "incomplete";
+    		  }
+    		  else {
+    			  val = "unknown";
+    		  }
+    		  srte.errorManager.clearCurrentErrorCode();
+		  }
+      }
+      else if (element === "cmi.success_status") {
+    	  var sps = dm.getValue("cmi.scaled_passing_score");
+    	  if ( srte.errorManager.getCurrentErrorCode() == 0 ) {
+    		  var ss = dm.getValue("cmi.score.scaled");
+    		  if ( srte.errorManager.getCurrentErrorCode() == 0 ) {
+    			  val = ( ss >= sps ) ? "passed" : "failed";
+    		  }
+    		  else {
+    			  val = "unknown";
+    		  }
+    		  srte.errorManager.clearCurrentErrorCode();
+		  }
+      }
+      else {
+    	  val = dm.getValue(element);
+      }
+      
+      srte.log("GetValue Returned Error Code " + srte.errorManager.getCurrentErrorCode());
+      return val;
    }
    
    function GetLastError () {

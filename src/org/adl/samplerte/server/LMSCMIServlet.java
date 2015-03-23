@@ -108,6 +108,8 @@ public class LMSCMIServlet extends HttpServlet
     * This string contains the name of the SampleRTEFiles directory.
     */
    private final String SRTEFILESDIR = "SCORM4EDSampleRTE111Files";
+   
+   private final String INITIALIZED_DM_EXT = "initialized";
 
    /**
     * This method handles the 'POST' message sent to the servlet. This servlet
@@ -411,7 +413,12 @@ public class LMSCMIServlet extends HttpServlet
                
 //               out.print(gson.toJson(gson.toJson(response, LMSCMIServletResponse.class)));
                logger.info("LMSCMIServlet processed init");
-
+               
+               // shrug.. this was done in clientrts.. now that it's removed, i moved this here
+               SCORM_2004_NAV_DM navDM = (SCORM_2004_NAV_DM)mSCOData.getDataModel("adl");
+               navDM.setValidRequests(mState);
+               // finally write initialized dm to file so we can read it on set
+               writeDM(mSCOData, scoFile + "_" + INITIALIZED_DM_EXT);
                break;
 
 //            case LMSCMIServletRequest.TYPE_GET:
@@ -450,19 +457,32 @@ public class LMSCMIServlet extends HttpServlet
 //
 //               break;
 //
-//            case LMSCMIServletRequest.TYPE_SET:
-//
-//               logger.info("Processing 'set' request");
-//
-//               response = handleData(request.mActivityData, userID, courseID,
-//                                       response, request, activityID, scoID, scoFile);
-//
-//               out.writeObject(response);
-//
-//               logger.info("LMSCMIServlet processed set.");
-//
-//               break;
-//
+            case LMSCMIServletRequest.TYPE_SET:
+
+               logger.info("Processing 'set' request");
+               
+               SCODataManager data = updateDM(request, scoFile, logger);
+               
+               response = handleData(data, userID, courseID,
+                                       response, request, activityID, scoID, scoFile);
+
+               //out.writeObject(response);
+               // mValidRequests, mError="OK"
+               Gson set_dm = new Gson();
+               StringBuilder set_sb = new StringBuilder("{\n\"mError\":\"OK\",\n\"validrequests\":");
+               set_sb.append(set_dm.toJson(set_dm.fromJson(response.mValidRequests.toJSONString(), HashMap.class)));
+               set_sb.append("\n}");
+               out.print(set_sb.toString());
+               logger.info("LMSCMIServlet processed set.");
+               
+               // shrug.. this was done in clientrts.. now that it's removed, i moved this here
+               SCORM_2004_NAV_DM setnavDM = (SCORM_2004_NAV_DM)data.getDataModel("adl");
+               setnavDM.setValidRequests(response.mValidRequests);
+               
+               writeDM(data, scoFile + "_" + INITIALIZED_DM_EXT);
+
+               break;
+
 //            case LMSCMIServletRequest.TYPE_TIMEOUT:
 //
 //               logger.info("Processing 'timeout' request");
@@ -494,7 +514,36 @@ public class LMSCMIServlet extends HttpServlet
       }
    }
 
+   private SCODataManager updateDM(LMSCMIServletRequest request, String scoFile, Logger logger) throws IOException, ClassNotFoundException 
+   {
+      // don't handle error.. if this doesn't exist, all's wrong
+      ObjectInputStream fileIn = new ObjectInputStream(new FileInputStream(scoFile + "_" + INITIALIZED_DM_EXT));
+
+      logger.info("Created OBJECT input stream successfully");
+
+      // Initialize the new attempt
+      SCODataManager SCOData = (SCODataManager)fileIn.readObject();
+
+      fileIn.close();
+      
+      //loop request data calls
+      for (String[] call : request.mActivityData )
+      {
+         SCOData.setValue(new DMRequest(call[0],call[1]));
+      }
+      
+      return SCOData;
+   }
    
+
+   private void writeDM(SCODataManager dm, String iScoFile) throws FileNotFoundException, IOException 
+   {
+      FileOutputStream fo = new FileOutputStream(iScoFile);
+      ObjectOutputStream outFile = new ObjectOutputStream(fo);
+      outFile.writeObject(dm);
+      outFile.close();
+      fo.close();
+   }
 
    /**
     * This method handles processing of the core data being sent from the client
@@ -510,7 +559,7 @@ public class LMSCMIServlet extends HttpServlet
     * @param iScoFile The name of the target persisted run-time data model file.
     * @return An updated LMSCMIServletResponse response
     */
-   private LMSCMIServletResponse handleData(SCODataManager iSCOData,
+   private LMSCMIServletResponse handleData(SCODataManager scoData,
                            String iUserID,
                            String iCourseID,
                            LMSCMIServletResponse iResponse,
@@ -540,7 +589,7 @@ public class LMSCMIServlet extends HttpServlet
          String sessionTime = null;
          String score = null;
 
-         SCODataManager scoData = iRequest.mActivityData;
+//         SCODataManager scoData = iRequest.mActivityData;
 
          int err = 0;
          DMProcessingInfo dmInfo = new DMProcessingInfo();        
@@ -647,7 +696,7 @@ public class LMSCMIServlet extends HttpServlet
                theSequencer.setActivityTree(theTree);
 
                SeqActivity act = theTree.getActivity(iActivityID);
-               populateMap(iSCOData, act);
+               populateMap(scoData, act);
 
                // Only modify the TM if the activity is tracked
                if( act.getIsTracked() )
@@ -989,11 +1038,7 @@ public class LMSCMIServlet extends HttpServlet
          }
 
          // Persist the run-time data model
-         FileOutputStream fo = new FileOutputStream(iScoFile);
-         ObjectOutputStream outFile = new ObjectOutputStream(fo);
-         outFile.writeObject(iRequest.mActivityData);
-         outFile.close();
-         fo.close();
+         writeDM(scoData, iScoFile);
 
       }
       catch( FileNotFoundException fnfe )
@@ -1014,6 +1059,7 @@ public class LMSCMIServlet extends HttpServlet
       
       return iResponse;
    }
+
    
    /**
     * Takes the sco data and sets the values in the sequencer and database.
@@ -1124,9 +1170,6 @@ public class LMSCMIServlet extends HttpServlet
       {
          ioSequencer.clearAttemptObjMaxScore(iActivityID, iObjID);
       }
-      
-      
-      
       
    }
    
