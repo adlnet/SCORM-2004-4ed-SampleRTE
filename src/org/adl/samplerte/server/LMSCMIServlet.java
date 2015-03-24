@@ -460,26 +460,39 @@ public class LMSCMIServlet extends HttpServlet
             case LMSCMIServletRequest.TYPE_SET:
 
                logger.info("Processing 'set' request");
-               
+               System.out.println("LMSCMIServlet.doPost() -- type set 463");
                SCODataManager data = updateDM(request, scoFile, logger);
-               
+               System.out.println("LMSCMIServlet.doPost() -- type set 465");
                response = handleData(data, userID, courseID,
                                        response, request, activityID, scoID, scoFile);
-
+               System.out.println("LMSCMIServlet.doPost() -- type set 468");
                //out.writeObject(response);
                // mValidRequests, mError="OK"
                Gson set_dm = new Gson();
-               StringBuilder set_sb = new StringBuilder("{\n\"mError\":\"OK\",\n\"validrequests\":");
-               set_sb.append(set_dm.toJson(set_dm.fromJson(response.mValidRequests.toJSONString(), HashMap.class)));
+               StringBuilder set_sb = new StringBuilder("{\n\"mError\":\"OK\"");
+               System.out.println("LMSCMIServlet.doPost() -- type set 473");
+               if (response.mValidRequests != null)
+               {
+                  set_sb.append(",\n\"validrequests\":");
+                  System.out.println("valid requests: " + response.mValidRequests);
+                  set_sb.append(set_dm.toJson(set_dm.fromJson(response.mValidRequests.toJSONString(), HashMap.class)));
+               }
+               System.out.println("LMSCMIServlet.doPost() -- type set 475");
                set_sb.append("\n}");
+               System.out.println("LMSCMIServlet.doPost() -- type set 477");
                out.print(set_sb.toString());
+               System.out.println("LMSCMIServlet.doPost() -- type set 479");
                logger.info("LMSCMIServlet processed set.");
                
+               System.out.println("LMSCMIServlet.doPost() -- type set 482");
                // shrug.. this was done in clientrts.. now that it's removed, i moved this here
                SCORM_2004_NAV_DM setnavDM = (SCORM_2004_NAV_DM)data.getDataModel("adl");
+               System.out.println("LMSCMIServlet.doPost() -- type set 485");
                setnavDM.setValidRequests(response.mValidRequests);
+               System.out.println("LMSCMIServlet.doPost() -- type set 487");
                
                writeDM(data, scoFile + "_" + INITIALIZED_DM_EXT);
+               System.out.println("LMSCMIServlet.doPost() -- type set 490");
 
                break;
 

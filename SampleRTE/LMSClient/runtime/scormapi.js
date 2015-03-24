@@ -265,8 +265,10 @@ function DM(errmgr) {
 }
 DM.prototype = {
    fromJSON : function (dmjs) {
-      this.elements = dmjs.elems;
-      this.validrequests = dmjs.validrequests;
+      if (dmjs.elems)
+    	  this.elements = dmjs.elems;
+      if (dmjs.validrequests)
+    	  this.validrequests = dmjs.validrequests;
    },
    calllist : function () {
       return this.calls;
@@ -275,12 +277,15 @@ DM.prototype = {
 	   this.calls = [];
    },
    getValue : function (element) {
-      if (this.elements[element]) {
-         this.errmgr.clearCurrentErrorCode()
-         return this.elements[element];
+      try {
+         var ret = this.elements[element];
+         this.errmgr.clearCurrentErrorCode();
+         return ret;
       }
-      this.errmgr.setCurrentErrorCode(301);
-      return "";
+      catch (e) {
+         this.errmgr.setCurrentErrorCode(301);
+         return "";
+      }
    },
    setValue : function (element, value) {
       this.errmgr.clearCurrentErrorCode();
@@ -366,7 +371,7 @@ var SRTE_CLIENT = (function () {
    
    function log (message) {
       if (_logging_on && typeof display_log === "function") {
-         display_log(message);
+    	  top.frames['LMSFrame'].display_log(message);
       }
    }
    
@@ -482,7 +487,7 @@ var API_1484_11 = (function (srte) {
          return result;
       }
       
-      setUIState(false);
+      top.frames['LMSFrame'].setUIState(false);
       
       if ( srte.getTerminatedState() ) {
          srte.errorManager.setCurrentErrorCode(143);
@@ -527,8 +532,8 @@ var API_1484_11 = (function (srte) {
     	  dm.fromJSON(resp);
       }
       
-      setUIState(true);
-      refreshMenu();
+      top.frames['LMSFrame'].setUIState(true);
+      top.frames['LMSFrame'].refreshMenu();
       
       srte.log("Commit Returned Error Code " + srte.errorManager.getCurrentErrorCode());
       
@@ -619,9 +624,9 @@ var API_1484_11 = (function (srte) {
       if (!(srte.getWasLmsSuspendAllPushed() || srte.getWasPreviousButtonPushed() || 
     		  srte.getWasNextButtonPushed() || srte.getWasTOCPushed()) && 
     		  tempevent !== "_none_") {
-    	  if ( isChoice ) doChoiceEvent(tempevent);
-    	  else if ( isJump ) doJumpEvent(tempevent);
-    	  else doNavEvent(tempevent);
+    	  if ( isChoice ) top.frames['LMSFrame'].doChoiceEvent(tempevent);
+    	  else if ( isJump ) top.frames['LMSFrame'].doJumpEvent(tempevent);
+    	  else top.frames['LMSFrame'].doNavEvent(tempevent);
       }
       
       
@@ -653,7 +658,7 @@ var API_1484_11 = (function (srte) {
 	   
    
    function GetValue (element) {
-      srte.log("Called GetValue(" + dmelement + ") ");
+      srte.log("Called GetValue(" + element + ") ");
       var val = "";
       if ( srte.getTerminatedState() ) {
          srte.errorManager.setCurrentErrorCode(123);
