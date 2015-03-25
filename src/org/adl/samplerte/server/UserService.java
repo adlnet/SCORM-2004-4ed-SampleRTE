@@ -77,7 +77,7 @@ public class UserService
             
       if (iOnlyActive == true)
       {
-    	  sqlSelectUser = sqlSelectUser + " WHERE Active = yes";
+    	  sqlSelectUser = sqlSelectUser + " WHERE Active = 1";
       }
       
       try
@@ -265,7 +265,7 @@ public class UserService
          conn = LMSDatabaseHandler.getConnection();
 
          // The SQL string is created and converted to a prepared statement.
-         String sqlUpdateUser = "UPDATE UserInfo set Active = no where UserID = ?";
+         String sqlUpdateUser = "UPDATE UserInfo set Active = 0 where UserID = ?";
          stmtUpdateUser = conn.prepareStatement(sqlUpdateUser);
 
          synchronized(stmtUpdateUser)
