@@ -277,15 +277,19 @@ DM.prototype = {
 	   this.calls = [];
    },
    getValue : function (element) {
-      try {
-         var ret = this.elements[element];
+      var ret = "";
+	  try {
+         ret = this.elements[element];
+         if ( ret === undefined ) {
+        	 this.errmgr.setCurrentErrorCode(403);
+        	 ret = "";
+         }
          this.errmgr.clearCurrentErrorCode();
-         return ret;
       }
-      catch (e) {
-         this.errmgr.setCurrentErrorCode(301);
-         return "";
+      catch (e) { 
+    	  this.errmgr.setCurrentErrorCode(301);
       }
+      return ret;
    },
    setValue : function (element, value) {
       this.errmgr.clearCurrentErrorCode();
@@ -649,7 +653,7 @@ var API_1484_11 = (function (srte) {
           return result;
        }
        
-       dm.setValue(element, value);
+       dm.setValue(dmelement, value);
        val = "true";
       
       srte.log("SetValue Returned " + val);

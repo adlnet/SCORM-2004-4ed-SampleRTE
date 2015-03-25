@@ -158,33 +158,10 @@ public class LMSCMIServlet extends HttpServlet
             logger.info(e.nextElement().toString());
          }
 
-         // Retrieve the current session ID
-//         HttpSession session = iRequest.getSession(false);
-//         if( session == null )
-//         {
-//            logger.severe("  ERROR - No session ID in LMSCMIServlet.");
-//         }
-//         else
-//         {
-//            logger.info("Session ID is: " + session.getId());
-//         }
-
-//         logger.info("Checking attributes");
-//
-//         ObjectInputStream in = new ObjectInputStream(iRequest.getInputStream());
-//
-//         logger.info("Created REQUEST object INPUT stream successfully");
-//
          oResponse.setContentType("application/json; charset=utf-8");
          oResponse.setCharacterEncoding("UTF-8");
          // Get the printwriter object from response to write the required json object to the output stream      
          PrintWriter out = oResponse.getWriter();
-//         ObjectOutputStream out = new ObjectOutputStream(oResponse.getOutputStream());
-//
-//         logger.info("Created RESPONSE object OUTPUT stream successfully");
-
-         
-         // --------------------------- tom applet removal -------------------------//
          
          StringBuffer jb = new StringBuffer();
          String line = null;
@@ -196,10 +173,6 @@ public class LMSCMIServlet extends HttpServlet
 
          Gson gson = new Gson();
          request = gson.fromJson(jb.toString(),LMSCMIServletRequest.class);
-         // --------------------------- end tom applet removal ---------------------//
-         
-         // Read the LMSCMIServletRequest object
-//         request = (LMSCMIServletRequest)in.readObject();
 
          // Set servlet state
          scoID = request.mStateID;
@@ -358,7 +331,6 @@ public class LMSCMIServlet extends HttpServlet
 
                            result = DMInterface.processGetValue(obj, true, mSCOData, pi);
 
-                           
                            if( pi.mValue.equals(mObjStatus.mObjID) )
                            {
                               
@@ -391,18 +363,14 @@ public class LMSCMIServlet extends HttpServlet
                {
                   initializeDataStores(mSCOData, mSeqActivity.getDataStores());
                }
-               
-//               response.mActivityData = mSCOData;
 
-               // Need to return time tracking information
-               // -+- TODO -+-
-
-//               out.write(response);
                String cmidmstr = ((SCORM_2004_DM)mSCOData.getDataModel("cmi")).toJSONString();
                String adldmstr =  ((SCORM_2004_NAV_DM)mSCOData.getDataModel("adl")).toJSONString();
+               
                Gson gsondm = new Gson();
                HashMap<String, String> cmiobj = gsondm.fromJson(cmidmstr, HashMap.class);
                cmiobj.putAll(gsondm.fromJson(adldmstr, HashMap.class));
+               
                StringBuilder sb = new StringBuilder();
                sb.append("{\"elems\":");
                sb.append(gsondm.toJson(cmiobj));
@@ -411,9 +379,6 @@ public class LMSCMIServlet extends HttpServlet
                sb.append("}");
                out.print(sb.toString());
                
-//               out.print(gson.toJson(gson.toJson(response, LMSCMIServletResponse.class)));
-               logger.info("LMSCMIServlet processed init");
-               
                // shrug.. this was done in clientrts.. now that it's removed, i moved this here
                SCORM_2004_NAV_DM navDM = (SCORM_2004_NAV_DM)mSCOData.getDataModel("adl");
                navDM.setValidRequests(mState);
@@ -421,100 +386,29 @@ public class LMSCMIServlet extends HttpServlet
                writeDM(mSCOData, scoFile + "_" + INITIALIZED_DM_EXT);
                break;
 
-//            case LMSCMIServletRequest.TYPE_GET:
-//
-//               logger.info("Processing 'get' request");
-//
-//               response = new LMSCMIServletResponse();
-//
-//               // Try to open the state file
-//               try
-//               {
-//                  fi = new FileInputStream(scoFile);
-//
-//                  logger.info("Created SCO data file input stream " + "successfully");
-//
-//                  fileIn = new ObjectInputStream(fi);
-//
-//                  logger.info("Created OBJECT input stream successfully");
-//
-//                  response.mActivityData = (SCODataManager)fileIn.readObject();
-//
-//               }
-//               catch( FileNotFoundException fnfe )
-//               {
-//                  logger.fine("ERROR == State data not created");
-//
-//                  response.mError = "NO DATA";
-//               }
-//
-//               fileIn.close();
-//               fi.close();
-//
-//               out.writeObject(response);
-//
-//               logger.info("LMSCMIServlet processed get for SCO Data\n");
-//
-//               break;
-//
             case LMSCMIServletRequest.TYPE_SET:
-
-               logger.info("Processing 'set' request");
-               System.out.println("LMSCMIServlet.doPost() -- type set 463");
                SCODataManager data = updateDM(request, scoFile, logger);
-               System.out.println("LMSCMIServlet.doPost() -- type set 465");
                response = handleData(data, userID, courseID,
                                        response, request, activityID, scoID, scoFile);
-               System.out.println("LMSCMIServlet.doPost() -- type set 468");
-               //out.writeObject(response);
-               // mValidRequests, mError="OK"
+
                Gson set_dm = new Gson();
                StringBuilder set_sb = new StringBuilder("{\n\"mError\":\"OK\"");
-               System.out.println("LMSCMIServlet.doPost() -- type set 473");
                if (response.mValidRequests != null)
                {
                   set_sb.append(",\n\"validrequests\":");
-                  System.out.println("valid requests: " + response.mValidRequests);
                   set_sb.append(set_dm.toJson(set_dm.fromJson(response.mValidRequests.toJSONString(), HashMap.class)));
                }
-               System.out.println("LMSCMIServlet.doPost() -- type set 475");
                set_sb.append("\n}");
-               System.out.println("LMSCMIServlet.doPost() -- type set 477");
                out.print(set_sb.toString());
-               System.out.println("LMSCMIServlet.doPost() -- type set 479");
-               logger.info("LMSCMIServlet processed set.");
                
-               System.out.println("LMSCMIServlet.doPost() -- type set 482");
                // shrug.. this was done in clientrts.. now that it's removed, i moved this here
                SCORM_2004_NAV_DM setnavDM = (SCORM_2004_NAV_DM)data.getDataModel("adl");
-               System.out.println("LMSCMIServlet.doPost() -- type set 485");
                setnavDM.setValidRequests(response.mValidRequests);
-               System.out.println("LMSCMIServlet.doPost() -- type set 487");
-               
                writeDM(data, scoFile + "_" + INITIALIZED_DM_EXT);
-               System.out.println("LMSCMIServlet.doPost() -- type set 490");
 
                break;
-
-//            case LMSCMIServletRequest.TYPE_TIMEOUT:
-//
-//               logger.info("Processing 'timeout' request");
-//
-//               // -+- TODO -+-
-//
-//               logger.info("LMSCMIServlet processed 'timeout'");
-//
-//               break;
-//
-//            default:
-//
-//               logger.severe("ERROR:  Bad Request Type.");
-//
-//               break;
          }
 
-         // Close the input and output streams
-//         in.close();
          out.flush();
          out.close();
 
@@ -532,11 +426,8 @@ public class LMSCMIServlet extends HttpServlet
       // don't handle error.. if this doesn't exist, all's wrong
       ObjectInputStream fileIn = new ObjectInputStream(new FileInputStream(scoFile + "_" + INITIALIZED_DM_EXT));
 
-      logger.info("Created OBJECT input stream successfully");
-
       // Initialize the new attempt
       SCODataManager SCOData = (SCODataManager)fileIn.readObject();
-
       fileIn.close();
       
       //loop request data calls
@@ -544,7 +435,6 @@ public class LMSCMIServlet extends HttpServlet
       {
          SCOData.setValue(new DMRequest(call[0],call[1]));
       }
-      
       return SCOData;
    }
    
