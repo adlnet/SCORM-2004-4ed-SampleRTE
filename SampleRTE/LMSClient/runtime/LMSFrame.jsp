@@ -64,6 +64,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 	session.removeAttribute( "COURSEID" );
 	session.removeAttribute( "SCOID" );
 	session.removeAttribute( "TOC" );
+   session.removeAttribute( "COURSETITLE" );
    String userid = (String)session.getAttribute( "USERID" );
 
    Logger mLogger = Logger.getLogger("org.adl.util.debug.samplerte");
