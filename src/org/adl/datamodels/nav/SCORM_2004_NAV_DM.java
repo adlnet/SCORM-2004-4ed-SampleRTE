@@ -34,17 +34,16 @@ import org.adl.datamodels.DMErrorCodes;
 import org.adl.datamodels.DMProcessingInfo;
 import org.adl.datamodels.RequestToken;
 import org.adl.datamodels.DMElement;
-
 import org.adl.datamodels.datatypes.SPMRangeValidator;
 import org.adl.datamodels.datatypes.VocabularyValidator;
 import org.adl.datamodels.datatypes.URIValidator;
-
+import org.adl.datamodels.ieee.SCORM_2004_DM;
 import org.adl.sequencer.ADLValidRequests;
 import org.adl.sequencer.SeqNavRequests;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-
 import java.io.Serializable;
 
 /**
@@ -725,6 +724,42 @@ public class SCORM_2004_NAV_DM extends DataModel implements Serializable
       }
 
       return result;
+   }
+   
+   public String toJSONString() {
+      StringBuilder sb = new StringBuilder();
+      Enumeration<String> key = mElements.keys();
+      sb.append("{\n");
+      sb.append("\"" + mBinding + "._version\": \"1.0\",\n");
+      while (key.hasMoreElements()) {
+         String k = key.nextElement();
+         DMElement val = (DMElement)mElements.get(k);
+
+         sb.append(val.toJSONString(mBinding));
+      }
+      sb.deleteCharAt(sb.length() -2);
+      sb.append("}");
+      return sb.toString();
+   }
+   
+   public static void main(String[] args)
+   {
+      SCORM_2004_NAV_DM dm = new SCORM_2004_NAV_DM();
+      DMRequest nav = new DMRequest("adl.nav.request", "{target=SCO1}jump");
+      nav.getNextToken();
+      
+      DMRequest did = new DMRequest("adl.data.0.id", "foo", true);
+      did.getNextToken();
+      DMRequest dsa = new DMRequest("adl.data.0.store._access", true + "<>" + true, true);
+      dsa.getNextToken();
+      DMRequest ds = new DMRequest("adl.data.0.store.", "hello", true);
+      ds.getNextToken();
+      System.out.println(dm.setValue(nav));
+      System.out.println(dm.setValue(did));
+      System.out.println(dm.setValue(dsa));
+      System.out.println(dm.setValue(ds));
+      System.out.println(dm.toJSONString());
+      System.out.println(dm.getJumpLocation());
    }
 
 } // end SCORM_2004_NAV_DM

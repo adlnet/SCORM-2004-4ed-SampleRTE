@@ -62,7 +62,7 @@ var findAPITries = 0;
 *******************************************************************************/
 function initAPI()
 {
-   var api = getAPIHandle();
+   var api = top.SRTE_CLIENT; //getAPIHandle();
    
    if (api == null)
    {
@@ -142,45 +142,45 @@ function findAPI(win)
 
    }
    
-  //return win.API_1484_11; 
-  DetectBrowser();
+  return win.API_1484_11; 
+
   
- 	if (Netscape) 
-    {
-    	if(_Debug && !IE){
-			java.lang.System.out.println("Debug: Found Netscape, not supported - returning null...");
-		}
-        //alert("Netscape Browser is not supported.");
-		
-    	//return win.frames['LMSFrame'].document.getElementById("API_1484_11");
-        return null;
-    }
-   	
-    else if (Firefox){
-	    if(_Debug){
-			java.lang.System.out.println("APIWrapper.js ->findAPI: Found Mozilla Firefox, returning getElementById:NNAPIAdapter");
-		}
-		
-		
-		var retVal;
-		try{
-		
-		//retVal = win.frames['LMSFrame'].document.getElementById("API_1484_11");
-		retVal = win.frames['LMSFrame'].document.getElementById("NNAPIAdapter");
-		//retVal = win.frames['LMSFrame'].document.API_1484_11;
-		}
-		catch( e ){
-			alert( "An exception has occurred:" + e );
-		}
-		return retVal;
-	}   	
-    else 
-    {
-   		if(_Debug && !IE){
-       		java.lang.System.out.println("Debug: Returning win.API_1484_11");
-       	}
-       return win.API_1484_11;       
-   }
+// 	if (Netscape) 
+//    {
+//    	if(_Debug && !IE){
+//			java.lang.System.out.println("Debug: Found Netscape, not supported - returning null...");
+//		}
+//        //alert("Netscape Browser is not supported.");
+//		
+//    	//return win.frames['LMSFrame'].document.getElementById("API_1484_11");
+//        return null;
+//    }
+//   	
+//    else if (Firefox){
+//	    if(_Debug){
+//			java.lang.System.out.println("APIWrapper.js ->findAPI: Found Mozilla Firefox, returning getElementById:NNAPIAdapter");
+//		}
+//		
+//		
+//		var retVal;
+//		try{
+//		
+//		//retVal = win.frames['LMSFrame'].document.getElementById("API_1484_11");
+//		retVal = win.frames['LMSFrame'].document.getElementById("NNAPIAdapter");
+//		//retVal = win.frames['LMSFrame'].document.API_1484_11;
+//		}
+//		catch( e ){
+//			alert( "An exception has occurred:" + e );
+//		}
+//		return retVal;
+//	}   	
+//    else 
+//    {
+//   		if(_Debug && !IE){
+//       		java.lang.System.out.println("Debug: Returning win.API_1484_11");
+//       	}
+//       return win.API_1484_11;       
+//   }
 }
 
 

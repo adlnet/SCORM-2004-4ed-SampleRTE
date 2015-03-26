@@ -278,7 +278,7 @@ Course Register</title>
 	
 </style>
 
-<script type="text/javascript" src="BrowserDetect.js"></script>
+
 <script type="text/javascript">
 //<!-- [CDATA[
 
@@ -531,18 +531,18 @@ function setType(process /*buttonName*/)
 function clearTopFrame()
 {
    //Hide or display the relevant controls
-   if( document.all != null && 
-         window.parent.frames.LMSFrame != null && 
-         window.top.frames.LMSFrame.document != null && 
-         window.parent.frames.code.document != null)
-   {
-      // DetectBrowser();
+   //if( document.all != null && 
+   //      window.parent.frames.LMSFrame != null && 
+   //      window.top.frames.LMSFrame.document != null && 
+   //      window.parent.frames.code.document != null)
+   try {
+
       window.parent.frames.LMSFrame.document.forms.buttonform.suspend.style.visibility="hidden";
       window.parent.frames.code.document.location.href = codeLoc;
       window.top.frames.LMSFrame.document.forms.buttonform.next.style.visibility = "hidden";
       window.top.frames.LMSFrame.document.forms.buttonform.previous.style.visibility = "hidden";
       window.top.frames.LMSFrame.document.forms.buttonform.quit.style.visibility = "hidden";
-   }
+   } catch (e) {}
 }
 
 /**************************************************************************

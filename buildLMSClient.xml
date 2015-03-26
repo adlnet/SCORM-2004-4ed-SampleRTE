@@ -12,6 +12,7 @@
                <pathelement location="${lib}/sequencer.jar"/>
                <pathelement location="${lib}/cmidatamodel.jar"/>
                <pathelement location="${lib}/adlvalidator.jar"/>
+			   <pathelement location="${lib}/gson-2.3.1.jar"/>
                <pathelement location="${CATALINA_HOME}/common/lib/servlet-api.jar"/>
            </classpath>
        </javac>
@@ -31,7 +32,8 @@
                 <pathelement location="${lib}/commons-fileupload-1.1.jar"/>
                 <pathelement location="${lib}/commons-io-1.2.jar"/>
                 <pathelement location="${lib}/jdom.jar"/>
-                <pathelement location="${lib}/reload-diva.jar"/>               
+                <pathelement location="${lib}/reload-diva.jar"/> 
+			    <pathelement location="${lib}/gson-2.3.1.jar"/>              
             </classpath>                            
         </javac>
     </target>

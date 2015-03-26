@@ -116,18 +116,19 @@ Nothing in this license impairs or restricts the author's moral rights.
 	function DetectUnsupportedBrowser()
 	{
 	   // see if the browser and version are supported
-	   if( ( (!IE) && (!Netscape) && (!Firefox) ) || 
-	       ( (IE) && (navigator.userAgent.indexOf("Opera") > -1) ) ||
-	       ( (IE) && (browserVersion < 6) ) ||
-	       ( (Netscape) && (browserVersion < 7) ) )
-	   {
-	      alert("Browser not tested.");
-	      return false;
-	   }
-	   else
-	   {
-	      return true;
-	   }
+//	   if( ( (!IE) && (!Netscape) && (!Firefox) ) || 
+//	       ( (IE) && (navigator.userAgent.indexOf("Opera") > -1) ) ||
+//	       ( (IE) && (browserVersion < 6) ) ||
+//	       ( (Netscape) && (browserVersion < 7) ) )
+//	   {
+//	      alert("Browser not tested.");
+//	      return false;
+//	   }
+//	   else
+//	   {
+//	      return true;
+//	   }
+	   return true;
 	}    
 
 /*******************************************************************************

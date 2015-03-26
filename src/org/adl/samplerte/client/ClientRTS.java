@@ -1274,7 +1274,7 @@ setBackground(new Color(54,60,84));
             // Prepare the request before it goes across the socket
             LMSCMIServletRequest request = new LMSCMIServletRequest();
 
-            request.mActivityData = mSCOData;
+//            request.mActivityData = mSCOData;
             request.mIsFinished = mTerminateCalled;
             request.mRequestType = LMSCMIServletRequest.TYPE_SET;
             request.mCourseID = mCourseID;

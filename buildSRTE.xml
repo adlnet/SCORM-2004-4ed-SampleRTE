@@ -110,6 +110,7 @@
                 <include name="xmlParserAPIs.jar" />
                 <include name="joda-time-1.1.jar" />
                 <include name="xalan.jar" />
+				<include name="gson-2.3.1.jar" />
             </fileset>
         </copy>
          <!--start add for java file upload -->

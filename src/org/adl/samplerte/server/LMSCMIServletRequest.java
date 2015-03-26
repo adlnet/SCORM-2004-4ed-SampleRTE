@@ -28,8 +28,6 @@ package org.adl.samplerte.server;
 
 import java.io.Serializable;
 
-import org.adl.datamodels.SCODataManager;
-
 /**
  * <strong>Filename:</strong> LMSCMIServletRequest<br><br>
  *
@@ -96,7 +94,7 @@ public class LMSCMIServletRequest implements Serializable
    /**
     * The run-time data that is being send from the client
     */
-   public SCODataManager mActivityData = null;
+   public String[][] mActivityData = null;
 
    /**
     * Indicates if the request is being sent due to an LMSFinish
