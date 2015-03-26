@@ -166,8 +166,7 @@ var anchorSet = false;	// an anchor tag is associated with a menu choice
 *****************************************************************************/
 function launchItem(launch)
 {	
-   api = window.top.frames['LMSFrame'].document.getElementById('APIAdapter');
-	 api.TOCPushed(launch);
+   top.SRTE_CLIENT.setTOCPushed(launch);
 	 
    var launchString = "pleaseWait.jsp?scoID=" + launch;	
    window.top.frames['Content'].location.href = (encodeURI(launchString));

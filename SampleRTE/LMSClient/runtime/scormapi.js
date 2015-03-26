@@ -399,6 +399,10 @@ var SRTE_CLIENT = (function () {
       setWasNextButtonPushed : function (val) { _nextButtonPushed = val; },
       getWasTOCPushed : function () { return _TOCPushed; },
       setWasTOCPushed : function (val) { _TOCPushed = val; },
+      setTOCPushed : function (val) { 
+    	  _userNavRequest = val;
+    	  _TOCPushed = true; 
+      },
       getUserNavRequest : function () { return _userNavRequest; },
       setUserNavRequest : function (val) { _userNavRequest = val; },
       suspendButtonPushed : suspendButtonPushed,
