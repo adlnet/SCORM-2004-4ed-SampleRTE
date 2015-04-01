@@ -246,6 +246,22 @@ public class ServletRequestTypes implements Serializable
    
    /**
     * Enumeration of possible Servlet Request Types.<br>
+    * <br>NEW_SIGN_UP
+    * <br><b>25</b>
+    * <br><br>[SERVLET REQUEST TYPE CONSTANT]
+    */
+   public static final int NEW_SIGN_UP          =  25;
+   
+   /**
+    * Enumeration of possible Servlet Request Types.<br>
+    * <br>LOG_IN
+    * <br><b>26</b>
+    * <br><br>[SERVLET REQUEST TYPE CONSTANT]
+    */
+   public static final int LOG_IN          =  26;
+   
+   /**
+    * Enumeration of possible Servlet Request Types.<br>
     * <br>IMPORT_MULTIPLE_COURSES
     * <br><b>29</b>
     * <br><br>[SERVLET REQUEST TYPE CONSTANT]

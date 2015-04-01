@@ -7,15 +7,15 @@ The ADL SCORM 2004 4th Ed. Sample Run-Time Environment is licensed under
 Creative Commons Attribution-Noncommercial-Share Alike 3.0 United States.
 
 The Advanced Distributed Learning Initiative allows you to:
-  *  Share - to copy, distribute and transmit the work.
-  *  Remix - to adapt the work. 
+ *  Share - to copy, distribute and transmit the work.
+ *  Remix - to adapt the work. 
 
 Under the following conditions:
-  *  Attribution. You must attribute the work in the manner specified by the author or
+ *  Attribution. You must attribute the work in the manner specified by the author or
      licensor (but not in any way that suggests that they endorse you or your use
      of the work).
-  *  Noncommercial. You may not use this work for commercial purposes. 
-  *  Share Alike. If you alter, transform, or build upon this work, you may distribute
+ *  Noncommercial. You may not use this work for commercial purposes. 
+ *  Share Alike. If you alter, transform, or build upon this work, you may distribute
      the resulting work only under the same or similar license to this one. 
 
 For any reuse or distribution, you must make clear to others the license terms of this work. 
@@ -23,14 +23,18 @@ For any reuse or distribution, you must make clear to others the license terms o
 Any of the above conditions can be waived if you get permission from the ADL Initiative. 
 Nothing in this license impairs or restricts the author's moral rights.
 
-*******************************************************************************/
+ *******************************************************************************/
 
 package org.adl.samplerte.server;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.adl.samplerte.util.LMSDatabaseHandler;
 
@@ -62,7 +66,7 @@ public class UserService
    {
       // Default constructor
    }
-   
+
    /**
     * Returns a list of users registered in the Sample RTE
     * @param iOnlyActive - return a list of inactive or active users
@@ -74,12 +78,12 @@ public class UserService
       PreparedStatement stmtSelectUser;      
       Vector mUserVector = new Vector();
       String sqlSelectUser = "SELECT * FROM UserInfo";
-            
+
       if (iOnlyActive == true)
       {
-    	  sqlSelectUser = sqlSelectUser + " WHERE Active = yes";
+         sqlSelectUser = sqlSelectUser + " WHERE Active = yes";
       }
-      
+
       try
       {
          conn = LMSDatabaseHandler.getConnection();
@@ -112,7 +116,7 @@ public class UserService
 
       return mUserVector;
    }
- 
+
    /**
     * Returns a UserProfile for the desired user
     * @param iUserID - the ID of the desired user
@@ -175,9 +179,9 @@ public class UserService
       Connection conn = LMSDatabaseHandler.getConnection();
       PreparedStatement stmtSetUserInfo;
       String sqlSetUserInfo = "UPDATE UserInfo SET Password = ?,"
-                              + "AudioLevel = ?, AudioCaptioning = ?,"
-                              + "DeliverySpeed = ?, Language = ?, Admin = ? " 
-                              + "WHERE UserID = ?";  
+            + "AudioLevel = ?, AudioCaptioning = ?,"
+            + "DeliverySpeed = ?, Language = ?, Admin = ? " 
+            + "WHERE UserID = ?";  
 
       try
       {
@@ -206,7 +210,7 @@ public class UserService
 
       return result;
    }
-   
+
    /**
     * Adds a user to the Sample Run Time Environment
     * @param iUser - UserProfile object of the desired user to be added to the system
@@ -220,7 +224,7 @@ public class UserService
       Connection conn; 
       PreparedStatement stmtInsertUserInfo;
       String sqlInsertUserInfo = 
-               "INSERT INTO UserInfo VALUES (?, ?, ?, ?, ?,'1','1','0','1','')";
+            "INSERT INTO UserInfo VALUES (?, ?, ?, ?, ?,'1','1','0','1','')";
 
       try
       {
@@ -249,7 +253,7 @@ public class UserService
 
       return result;
    }
-   
+
    /**
     * Deletes the undesired user
     * @param iUser - ID of the user to be deleted from the Sample RTE
@@ -285,5 +289,117 @@ public class UserService
       }
 
       return result;
+   }
+
+   public boolean loginUser(HttpServletRequest ioRequest, HttpServletResponse ioResponse)
+   {
+      Connection conn;
+      PreparedStatement stmtSelectUser;
+      LMSDatabaseHandler myDatabaseHandler = new LMSDatabaseHandler();
+      String sqlSelectUser = "SELECT * FROM UserInfo Where UserID = ?";
+      String action = null;
+      try
+      {
+         String UserName = "";
+         String Password = "";
+         String fullName = "";
+         String loginName = "";
+         String firstName = "";
+         String lastName = "";
+
+         UserName = ioRequest.getParameter("uname");
+         Password = ioRequest.getParameter("pwd");
+         conn = myDatabaseHandler.getConnection();
+         stmtSelectUser = conn.prepareStatement( sqlSelectUser );
+
+         ResultSet userRS = null;
+
+         synchronized( stmtSelectUser )
+         {
+            stmtSelectUser.setString( 1, UserName);
+            userRS = stmtSelectUser.executeQuery();
+         }
+
+         // Verifies that the username was found by checking to see if the result
+         // set 'userRS' is empty.  If the username was found, it checks to see if 
+         // the entered password is correct.  If the username was not found, the 
+         // variable 'action' is changed to indicate this.
+         if( (userRS != null) && (userRS.next()) )
+         {
+            String userID = userRS.getString("UserID");
+
+            if(userID.equals(UserName))
+            {
+               String passwd = userRS.getString("Password");
+               boolean active = userRS.getBoolean("Active");
+               firstName = userRS.getString("FirstName");
+               lastName = userRS.getString("LastName");
+               fullName = lastName + ", " + firstName;
+               loginName = firstName + ' ' + lastName;
+
+               if (! active )
+               {
+                  action = "deactivated";
+               }
+
+               // Verifies that the password that was entered is not blank and that 
+               // it matches the password found to belong to the username.  If either
+               // of these conditions is incorrect, the variable 'action' is changed
+               // to indicate this.
+               if( (Password != null) && (!Password.equals(passwd)) )
+               {
+                  action = "invalidpwd";      
+               }
+            }
+            else
+            {
+               action = "invaliduname";
+            }
+
+         }
+         else
+         {
+            action = "invaliduname";
+         }
+
+         // Verifies that no errors were found with the login by checking to see 
+         // if the action variable has been assigned anything.  If 'action' is
+         //  null, no errors were found and the session variables 'USERID' and
+         //  'RTEADMIN' are set.  
+         if ( action == null )
+         {
+            ioRequest.getSession().setAttribute("USERID", UserName);
+            ioRequest.getSession().setAttribute("USERNAME", fullName);
+            ioRequest.getSession().setAttribute("LOGINNAME", loginName);
+
+            String admin = userRS.getString("Admin"); 
+
+            // Checks to see if the user has admin rights and sets the 'RTEADMIN'
+            // variable accordingly.
+            if ( (admin != null) && (admin.equals("1")) ) 
+            {
+               ioRequest.getSession().setAttribute("RTEADMIN", new String("true"));
+            }
+            else
+            {
+               ioRequest.getSession().setAttribute("RTEADMIN", new String("false"));
+            }
+         }
+
+         userRS.close();
+         stmtSelectUser.close();
+         conn.close();
+      }
+      catch(SQLException e)
+      {
+         System.out.println("login sql exception ");e.printStackTrace();  
+         action = "fail";
+      }
+      catch(Exception e)
+      { 
+         e.printStackTrace();
+         action = "fail";
+      } 
+      return action == null;
    }
 }

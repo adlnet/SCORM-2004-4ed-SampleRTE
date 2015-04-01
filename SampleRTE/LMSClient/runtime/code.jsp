@@ -210,6 +210,7 @@ var menu = new MTMenu();
 
 
    // Get the session information
+   session.getServletContext();
    String courseID = (String)session.getAttribute("COURSEID");
    String userID = (String)session.getAttribute("USERID");
    String control = (String)session.getAttribute("TOC");
