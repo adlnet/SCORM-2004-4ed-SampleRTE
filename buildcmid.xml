@@ -10,7 +10,7 @@
    <target name="buildFiles" depends="init">
         <javac destdir="${buildDir}" srcdir="${src}"
             includes="org/adl/datamodels/"
-            classpath="${lib}/sequencer.jar,${buildDir}/util.jar,${lib}/joda-time-1.1.jar" >
+            classpath="${lib}/sequencer.jar:${buildDir}/util.jar:${lib}/joda-time-1.1.jar" >
             <exclude name="SCORM_1_2_DM.java" />
             <exclude name="SCORM_1_2_DMElement.java" />
             <exclude name="CMITimespanValidator.java" />
