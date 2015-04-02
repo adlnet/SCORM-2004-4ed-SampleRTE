@@ -109,7 +109,6 @@
                 <include name="xml-apis.jar" />
                 <include name="xmlParserAPIs.jar" />
                 <include name="joda-time-1.1.jar" />
-                <include name="xalan.jar" />
             </fileset>
         </copy>
          <!--start add for java file upload -->
@@ -139,6 +138,9 @@
             </fileset>
             <fileset dir="${ccHome}/source/lib" >
                 <include name="sqlite-jdbc-3.7.2.jar" />
+                <include name="commons-fileupload-1.1.jar" />
+                <include name="commons-io-1.2.jar" />
+                <include name="jdom.jar" />
             </fileset>
         </copy>
 
