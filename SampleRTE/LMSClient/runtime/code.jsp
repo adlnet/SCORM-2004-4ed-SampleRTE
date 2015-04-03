@@ -333,7 +333,7 @@ var MTMenuText = " ";
 %>
 
 <%= parent_vector.elementAt(parent_index).toString()%>.MTMAddItem(new MTMenuItem("<%= title_vector.elementAt(i).toString()%>", 
-              "javascript:launchItem('<%=id_vector.elementAt(i).toString()%>')", "code", "curr"));
+              "javascript:top.frames['code'].launchItem('<%=id_vector.elementAt(i).toString()%>')", "code", "curr"));
 
 <%  
     }
@@ -355,7 +355,7 @@ var MTMenuText = " ";
        
 <%= parent_vector.elementAt(parent_index).toString() %>.MTMAddItem(
     new MTMenuItem("<%= title_vector.elementAt(i).toString()%>", 
-              "javascript:launchItem('<%=id_vector.elementAt(i).toString()%>')",
+              "javascript:top.frames['code'].launchItem('<%=id_vector.elementAt(i).toString()%>')",
               "code"));
 <%  
          }
@@ -386,7 +386,7 @@ var MTMenuText = " ";
 
 <%= parent_vector.elementAt(parent_index).toString()%>.MTMAddItem(
    new MTMenuItem("<%= title_vector.elementAt(i).toString()%>", 
-              "javascript:launchItem('<%=id_vector.elementAt(i).toString()%>')",
+              "javascript:top.frames['code'].launchItem('<%=id_vector.elementAt(i).toString()%>')",
               "code", "curr"));
 
 <%  
@@ -408,7 +408,7 @@ var MTMenuText = " ";
    
 <%= parent_vector.elementAt(parent_index).toString()%>.MTMAddItem(
    new MTMenuItem("<%= title_vector.elementAt(i).toString()%>", 
-              "javascript:launchItem('<%=id_vector.elementAt(i).toString()%>')",
+              "javascript:top.frames['code'].launchItem('<%=id_vector.elementAt(i).toString()%>')",
               "code"));
               
 <%  
@@ -466,7 +466,7 @@ var <%= menu_name%> = new MTMenu();
 
 <%= parent_vector.elementAt(parent_index).toString()%>.MTMAddItem(
    new MTMenuItem("<%= title_vector.elementAt(i).toString()%>", 
-              "javascript:launchItem('<%=id_vector.elementAt(i).toString()%>')",
+              "javascript:top.frames['code'].launchItem('<%=id_vector.elementAt(i).toString()%>')",
               "code", "curr"));
 
 <%  
@@ -486,7 +486,7 @@ var <%= menu_name%> = new MTMenu();
 
 <%=menu_name%>.MTMAddItem(new MTMenuItem(
    "<%=title_vector.elementAt(i).toString()%>",  
-   "javascript:launchItem('<%=id_vector.elementAt(i).toString()%>')", "code"));
+   "javascript:top.frames['code'].launchItem('<%=id_vector.elementAt(i).toString()%>')", "code"));
 
 <%  
                }
@@ -525,7 +525,7 @@ var <%= menu_name%> = new MTMenu();
 
 <%= parent_vector.elementAt(parent_index).toString()%>.MTMAddItem(
    new MTMenuItem("<%= title_vector.elementAt(i).toString()%>", 
-              "javascript:launchItem('<%=id_vector.elementAt(i).toString()%>')",
+              "javascript:top.frames['code'].launchItem('<%=id_vector.elementAt(i).toString()%>')",
               "code", "curr"));
 
 <%  
@@ -547,7 +547,7 @@ var <%= menu_name%> = new MTMenu();
 <%=parent_vector.elementAt(parent_index).toString()%>.MTMAddItem(
    new MTMenuItem(
    "<%=title_vector.elementAt(i).toString()%>",  
-   "javascript:launchItem('<%=id_vector.elementAt(i).toString()%>')", "code"));
+   "javascript:top.frames['code'].launchItem('<%=id_vector.elementAt(i).toString()%>')", "code"));
 
 <%  
                }

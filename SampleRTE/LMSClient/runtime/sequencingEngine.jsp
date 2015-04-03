@@ -636,7 +636,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 <%
    }   
 %> 
-   		<script type="text/javascript" src="./BrowserDetect.js"></script>
+   		
       	<script type="text/javascript" src="./APIWrapper.js"></script>
       	 <link href="../includes/sampleRTE_style.css" rel="stylesheet"
          type="text/css" />
@@ -739,7 +739,6 @@ Nothing in this license impairs or restricts the author's moral rights.
                 .forms.buttonform.suspend.style.visibility = 
                "hidden";
          }
-         DetectBrowser();
          
         
          window.parent.frames['code'].document.location.href = codeLoc;

@@ -26,6 +26,8 @@ Nothing in this license impairs or restricts the author's moral rights.
 
 package org.adl.samplerte.server;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +53,8 @@ import org.adl.datamodels.DMInterface;
 import org.adl.datamodels.DMProcessingInfo;
 import org.adl.datamodels.DMRequest;
 import org.adl.datamodels.SCODataManager;
+import org.adl.datamodels.ieee.SCORM_2004_DM;
+import org.adl.datamodels.nav.SCORM_2004_NAV_DM;
 import org.adl.samplerte.util.RTEFileHandler;
 import org.adl.sequencer.ADLObjStatus;
 import org.adl.sequencer.ADLSeqUtilities;
@@ -60,6 +65,8 @@ import org.adl.sequencer.SeqActivity;
 import org.adl.sequencer.SeqActivityTree;
 import org.adl.sequencer.SeqObjective;
 import org.adl.sequencer.SeqActivity.DataStore;
+
+import com.google.gson.Gson;
 
 /**
  * <strong>Filename:</strong> LMSCMIServletjava<br>
@@ -101,6 +108,8 @@ public class LMSCMIServlet extends HttpServlet
     * This string contains the name of the SampleRTEFiles directory.
     */
    private final String SRTEFILESDIR = "SCORM4EDSampleRTE111Files";
+   
+   private final String INITIALIZED_DM_EXT = "initialized";
 
    /**
     * This method handles the 'POST' message sent to the servlet. This servlet
@@ -149,29 +158,21 @@ public class LMSCMIServlet extends HttpServlet
             logger.info(e.nextElement().toString());
          }
 
-         // Retrieve the current session ID
-         HttpSession session = iRequest.getSession(false);
-         if( session == null )
-         {
-            logger.severe("  ERROR - No session ID in LMSCMIServlet.");
-         }
-         else
-         {
-            logger.info("Session ID is: " + session.getId());
-         }
+         oResponse.setContentType("application/json; charset=utf-8");
+         oResponse.setCharacterEncoding("UTF-8");
+         // Get the printwriter object from response to write the required json object to the output stream      
+         PrintWriter out = oResponse.getWriter();
+         
+         StringBuffer jb = new StringBuffer();
+         String line = null;
+         try {
+           BufferedReader reader = iRequest.getReader();
+           while ((line = reader.readLine()) != null)
+             jb.append(line);
+         } catch (Exception e) { /*report an error*/ }
 
-         logger.info("Checking attributes");
-
-         ObjectInputStream in = new ObjectInputStream(iRequest.getInputStream());
-
-         logger.info("Created REQUEST object INPUT stream successfully");
-
-         ObjectOutputStream out = new ObjectOutputStream(oResponse.getOutputStream());
-
-         logger.info("Created RESPONSE object OUTPUT stream successfully");
-
-         // Read the LMSCMIServletRequest object
-         request = (LMSCMIServletRequest)in.readObject();
+         Gson gson = new Gson();
+         request = gson.fromJson(jb.toString(),LMSCMIServletRequest.class);
 
          // Set servlet state
          scoID = request.mStateID;
@@ -330,7 +331,6 @@ public class LMSCMIServlet extends HttpServlet
 
                            result = DMInterface.processGetValue(obj, true, mSCOData, pi);
 
-                           
                            if( pi.mValue.equals(mObjStatus.mObjID) )
                            {
                               
@@ -363,85 +363,53 @@ public class LMSCMIServlet extends HttpServlet
                {
                   initializeDataStores(mSCOData, mSeqActivity.getDataStores());
                }
+
+               String cmidmstr = ((SCORM_2004_DM)mSCOData.getDataModel("cmi")).toJSONString();
+               String adldmstr =  ((SCORM_2004_NAV_DM)mSCOData.getDataModel("adl")).toJSONString();
                
-               response.mActivityData = mSCOData;
-
-               // Need to return time tracking information
-               // -+- TODO -+-
-
-               out.writeObject(response);
-               logger.info("LMSCMIServlet processed init");
-
-               break;
-
-            case LMSCMIServletRequest.TYPE_GET:
-
-               logger.info("Processing 'get' request");
-
-               response = new LMSCMIServletResponse();
-
-               // Try to open the state file
-               try
-               {
-                  fi = new FileInputStream(scoFile);
-
-                  logger.info("Created SCO data file input stream " + "successfully");
-
-                  fileIn = new ObjectInputStream(fi);
-
-                  logger.info("Created OBJECT input stream successfully");
-
-                  response.mActivityData = (SCODataManager)fileIn.readObject();
-
-               }
-               catch( FileNotFoundException fnfe )
-               {
-                  logger.fine("ERROR == State data not created");
-
-                  response.mError = "NO DATA";
-               }
-
-               fileIn.close();
-               fi.close();
-
-               out.writeObject(response);
-
-               logger.info("LMSCMIServlet processed get for SCO Data\n");
-
+               Gson gsondm = new Gson();
+               HashMap<String, String> cmiobj = gsondm.fromJson(cmidmstr, HashMap.class);
+               cmiobj.putAll(gsondm.fromJson(adldmstr, HashMap.class));
+               
+               StringBuilder sb = new StringBuilder();
+               sb.append("{\"elems\":");
+               sb.append(gsondm.toJson(cmiobj));
+               sb.append(",\"validrequests\":");
+               sb.append(gsondm.toJson(gsondm.fromJson(mState.toJSONString(), HashMap.class)));
+               sb.append("}");
+               out.print(sb.toString());
+               
+               // shrug.. this was done in clientrts.. now that it's removed, i moved this here
+               SCORM_2004_NAV_DM navDM = (SCORM_2004_NAV_DM)mSCOData.getDataModel("adl");
+               navDM.setValidRequests(mState);
+               // finally write initialized dm to file so we can read it on set
+               writeDM(mSCOData, scoFile + "_" + INITIALIZED_DM_EXT);
                break;
 
             case LMSCMIServletRequest.TYPE_SET:
-
-               logger.info("Processing 'set' request");
-
-               response = handleData(request.mActivityData, userID, courseID,
+               SCODataManager data = updateDM(request, scoFile, logger);
+               response = handleData(data, userID, courseID,
                                        response, request, activityID, scoID, scoFile);
 
-               out.writeObject(response);
-
-               logger.info("LMSCMIServlet processed set.");
-
-               break;
-
-            case LMSCMIServletRequest.TYPE_TIMEOUT:
-
-               logger.info("Processing 'timeout' request");
-
-               // -+- TODO -+-
-
-               logger.info("LMSCMIServlet processed 'timeout'");
-
-               break;
-
-            default:
-
-               logger.severe("ERROR:  Bad Request Type.");
+               Gson set_dm = new Gson();
+               StringBuilder set_sb = new StringBuilder("{\n\"mError\":\"OK\"");
+               if (response.mValidRequests != null)
+               {
+                  set_sb.append(",\n\"validrequests\":");
+                  set_sb.append(set_dm.toJson(set_dm.fromJson(response.mValidRequests.toJSONString(), HashMap.class)));
+               }
+               set_sb.append("\n}");
+               out.print(set_sb.toString());
+               
+               // shrug.. this was done in clientrts.. now that it's removed, i moved this here
+               SCORM_2004_NAV_DM setnavDM = (SCORM_2004_NAV_DM)data.getDataModel("adl");
+               setnavDM.setValidRequests(response.mValidRequests);
+               writeDM(data, scoFile + "_" + INITIALIZED_DM_EXT);
 
                break;
          }
 
-         // Close the input and output streams
-         in.close();
+         out.flush();
          out.close();
 
       }
@@ -453,7 +421,32 @@ public class LMSCMIServlet extends HttpServlet
       }
    }
 
+   private SCODataManager updateDM(LMSCMIServletRequest request, String scoFile, Logger logger) throws IOException, ClassNotFoundException 
+   {
+      // don't handle error.. if this doesn't exist, all's wrong
+      ObjectInputStream fileIn = new ObjectInputStream(new FileInputStream(scoFile + "_" + INITIALIZED_DM_EXT));
+
+      // Initialize the new attempt
+      SCODataManager SCOData = (SCODataManager)fileIn.readObject();
+      fileIn.close();
+      
+      //loop request data calls
+      for (String[] call : request.mActivityData )
+      {
+         SCOData.setValue(new DMRequest(call[0],call[1]));
+      }
+      return SCOData;
+   }
    
+
+   private void writeDM(SCODataManager dm, String iScoFile) throws FileNotFoundException, IOException 
+   {
+      FileOutputStream fo = new FileOutputStream(iScoFile);
+      ObjectOutputStream outFile = new ObjectOutputStream(fo);
+      outFile.writeObject(dm);
+      outFile.close();
+      fo.close();
+   }
 
    /**
     * This method handles processing of the core data being sent from the client
@@ -469,7 +462,7 @@ public class LMSCMIServlet extends HttpServlet
     * @param iScoFile The name of the target persisted run-time data model file.
     * @return An updated LMSCMIServletResponse response
     */
-   private LMSCMIServletResponse handleData(SCODataManager iSCOData,
+   private LMSCMIServletResponse handleData(SCODataManager scoData,
                            String iUserID,
                            String iCourseID,
                            LMSCMIServletResponse iResponse,
@@ -499,7 +492,7 @@ public class LMSCMIServlet extends HttpServlet
          String sessionTime = null;
          String score = null;
 
-         SCODataManager scoData = iRequest.mActivityData;
+//         SCODataManager scoData = iRequest.mActivityData;
 
          int err = 0;
          DMProcessingInfo dmInfo = new DMProcessingInfo();        
@@ -606,7 +599,7 @@ public class LMSCMIServlet extends HttpServlet
                theSequencer.setActivityTree(theTree);
 
                SeqActivity act = theTree.getActivity(iActivityID);
-               populateMap(iSCOData, act);
+               populateMap(scoData, act);
 
                // Only modify the TM if the activity is tracked
                if( act.getIsTracked() )
@@ -948,11 +941,7 @@ public class LMSCMIServlet extends HttpServlet
          }
 
          // Persist the run-time data model
-         FileOutputStream fo = new FileOutputStream(iScoFile);
-         ObjectOutputStream outFile = new ObjectOutputStream(fo);
-         outFile.writeObject(iRequest.mActivityData);
-         outFile.close();
-         fo.close();
+         writeDM(scoData, iScoFile);
 
       }
       catch( FileNotFoundException fnfe )
@@ -973,6 +962,7 @@ public class LMSCMIServlet extends HttpServlet
       
       return iResponse;
    }
+
    
    /**
     * Takes the sco data and sets the values in the sequencer and database.
@@ -1083,9 +1073,6 @@ public class LMSCMIServlet extends HttpServlet
       {
          ioSequencer.clearAttemptObjMaxScore(iActivityID, iObjID);
       }
-      
-      
-      
       
    }
    

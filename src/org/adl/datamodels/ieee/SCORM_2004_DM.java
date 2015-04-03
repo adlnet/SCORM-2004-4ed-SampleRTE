@@ -37,7 +37,6 @@ import org.adl.datamodels.DMRequest;
 import org.adl.datamodels.DMTimeUtility;
 import org.adl.datamodels.RequestDelimiter;
 import org.adl.datamodels.RequestToken;
-
 import org.adl.datamodels.datatypes.DateTimeValidator;
 import org.adl.datamodels.datatypes.DurationValidator;
 import org.adl.datamodels.datatypes.LangStringValidator;
@@ -47,9 +46,10 @@ import org.adl.datamodels.datatypes.SPMRangeValidator;
 import org.adl.datamodels.datatypes.URIValidator;
 import org.adl.datamodels.datatypes.VocabularyValidator;
 
+import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-
 import java.io.Serializable;
 
 
@@ -1423,6 +1423,37 @@ public class SCORM_2004_DM extends DataModel implements Serializable
       }
 
       return result;
+   }
+   
+   public String toJSONString() {
+      StringBuilder sb = new StringBuilder();
+      Enumeration<String> key = mElements.keys();
+      sb.append("{\n");
+      sb.append("\"" + mBinding + "._version\": \"1.0\",\n");
+      while (key.hasMoreElements()) {
+         String k = key.nextElement();
+         DMElement val = (DMElement)mElements.get(k);
+
+         sb.append(val.toJSONString(mBinding));
+      }
+      sb.deleteCharAt(sb.length() -2);
+      sb.append("}");
+      return sb.toString();
+   }
+   
+   public static void main(String[] args)
+   {
+      SCORM_2004_DM dm = new SCORM_2004_DM();
+      DMRequest objid = new DMRequest("cmi.objectives.0.id", "IT001");
+      objid.getNextToken();
+      DMRequest objss = new DMRequest("cmi.objectives.0.success_status", "passed");
+      objss.getNextToken();
+      DMRequest objd = new DMRequest("cmi.objectives.0.description", "hello");
+      objd.getNextToken();
+      System.out.println(dm.setValue(objid));
+      System.out.println(dm.setValue(objss));
+      System.out.println(dm.setValue(objd));
+      System.out.println(dm.toJSONString());
    }
 
 } // end SCORM_2004_DM
