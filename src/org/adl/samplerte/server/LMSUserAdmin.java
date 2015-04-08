@@ -251,7 +251,6 @@ public class LMSUserAdmin extends HttpServlet
             userProfile.mAdmin = mAdminString.equals("true");
             RealRangeValidator rrv = 
                                   new RealRangeValidator(new Double(0.0), null);
-
             if ( (userProfile.mAudioLevel == null) || 
                  (userProfile.mAudioLevel.length() == 0) ||
                  (!(rrv.validate(userProfile.mAudioLevel) == 0)) )
@@ -271,7 +270,6 @@ public class LMSUserAdmin extends HttpServlet
             }
 
             LangStringValidator lsv = new LangStringValidator();
-
             if ( !(userProfile.mLanguage.trim().equals("")) &&
                  (!(lsv.validate(userProfile.mLanguage) == 0 )) )
             {

@@ -190,8 +190,9 @@ public class SchematronValidationDOMParser
          if ( mIdentiferList == null || mIDList == null )
          {
             UniqueIDSaxParser uniqueParser = new UniqueIDSaxParser();
-            success = uniqueParser.performParse(iFile);
-            
+            System.out.println("IFILE"+iFile);
+             success = uniqueParser.performParse(iFile);
+
             if ( success )
             {
                mIdentiferList = uniqueParser.getIdentiferList();
@@ -211,12 +212,12 @@ public class SchematronValidationDOMParser
          }
          
          // Prepare the schematron schema
-         Document newSchematronSchema = parse(mSchematronSchema);         
+         Document newSchematronSchema = parse(mSchematronSchema);
          newSchematronSchema = fixImports( newSchematronSchema, mSchematronSkeletonSchema );         
          
          // Prepare the schematron rule file
          Document transform = transform(iSchematron, newSchematronSchema);
-         
+
          // Clean up unused DOM objects
          newSchematronSchema = null;
          
@@ -250,7 +251,7 @@ public class SchematronValidationDOMParser
          
          // Validate the xml instance against the schematron rules
          List  messageList = transform(mXMLInstance, transform);
-         
+
          // Clean up unused DOM objects
          mXMLInstance = null;
          transform = null;
@@ -406,17 +407,17 @@ public class SchematronValidationDOMParser
          // Create sources from transform and xml instance
          JDOMSource transformSource = new JDOMSource(iTransform);
          JDOMSource docSource = new JDOMSource(iDoc);
-         
+
          // Create and call a transformer from the saxon 8 parser
          TransformerFactoryImpl transformFactory = new TransformerFactoryImpl();
          Transformer tranformer = transformFactory.newTransformer(transformSource);
-         
+
          // Create ContentHandler to parse the schematron results
          SchematronResultContentHandler handler = new SchematronResultContentHandler();
          SAXResult transformResult = new SAXResult(handler);
-         
+
          tranformer.transform(docSource, transformResult);
-         
+
          return handler.getResultMessages();
       }
       catch ( TransformerConfigurationException tce )
@@ -430,7 +431,7 @@ public class SchematronValidationDOMParser
       }
       catch ( TransformerException te )
       {
-         //te.printStackTrace();
+//         te.printStackTrace();
          String msg = 
             Messages.getString("SchematronValidationDOMParser.8");
          ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg + "MESSAGE 4");
@@ -556,7 +557,7 @@ public class SchematronValidationDOMParser
       {
          XPath resourcePath = XPath.newInstance("imscp:manifest/imscp:resources/imscp:resource[normalize-space(@identifier)='" + iResourceID.trim() + "']");
          resourcePath.addNamespace("imscp", IMSCP);
-         List resources = resourcePath.selectNodes(mXMLInstance);
+          List resources = resourcePath.selectNodes(mXMLInstance);
          // If the resource identifier, we do not want to test it
          if( resources.size() > 1 )
          {

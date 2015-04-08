@@ -71,7 +71,7 @@ Nothing in this license impairs or restricts the author's moral rights.
    
    //System.out.println("dsp_userProfile : " + caller);
 
-   if (caller.equals("adminUserPref"))
+   if (caller != null && caller.equals("adminUserPref"))
    {
       helpPage = "/adl/help/manageUserHelp.htm";
    }

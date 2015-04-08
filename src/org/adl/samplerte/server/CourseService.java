@@ -56,7 +56,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory; 
-import org.apache.commons.fileupload.servlet.ServletFileUpload; 
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.tools.zip.ZipFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -1483,15 +1484,15 @@ public class CourseService
  
          // Set the name of the course being imported so it can be gotten from the outside
          mCourseFileName = myFileName;
-        System.out.println("FROM COURSESERVICE MCOURSEFILENAME====================" + mCourseFileName);
          mOnlineValidation = validationValue.equals("1");    
  
          String zipFile = uploadDir + fileSeparator + myFileName;
          String theXSDPath = theWebPath.
                              substring(0, theWebPath.
                                           lastIndexOf(fileSeparator));
-
-          System.out.println("FROM COURSESERVICE thexsdpath====================" + theXSDPath);
+          System.out.println("ZIPFILE=================="+zipFile);
+          System.out.println("THEWEBPATH=================="+theWebPath);
+          System.out.println("THEXSDPATH=================="+theXSDPath);
          // Create a manifest handler instance
          myManifestHandler = new LMSManifestHandler(theXSDPath);
 

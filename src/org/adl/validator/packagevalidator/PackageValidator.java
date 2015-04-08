@@ -97,7 +97,6 @@ public class PackageValidator
       // Clear out any previous package data that may have been left by an
       // unexpected exit
       UnZipHandler tempUnZip = new UnZipHandler();
-      System.out.println("MTEMPDIR=========================" + mTempDir);
        tempUnZip.clearTempDir(mTempDir);
       
       PackageProcessor packageProcessor = new PackageProcessor();
@@ -122,7 +121,6 @@ public class PackageValidator
          mResultCollection = pcInvoker.performPackageChecks();
       }
       UnZipHandler tempUnZip = new UnZipHandler();
-       System.out.println("MTEMPDIR=========================" + mTempDir);
        tempUnZip.clearTempDir(mTempDir);
       CheckerStateData.getInstance().clearCollection();
       return mResultCollection;

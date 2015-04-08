@@ -633,8 +633,7 @@ public class LMSCourseAdmin extends HttpServlet
                this.getServletConfig().getServletContext().getRealPath("/");
             courseService = new CourseService();
                                     
-            
-            System.out.println("WEBPATH FROM LMSCOURSEADMIN=================" + webPath);
+
             ResultCollection validationResult = 
                      courseService.importCourse(iRequest, webPath, sessionID);
             

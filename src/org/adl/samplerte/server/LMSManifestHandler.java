@@ -247,7 +247,7 @@ public class LMSManifestHandler implements Serializable
       results = scormValidator.getResultCollection();
       
       boolean validationPassed = determineValidationStatus(results, iOnlineValidation);
-
+      System.out.println("VALIDATIONPASSED================"+validationPassed);
       mLogger.info( "Document parsing complete." ); 
       
       String packageLocation = "";
@@ -934,7 +934,9 @@ public class LMSManifestHandler implements Serializable
          if ( !passed )
          {
             validationStatus = false;
+             System.out.println("PACKAGECHECKERNAME==========="+tempRes.getPackageCheckerName());
          }
+          System.out.println("VALIDATIONSTATUS============="+validationStatus);
       }
       return validationStatus;
    }
