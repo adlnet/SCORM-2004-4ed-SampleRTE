@@ -61,7 +61,7 @@ public class PackageValidator
     * extracted to. 
     */
    private File mTempDir = new File(System.getProperty("java.io.tmpdir") +
-                                    "tempZipFolder" + File.separator);
+                                    File.separator + "tempZipFolder" + File.separator);
    
    /**
     * Overload Constructor.
@@ -97,7 +97,8 @@ public class PackageValidator
       // Clear out any previous package data that may have been left by an
       // unexpected exit
       UnZipHandler tempUnZip = new UnZipHandler();
-      tempUnZip.clearTempDir(mTempDir);
+      System.out.println("MTEMPDIR=========================" + mTempDir);
+       tempUnZip.clearTempDir(mTempDir);
       
       PackageProcessor packageProcessor = new PackageProcessor();
       mResult = packageProcessor.processPackage();
@@ -121,7 +122,8 @@ public class PackageValidator
          mResultCollection = pcInvoker.performPackageChecks();
       }
       UnZipHandler tempUnZip = new UnZipHandler();
-      tempUnZip.clearTempDir(mTempDir);
+       System.out.println("MTEMPDIR=========================" + mTempDir);
+       tempUnZip.clearTempDir(mTempDir);
       CheckerStateData.getInstance().clearCollection();
       return mResultCollection;
    }

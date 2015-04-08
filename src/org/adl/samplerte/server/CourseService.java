@@ -1449,8 +1449,7 @@ public class CourseService
          String fileSeparator = java.io.File.separator;
         
          String theWebPath = iWebPath;
-         String mDrive = theWebPath.
-                             substring(0, 2);
+          String mDrive = theWebPath.substring(0, nthIndexOf(theWebPath, "/", 3));
          uploadDir = mDrive + fileSeparator + SRTEFILESDIR + fileSeparator + 
              "tempUploads" + fileSeparator + sessionID;
          File theRTEUploadDir = new File(uploadDir);
@@ -1484,7 +1483,7 @@ public class CourseService
  
          // Set the name of the course being imported so it can be gotten from the outside
          mCourseFileName = myFileName;
-         
+        System.out.println("FROM COURSESERVICE MCOURSEFILENAME====================" + mCourseFileName);
          mOnlineValidation = validationValue.equals("1");    
  
          String zipFile = uploadDir + fileSeparator + myFileName;
@@ -1492,6 +1491,7 @@ public class CourseService
                              substring(0, theWebPath.
                                           lastIndexOf(fileSeparator));
 
+          System.out.println("FROM COURSESERVICE thexsdpath====================" + theXSDPath);
          // Create a manifest handler instance
          myManifestHandler = new LMSManifestHandler(theXSDPath);
 
@@ -1588,11 +1588,11 @@ public class CourseService
          sessionID = iSessionID;
          String fileSeparator = java.io.File.separator;
          String theWebPath = iWebPath;
-         String mDrive = theWebPath.substring(0, 2);
-         uploadDir = mDrive + fileSeparator + SRTEFILESDIR + fileSeparator + 
+         String mDrive = theWebPath.substring(0, nthIndexOf(theWebPath, "/", 3));
+         uploadDir = mDrive + fileSeparator + SRTEFILESDIR + fileSeparator +
              "tempUploads" + fileSeparator + sessionID;
-         File theRTEUploadDir = new File(uploadDir);
-         
+          File theRTEUploadDir = new File(uploadDir);
+
          if ( !theRTEUploadDir.isDirectory() )
          {
              theRTEUploadDir.mkdirs();
@@ -1627,4 +1627,14 @@ public class CourseService
 
       return validationResults;
    }
+    public static int nthIndexOf(String source, String sought, int n){
+        int index = source.indexOf(sought);
+        if (index == -1) return -1;
+
+        for (int i=1; i<n; i++){
+            index = source.indexOf(sought, index + 1);
+            if (index == -1) return -1;
+        }
+        return index;
+    }
 }

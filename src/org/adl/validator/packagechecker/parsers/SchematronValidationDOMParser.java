@@ -181,7 +181,6 @@ public class SchematronValidationDOMParser
       try
       {
          boolean success = true;
-         
          // SAX Parse the XML File to get lists of its identifiers for later use
          mIdentiferList = 
             (List<String>)CheckerStateData.getInstance().getObjectValue(ValidatorKeyNames.IDENTIFIER_LIST);
@@ -377,7 +376,7 @@ public class SchematronValidationDOMParser
          //tce.printStackTrace();
          String msg = 
             Messages.getString("SchematronValidationDOMParser.8");
-         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg);
+         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg + "MESSAGE 1");
          mErrorMessages.add(message);
          return null;
       }
@@ -386,7 +385,7 @@ public class SchematronValidationDOMParser
          //te.printStackTrace();
          String msg = 
             Messages.getString("SchematronValidationDOMParser.8");
-         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg);
+         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg + "MESSAGE 2");
          mErrorMessages.add(message);
          return null;
       }
@@ -425,7 +424,7 @@ public class SchematronValidationDOMParser
          //tce.printStackTrace();
          String msg = 
             Messages.getString("SchematronValidationDOMParser.8");
-         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg);
+         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg + "MESSAGE 3");
          mErrorMessages.add(message);
          return null;
       }
@@ -434,7 +433,7 @@ public class SchematronValidationDOMParser
          //te.printStackTrace();
          String msg = 
             Messages.getString("SchematronValidationDOMParser.8");
-         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg);
+         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg + "MESSAGE 4");
          mErrorMessages.add(message);
          return null;
       }
@@ -551,7 +550,6 @@ public class SchematronValidationDOMParser
       {
          return "false";
       }
-      
       mResourceList = new ArrayList();
       
       try
@@ -559,7 +557,6 @@ public class SchematronValidationDOMParser
          XPath resourcePath = XPath.newInstance("imscp:manifest/imscp:resources/imscp:resource[normalize-space(@identifier)='" + iResourceID.trim() + "']");
          resourcePath.addNamespace("imscp", IMSCP);
          List resources = resourcePath.selectNodes(mXMLInstance);
-
          // If the resource identifier, we do not want to test it
          if( resources.size() > 1 )
          {

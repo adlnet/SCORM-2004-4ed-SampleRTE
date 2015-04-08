@@ -217,7 +217,7 @@ public class LMSManifestHandler implements Serializable
       Document document = null;      
       
       mLogger.entering("---LMSManifestHandler", "processManifest()");
-      
+
       // Configure validator and execute validator parse
       Validator scormValidator = new Validator(iFilePath, "contentaggregation", false);
 
@@ -252,12 +252,10 @@ public class LMSManifestHandler implements Serializable
       
       String packageLocation = "";
       String manifestFile = "";
-
       if ( validationPassed )
       {
          // Extract the package, exit if an error occurs
          packageLocation = LMSImportHandler.importContentPackage(mXSDLocation, iFilePath);
-         
          if ( packageLocation.equals("") )               
          {
             // Add zip error message to validation results
@@ -268,7 +266,7 @@ public class LMSManifestHandler implements Serializable
             results.addPackageResult( zipResult );               
             return results;
          }
-         manifestFile = packageLocation + "\\imsmanifest.xml";
+         manifestFile = packageLocation + "//imsmanifest.xml";
          
          // Parse and create domument object from manifest
          ADLDOMParser domParser = new ADLDOMParser();
@@ -304,7 +302,7 @@ public class LMSManifestHandler implements Serializable
          dbUpdateResult = updateDB();
       }
       else
-      {           
+      {
          if ( results.getPackageResult(ValidatorCheckerNames.WELLFORM).isPackageCheckerPassed() ) 
          {
             mLogger.info("NOT WELL FORMED!!!");
@@ -923,7 +921,6 @@ public class LMSManifestHandler implements Serializable
       while ( resIter.hasNext() && !stopImport )
       {
          Result tempRes = (Result)resIter.next();
-         
          if ( !iOnline && (tempRes.getPackageCheckerName().equals(ValidatorCheckerNames.SCHEMA_VAL) ||
               tempRes.getPackageCheckerName().equals(ValidatorCheckerNames.RES_HREF) ))
          {

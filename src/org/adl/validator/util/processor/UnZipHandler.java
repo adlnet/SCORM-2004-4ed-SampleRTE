@@ -145,13 +145,11 @@ public class UnZipHandler
       String destFileName = "";
       String exceptionMessage = "";
       InputStream in = null;
-      OutputStream out = null;      
-
+      OutputStream out = null;
       // Create a byte buffer
       byte[] buffer = new byte[BUFFER_SIZE];
 
       setTargetDirectory();
-      
       try
       {  
        ZipFile archive;
@@ -166,7 +164,6 @@ public class UnZipHandler
        {
           archive = new ZipFile( mZipFile );
        }
-       
          for ( Enumeration e = archive.getEntries(); e.hasMoreElements(); )
          {
             // Get the next entry in the Zip File
@@ -249,7 +246,6 @@ public class UnZipHandler
       {
          // In case an exception is thrown prior to closing the input stream
          // and output stream, close the streams
-         
          // Check to make sure the input stream has not been closed
          if (in != null)
          {
@@ -265,7 +261,7 @@ public class UnZipHandler
                      Messages.getString("UnZipHandler.4", exceptionMessage )));
             }
          }
-
+          System.out.println(mExceptionMsg);
          // Check to make sure the output stream has not been closed
          if (out != null)
          {
@@ -282,7 +278,7 @@ public class UnZipHandler
             }
          }        
       } // end finally
-      
+
       return setExceptionMsg(mExceptionMsg);
    }
 
