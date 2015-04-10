@@ -76,9 +76,9 @@ Nothing in this license impairs or restricts the author's moral rights.
    String showRegTable = (String)request.getAttribute( "showRegTable" );
    String showUnregTable = (String)request.getAttribute( "showUnregTable" );
 
-   String adminTableDisplayVal = showAdminTable.equals("true") ? "" : "none";
-   String regTableDisplayVal = showRegTable.equals("true") ? "" : "none";
-   String unregTableDisplayVal = showUnregTable.equals("true") ? "" : "none";
+   String adminTableDisplayVal = showAdminTable.equals("true") ? "float:left" : "display:none";
+   String regTableDisplayVal = showRegTable.equals("true") ? "float:left" : "display:none";
+   String unregTableDisplayVal = showUnregTable.equals("true") ? "float:left" : "display:none";
    
    // Get results data if available
    String reqOp = (String)request.getAttribute("reqOp");
@@ -654,7 +654,7 @@ function doRefresh()
        <div style="float:right; width:40px;">
           <a id="helplinkAdmin" href="javascript:newWindow('/adl/help/rteAdminOptionsHelp.htm');">Help</a>
        </div>
-       <table id="adminOptionsTable" width="700" class="sep" border="0" style="display: <%=adminTableDisplayVal %>">
+       <table id="adminOptionsTable" width="700" class="sep" border="0" style="<%=adminTableDisplayVal %>">
           <tr>
              <td class="white_text" colspan="3">&nbsp;
              </td>
@@ -722,7 +722,7 @@ function doRefresh()
        <div style="float:right; width:40px;">
           <a id="helplinkRegistered" href="javascript:newWindow('/adl/help/rteRegisteredCoursesHelp.htm');">Help</a>
        </div>
-			<table id="registeredCoursesTable" width="700" class="sep" border="0" style="display: <%=regTableDisplayVal %>">
+			<table id="registeredCoursesTable" width="700" class="sep" border="0" style="<%=regTableDisplayVal %>">
 	   			<tr>
 	   				<td class="white_text" style="border-right-style: none;" align="left">
 	   					<!-- Checkbox for select/deselect all -->
@@ -776,7 +776,7 @@ function doRefresh()
        <div style="float:right; width:40px;">
           <a id="helplinkAvailable" href="javascript:newWindow('/adl/help/rteAvailableCoursesHelp.htm');">Help</a>
        </div>
-			<table id="unregisteredCoursesTable" class="sep" width="700" style="display: <%=unregTableDisplayVal %>">
+			<table id="unregisteredCoursesTable" class="sep" width="700" style="<%=unregTableDisplayVal %>">
 				<tr>
 	   				<td style="border-right-style: none;" class="white_text" align="left">
 	   					<!-- Checkbox for select/deselect all -->
