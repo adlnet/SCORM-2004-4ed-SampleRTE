@@ -190,7 +190,7 @@ public class SchematronValidationDOMParser
          if ( mIdentiferList == null || mIDList == null )
          {
             UniqueIDSaxParser uniqueParser = new UniqueIDSaxParser();
-            System.out.println("IFILE"+iFile);
+
              success = uniqueParser.performParse(iFile);
 
             if ( success )
@@ -377,7 +377,7 @@ public class SchematronValidationDOMParser
          //tce.printStackTrace();
          String msg = 
             Messages.getString("SchematronValidationDOMParser.8");
-         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg + "MESSAGE 1");
+         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg);
          mErrorMessages.add(message);
          return null;
       }
@@ -386,7 +386,7 @@ public class SchematronValidationDOMParser
          //te.printStackTrace();
          String msg = 
             Messages.getString("SchematronValidationDOMParser.8");
-         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg + "MESSAGE 2");
+         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg);
          mErrorMessages.add(message);
          return null;
       }
@@ -425,7 +425,7 @@ public class SchematronValidationDOMParser
          //tce.printStackTrace();
          String msg = 
             Messages.getString("SchematronValidationDOMParser.8");
-         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg + "MESSAGE 3");
+         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg);
          mErrorMessages.add(message);
          return null;
       }
@@ -434,7 +434,7 @@ public class SchematronValidationDOMParser
 //         te.printStackTrace();
          String msg = 
             Messages.getString("SchematronValidationDOMParser.8");
-         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg + "MESSAGE 4");
+         ValidatorMessage message = new ValidatorMessage(ValidatorMessage.FAILED, msg);
          mErrorMessages.add(message);
          return null;
       }

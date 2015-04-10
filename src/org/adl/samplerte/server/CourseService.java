@@ -1490,9 +1490,6 @@ public class CourseService
          String theXSDPath = theWebPath.
                              substring(0, theWebPath.
                                           lastIndexOf(fileSeparator));
-          System.out.println("ZIPFILE=================="+zipFile);
-          System.out.println("THEWEBPATH=================="+theWebPath);
-          System.out.println("THEXSDPATH=================="+theXSDPath);
          // Create a manifest handler instance
          myManifestHandler = new LMSManifestHandler(theXSDPath);
 

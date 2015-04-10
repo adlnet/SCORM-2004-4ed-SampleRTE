@@ -261,7 +261,6 @@ public class UnZipHandler
                      Messages.getString("UnZipHandler.4", exceptionMessage )));
             }
          }
-          System.out.println(mExceptionMsg);
          // Check to make sure the output stream has not been closed
          if (out != null)
          {
