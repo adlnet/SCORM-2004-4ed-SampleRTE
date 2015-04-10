@@ -27,15 +27,18 @@ Nothing in this license impairs or restricts the author's moral rights.
 
 package org.adl.samplerte.server;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.adl.samplerte.util.LMSDBHandler;
 import org.adl.samplerte.util.LMSDatabaseHandler;
 
 
@@ -59,6 +62,8 @@ import org.adl.samplerte.util.LMSDatabaseHandler;
  */
 public class UserService 
 {
+   private final String SRTEFILESDIR = "SCORM4EDSampleRTE111Files";
+   
    /**
     * This constructor creates a UserService object.
     */
@@ -147,7 +152,6 @@ public class UserService
             mUserProfile.mUserID = userRS.getString("UserID");
             mUserProfile.mLastName = userRS.getString("LastName");
             mUserProfile.mFirstName = userRS.getString("FirstName");
-            mUserProfile.mPassword = userRS.getString("Password");
             mUserProfile.mAudioLevel = userRS.getString("AudioLevel");
             mUserProfile.mAudioCaptioning = userRS.getString("AudioCaptioning");
             mUserProfile.mDeliverySpeed = userRS.getString("DeliverySpeed");
@@ -178,7 +182,7 @@ public class UserService
       String result = "true";
       Connection conn = LMSDatabaseHandler.getConnection();
       PreparedStatement stmtSetUserInfo;
-      String sqlSetUserInfo = "UPDATE UserInfo SET Password = ?,"
+      String sqlSetUserInfo = "UPDATE UserInfo SET "
             + "AudioLevel = ?, AudioCaptioning = ?,"
             + "DeliverySpeed = ?, Language = ?, Admin = ? " 
             + "WHERE UserID = ?";  
@@ -189,13 +193,12 @@ public class UserService
 
          synchronized(stmtSetUserInfo)
          {
-            stmtSetUserInfo.setString(1, iUser.mPassword);
-            stmtSetUserInfo.setString(2, iUser.mAudioLevel);
-            stmtSetUserInfo.setString(3, iUser.mAudioCaptioning);
-            stmtSetUserInfo.setString(4, iUser.mDeliverySpeed);
-            stmtSetUserInfo.setString(5, iUser.mLanguage);
-            stmtSetUserInfo.setBoolean(6, iUser.mAdmin);
-            stmtSetUserInfo.setString(7, iUser.mUserID);
+            stmtSetUserInfo.setString(1, iUser.mAudioLevel);
+            stmtSetUserInfo.setString(2, iUser.mAudioCaptioning);
+            stmtSetUserInfo.setString(3, iUser.mDeliverySpeed);
+            stmtSetUserInfo.setString(4, iUser.mLanguage);
+            stmtSetUserInfo.setBoolean(5, iUser.mAdmin);
+            stmtSetUserInfo.setString(6, iUser.mUserID);
             stmtSetUserInfo.executeUpdate();
          }
 
@@ -216,7 +219,7 @@ public class UserService
     * @param iUser - UserProfile object of the desired user to be added to the system
     * @return String describing the success of the operation (true or false)
     */
-   public String addUser(UserProfile iUser)
+   public String addUser(UserProfile iUser, String pwd)
    {
 
       String result = "true";
@@ -237,7 +240,7 @@ public class UserService
             stmtInsertUserInfo.setString(2, iUser.mLastName);
             stmtInsertUserInfo.setString(3, iUser.mFirstName);
             stmtInsertUserInfo.setBoolean(4, iUser.mAdmin);
-            stmtInsertUserInfo.setString(5, iUser.mPassword);
+            stmtInsertUserInfo.setString(5, PasswordHash.createHash(pwd));
             stmtInsertUserInfo.executeUpdate();
          }
 
@@ -269,7 +272,7 @@ public class UserService
          conn = LMSDatabaseHandler.getConnection();
 
          // The SQL string is created and converted to a prepared statement.
-         String sqlUpdateUser = "UPDATE UserInfo set Active = no where UserID = ?";
+         String sqlUpdateUser = "delete from UserInfo where UserID = ?";
          stmtUpdateUser = conn.prepareStatement(sqlUpdateUser);
 
          synchronized(stmtUpdateUser)
@@ -287,7 +290,15 @@ public class UserService
          System.out.println("error updating db in UserService::deleteUser()");
          e.printStackTrace();
       }
-
+      
+      CourseService cs = new CourseService();
+      // get user's registered courses
+      List<String> courseIds = cs.getRegCourses(iUser);
+      // unregister for course
+      removeDBRefs(iUser, courseIds);
+      
+      removeUserFolders(iUser);
+      
       return result;
    }
 
@@ -295,7 +306,6 @@ public class UserService
    {
       Connection conn;
       PreparedStatement stmtSelectUser;
-      LMSDatabaseHandler myDatabaseHandler = new LMSDatabaseHandler();
       String sqlSelectUser = "SELECT * FROM UserInfo Where UserID = ?";
       String action = null;
       try
@@ -309,7 +319,7 @@ public class UserService
 
          UserName = ioRequest.getParameter("uname");
          Password = ioRequest.getParameter("pwd");
-         conn = myDatabaseHandler.getConnection();
+         conn = LMSDatabaseHandler.getConnection();
          stmtSelectUser = conn.prepareStatement( sqlSelectUser );
 
          ResultSet userRS = null;
@@ -346,7 +356,7 @@ public class UserService
                // it matches the password found to belong to the username.  If either
                // of these conditions is incorrect, the variable 'action' is changed
                // to indicate this.
-               if( (Password != null) && (!Password.equals(passwd)) )
+               if( ! PasswordHash.validatePassword(Password, passwd) )
                {
                   action = "invalidpwd";      
                }
@@ -401,5 +411,95 @@ public class UserService
          action = "fail";
       } 
       return action == null;
+   }
+   
+   private void removeUserFolders(String userid)
+   {
+      removeDirectory(new File(File.separator + SRTEFILESDIR + File.separator + userid));
+   }
+   
+   private boolean removeDirectory(File directory)
+   {
+      if (directory == null) return false;
+      if (!directory.exists()) return true;
+      if (!directory.isDirectory()) return false;
+
+      String[] list = directory.list();
+
+      // Some JVMs return null for File.list() when the
+      // directory is empty.
+      if (list != null)
+      {
+         for (int i = 0; i < list.length; i++)
+         {
+            File entry = new File(directory, list[i]);
+
+            if (entry.isDirectory())
+            {
+               if (!removeDirectory(entry)) return false;
+            }
+            else
+            {
+               if (!entry.delete()) return false;
+            }
+         }
+      }
+
+      return directory.delete();
+   }
+   
+   private synchronized void removeDBRefs(String iUser, List<String> courseIds)
+   {
+      Connection conn = LMSDatabaseHandler.getConnection();
+      Connection csConn = LMSDBHandler.getConnection();
+      PreparedStatement stmtDeleteUserCourse = null;
+      PreparedStatement stmtDeleteCourseStatus = null;
+      PreparedStatement stmtDeleteCourseObjectives = null;
+      try 
+      {
+         stmtDeleteUserCourse = conn.prepareStatement("DELETE FROM UserCourseInfo WHERE UserID = ?");
+         stmtDeleteCourseStatus = csConn.prepareStatement("DELETE FROM CourseStatus WHERE learnerID = ?");
+         stmtDeleteCourseObjectives = csConn.prepareStatement("DELETE FROM Objectives WHERE learnerID = ?");
+         
+//         synchronized( stmtDeleteUserCourse )
+//         {
+            stmtDeleteUserCourse.setString(1, iUser);
+            stmtDeleteUserCourse.executeUpdate();
+//         }
+//         
+//         synchronized( stmtDeleteCourseObjectives )
+//         {
+            // if adlseq:objectivesGlobalToSystem = "false" in the manifest related to this course
+            // scopeID will be == to courseID and should be removed upon deletion of that course
+            stmtDeleteCourseObjectives.setString(1, iUser);
+            stmtDeleteCourseObjectives.executeUpdate();
+//         }
+//         
+//         synchronized( stmtDeleteCourseStatus )
+//         {
+            stmtDeleteCourseStatus.setString(1, iUser);
+            stmtDeleteCourseStatus.executeUpdate();
+//         }
+           
+      }
+      catch (SQLException sqle)
+      {
+         System.out.println("error UserService removeDBRefs try");
+         sqle.printStackTrace();
+      }
+      finally 
+      {
+         try {
+            stmtDeleteUserCourse.close();
+            stmtDeleteCourseStatus.close();
+            stmtDeleteCourseObjectives.close();
+//            conn.close();
+//            csConn.close();
+         } 
+         catch (SQLException e) {
+            System.out.println("error UserService removeDBRefs finally");
+            e.printStackTrace();
+         }
+      }
    }
 }

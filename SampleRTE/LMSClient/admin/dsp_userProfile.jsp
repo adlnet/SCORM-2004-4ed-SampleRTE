@@ -61,7 +61,6 @@ Nothing in this license impairs or restricts the author's moral rights.
    String userID = user.mUserID;
    String firstName = user.mFirstName;
    String lastName = user.mLastName;
-   String password = user.mPassword;
    String audioLevel = user.mAudioLevel;
    String language = "";
    boolean isAdmin = user.mAdmin;
@@ -161,15 +160,6 @@ User Preferences Administration - Edit User Profile
          </td>
          <td>
             <%=firstName%>&nbsp;<%=lastName%>
-         </td>
-      </tr>
-      <tr>
-         <td>
-            <label for="password">Password:</label>  
-         </td>
-         <td>
-            <input type="text" name="password" id="password" 
-               value="<%=password%>" />
          </td>
       </tr>
       <tr>

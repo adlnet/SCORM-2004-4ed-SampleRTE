@@ -165,8 +165,7 @@ public class LMSUserAdmin extends HttpServlet
          case ServletRequestTypes.GET_PREF: 
             userService = new UserService();
             userProfile = new UserProfile();
-            userProfile = userService.getUser(iRequest.getParameter("userId"));          
-            
+            userProfile = userService.getUser(iRequest.getParameter("userId"));  
             // Send the results to the JSP view
             iRequest.setAttribute("userProfile", userProfile);
             iRequest.setAttribute("caller",caller);
@@ -205,7 +204,7 @@ public class LMSUserAdmin extends HttpServlet
             }
             else
             {
-                iRequest.setAttribute("result", userService.addUser(userProfile));
+                iRequest.setAttribute("result", userService.addUser(userProfile,iRequest.getParameter("password")));
                 iRequest.setAttribute("reqOp","Add User");
                 launchView(DSP_OUTCOME, iRequest, oResponse);
             }
@@ -224,7 +223,7 @@ public class LMSUserAdmin extends HttpServlet
             }
             else
             {
-               userService.addUser(userProfile); 
+               userService.addUser(userProfile, iRequest.getParameter("password")); 
                launchView("/LMSUserAdmin?type=" + ServletRequestTypes.LOG_IN + 
                       "&uname=" + iRequest.getParameter("userID") + 
                       "&pwd=" + iRequest.getParameter("password"), iRequest, oResponse);
@@ -278,14 +277,6 @@ public class LMSUserAdmin extends HttpServlet
                validationError = true;
                errorMsg += "<br>cmi.learner_preference.audio_captioning "; 
                errorMsg += "can only contain the values -1, 0, 1.";       
-            }
-
-            if ( (userProfile.mPassword == null) || 
-                 (userProfile.mPassword.length() == 0) ||  
-                 (userProfile.mPassword.trim().equals("")) )
-            {
-               validationError = true;
-               errorMsg += "<br>Password cannot be empty";
             }
 
             if ( validationError )
@@ -352,8 +343,7 @@ public class LMSUserAdmin extends HttpServlet
       userProfile.mAudioLevel = iRequest.getParameter("audioLevel");
       userProfile.mAudioCaptioning = iRequest.getParameter("audioCaptioning");
       userProfile.mDeliverySpeed = iRequest.getParameter("deliverySpeed");
-      userProfile.mLanguage = iRequest.getParameter("language");             
-      userProfile.mPassword = iRequest.getParameter("password");
+      userProfile.mLanguage = iRequest.getParameter("language");
       userProfile.mAdmin = Boolean.parseBoolean(iRequest.getParameter("admin"));
       return userProfile;
    }
