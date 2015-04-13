@@ -28,6 +28,8 @@ Nothing in this license impairs or restricts the author's moral rights.
 package org.adl.samplerte.server;
 
 import java.io.File;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -460,26 +462,15 @@ public class UserService
          stmtDeleteUserCourse = conn.prepareStatement("DELETE FROM UserCourseInfo WHERE UserID = ?");
          stmtDeleteCourseStatus = csConn.prepareStatement("DELETE FROM CourseStatus WHERE learnerID = ?");
          stmtDeleteCourseObjectives = csConn.prepareStatement("DELETE FROM Objectives WHERE learnerID = ?");
+
+         stmtDeleteUserCourse.setString(1, iUser);
+         stmtDeleteUserCourse.executeUpdate();
          
-//         synchronized( stmtDeleteUserCourse )
-//         {
-            stmtDeleteUserCourse.setString(1, iUser);
-            stmtDeleteUserCourse.executeUpdate();
-//         }
-//         
-//         synchronized( stmtDeleteCourseObjectives )
-//         {
-            // if adlseq:objectivesGlobalToSystem = "false" in the manifest related to this course
-            // scopeID will be == to courseID and should be removed upon deletion of that course
-            stmtDeleteCourseObjectives.setString(1, iUser);
-            stmtDeleteCourseObjectives.executeUpdate();
-//         }
-//         
-//         synchronized( stmtDeleteCourseStatus )
-//         {
-            stmtDeleteCourseStatus.setString(1, iUser);
-            stmtDeleteCourseStatus.executeUpdate();
-//         }
+         stmtDeleteCourseObjectives.setString(1, iUser);
+         stmtDeleteCourseObjectives.executeUpdate();
+         
+         stmtDeleteCourseStatus.setString(1, iUser);
+         stmtDeleteCourseStatus.executeUpdate();
            
       }
       catch (SQLException sqle)
@@ -493,13 +484,52 @@ public class UserService
             stmtDeleteUserCourse.close();
             stmtDeleteCourseStatus.close();
             stmtDeleteCourseObjectives.close();
-//            conn.close();
-//            csConn.close();
          } 
          catch (SQLException e) {
             System.out.println("error UserService removeDBRefs finally");
             e.printStackTrace();
          }
       }
+   }
+
+   public String changePassword(String userid, String password) {
+      Connection connection = LMSDatabaseHandler.getConnection();
+      String result = "true";
+      PreparedStatement psnewpwd = null;
+      try {
+         psnewpwd = connection.prepareStatement(
+               "update UserInfo set Password = ? where UserID = ?");
+      
+      
+      synchronized (psnewpwd)
+      {
+       psnewpwd.setString(1, PasswordHash.createHash(password));
+       psnewpwd.setString(2, userid);
+       psnewpwd.executeUpdate();
+      }
+      
+      psnewpwd.close();
+      } catch (SQLException e) {
+         result = "false";
+         e.printStackTrace();
+      } catch (NoSuchAlgorithmException e) {
+         result = "false";
+         e.printStackTrace();
+      } catch (InvalidKeySpecException e) {
+         result = "false";
+         e.printStackTrace();
+      } finally 
+      {
+         try {
+            if (psnewpwd != null)
+               psnewpwd.close();
+         } 
+         catch (SQLException e) {
+            System.out.println("error UserService changePassword finally");
+            e.printStackTrace();
+            result = "false";
+         }
+      }
+      return result;
    }
 }

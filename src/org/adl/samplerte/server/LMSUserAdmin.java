@@ -295,6 +295,14 @@ public class LMSUserAdmin extends HttpServlet
                launchView(DSP_OUTCOME, iRequest, oResponse);
             }
             break;
+            
+         case ServletRequestTypes.CHANGE_PASSWORD:
+            userService = new UserService();
+            result = userService.changePassword(iRequest.getParameter("userID"),
+                                                iRequest.getParameter("newPassword"));
+            iRequest.setAttribute("reqOp", "Change password");
+            iRequest.setAttribute("result", result);
+            launchView(DSP_OUTCOME, iRequest, oResponse);
 
          case ServletRequestTypes.DELETE_USERS:
             userService = new UserService();

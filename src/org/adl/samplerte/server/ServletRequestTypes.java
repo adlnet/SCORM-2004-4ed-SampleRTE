@@ -262,6 +262,14 @@ public class ServletRequestTypes implements Serializable
    
    /**
     * Enumeration of possible Servlet Request Types.<br>
+    * <br>CHANGE_PASSWORD
+    * <br><b>27</b>
+    * <br><br>[SERVLET REQUEST TYPE CONSTANT]
+    */
+   public static final int CHANGE_PASSWORD          =  27;
+   
+   /**
+    * Enumeration of possible Servlet Request Types.<br>
     * <br>IMPORT_MULTIPLE_COURSES
     * <br><b>29</b>
     * <br><br>[SERVLET REQUEST TYPE CONSTANT]
