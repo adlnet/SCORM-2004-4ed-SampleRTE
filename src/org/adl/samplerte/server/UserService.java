@@ -7,15 +7,15 @@ The ADL SCORM 2004 4th Ed. Sample Run-Time Environment is licensed under
 Creative Commons Attribution-Noncommercial-Share Alike 3.0 United States.
 
 The Advanced Distributed Learning Initiative allows you to:
-  *  Share - to copy, distribute and transmit the work.
-  *  Remix - to adapt the work. 
+ *  Share - to copy, distribute and transmit the work.
+ *  Remix - to adapt the work. 
 
 Under the following conditions:
-  *  Attribution. You must attribute the work in the manner specified by the author or
+ *  Attribution. You must attribute the work in the manner specified by the author or
      licensor (but not in any way that suggests that they endorse you or your use
      of the work).
-  *  Noncommercial. You may not use this work for commercial purposes. 
-  *  Share Alike. If you alter, transform, or build upon this work, you may distribute
+ *  Noncommercial. You may not use this work for commercial purposes. 
+ *  Share Alike. If you alter, transform, or build upon this work, you may distribute
      the resulting work only under the same or similar license to this one. 
 
 For any reuse or distribution, you must make clear to others the license terms of this work. 
@@ -23,15 +23,24 @@ For any reuse or distribution, you must make clear to others the license terms o
 Any of the above conditions can be waived if you get permission from the ADL Initiative. 
 Nothing in this license impairs or restricts the author's moral rights.
 
-*******************************************************************************/
+ *******************************************************************************/
 
 package org.adl.samplerte.server;
 
+import java.io.File;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.adl.samplerte.util.LMSDBHandler;
 import org.adl.samplerte.util.LMSDatabaseHandler;
 
 
@@ -55,6 +64,8 @@ import org.adl.samplerte.util.LMSDatabaseHandler;
  */
 public class UserService 
 {
+   private final String SRTEFILESDIR = "SCORM4EDSampleRTE111Files";
+   
    /**
     * This constructor creates a UserService object.
     */
@@ -62,7 +73,7 @@ public class UserService
    {
       // Default constructor
    }
-   
+
    /**
     * Returns a list of users registered in the Sample RTE
     * @param iOnlyActive - return a list of inactive or active users
@@ -74,12 +85,12 @@ public class UserService
       PreparedStatement stmtSelectUser;      
       Vector mUserVector = new Vector();
       String sqlSelectUser = "SELECT * FROM UserInfo";
-            
+
       if (iOnlyActive == true)
       {
     	  sqlSelectUser = sqlSelectUser + " WHERE Active = 1";
       }
-      
+
       try
       {
          conn = LMSDatabaseHandler.getConnection();
@@ -112,7 +123,7 @@ public class UserService
 
       return mUserVector;
    }
- 
+
    /**
     * Returns a UserProfile for the desired user
     * @param iUserID - the ID of the desired user
@@ -143,7 +154,6 @@ public class UserService
             mUserProfile.mUserID = userRS.getString("UserID");
             mUserProfile.mLastName = userRS.getString("LastName");
             mUserProfile.mFirstName = userRS.getString("FirstName");
-            mUserProfile.mPassword = userRS.getString("Password");
             mUserProfile.mAudioLevel = userRS.getString("AudioLevel");
             mUserProfile.mAudioCaptioning = userRS.getString("AudioCaptioning");
             mUserProfile.mDeliverySpeed = userRS.getString("DeliverySpeed");
@@ -174,10 +184,10 @@ public class UserService
       String result = "true";
       Connection conn = LMSDatabaseHandler.getConnection();
       PreparedStatement stmtSetUserInfo;
-      String sqlSetUserInfo = "UPDATE UserInfo SET Password = ?,"
-                              + "AudioLevel = ?, AudioCaptioning = ?,"
-                              + "DeliverySpeed = ?, Language = ?, Admin = ? " 
-                              + "WHERE UserID = ?";  
+      String sqlSetUserInfo = "UPDATE UserInfo SET "
+            + "AudioLevel = ?, AudioCaptioning = ?,"
+            + "DeliverySpeed = ?, Language = ?, Admin = ? " 
+            + "WHERE UserID = ?";  
 
       try
       {
@@ -185,13 +195,12 @@ public class UserService
 
          synchronized(stmtSetUserInfo)
          {
-            stmtSetUserInfo.setString(1, iUser.mPassword);
-            stmtSetUserInfo.setString(2, iUser.mAudioLevel);
-            stmtSetUserInfo.setString(3, iUser.mAudioCaptioning);
-            stmtSetUserInfo.setString(4, iUser.mDeliverySpeed);
-            stmtSetUserInfo.setString(5, iUser.mLanguage);
-            stmtSetUserInfo.setBoolean(6, iUser.mAdmin);
-            stmtSetUserInfo.setString(7, iUser.mUserID);
+            stmtSetUserInfo.setString(1, iUser.mAudioLevel);
+            stmtSetUserInfo.setString(2, iUser.mAudioCaptioning);
+            stmtSetUserInfo.setString(3, iUser.mDeliverySpeed);
+            stmtSetUserInfo.setString(4, iUser.mLanguage);
+            stmtSetUserInfo.setBoolean(5, iUser.mAdmin);
+            stmtSetUserInfo.setString(6, iUser.mUserID);
             stmtSetUserInfo.executeUpdate();
          }
 
@@ -206,13 +215,13 @@ public class UserService
 
       return result;
    }
-   
+
    /**
     * Adds a user to the Sample Run Time Environment
     * @param iUser - UserProfile object of the desired user to be added to the system
     * @return String describing the success of the operation (true or false)
     */
-   public String addUser(UserProfile iUser)
+   public String addUser(UserProfile iUser, String pwd)
    {
 
       String result = "true";
@@ -220,7 +229,7 @@ public class UserService
       Connection conn; 
       PreparedStatement stmtInsertUserInfo;
       String sqlInsertUserInfo = 
-               "INSERT INTO UserInfo VALUES (?, ?, ?, ?, ?,'1','1','0','1','')";
+            "INSERT INTO UserInfo VALUES (?, ?, ?, ?, ?,'1','1','0','1','')";
 
       try
       {
@@ -233,7 +242,7 @@ public class UserService
             stmtInsertUserInfo.setString(2, iUser.mLastName);
             stmtInsertUserInfo.setString(3, iUser.mFirstName);
             stmtInsertUserInfo.setBoolean(4, iUser.mAdmin);
-            stmtInsertUserInfo.setString(5, iUser.mPassword);
+            stmtInsertUserInfo.setString(5, PasswordHash.createHash(pwd));
             stmtInsertUserInfo.executeUpdate();
          }
 
@@ -249,7 +258,7 @@ public class UserService
 
       return result;
    }
-   
+
    /**
     * Deletes the undesired user
     * @param iUser - ID of the user to be deleted from the Sample RTE
@@ -265,7 +274,8 @@ public class UserService
          conn = LMSDatabaseHandler.getConnection();
 
          // The SQL string is created and converted to a prepared statement.
-         String sqlUpdateUser = "UPDATE UserInfo set Active = 0 where UserID = ?";
+         String sqlUpdateUser = "delete from UserInfo where UserID = ?";
+
          stmtUpdateUser = conn.prepareStatement(sqlUpdateUser);
 
          synchronized(stmtUpdateUser)
@@ -283,7 +293,244 @@ public class UserService
          System.out.println("error updating db in UserService::deleteUser()");
          e.printStackTrace();
       }
+      
+      CourseService cs = new CourseService();
+      // get user's registered courses
+      List<String> courseIds = cs.getRegCourses(iUser);
+      // unregister for course
+      removeDBRefs(iUser, courseIds);
+      
+      removeUserFolders(iUser);
+      
+      return result;
+   }
 
+   public boolean loginUser(HttpServletRequest ioRequest, HttpServletResponse ioResponse)
+   {
+      Connection conn;
+      PreparedStatement stmtSelectUser;
+      String sqlSelectUser = "SELECT * FROM UserInfo Where UserID = ?";
+      String action = null;
+      try
+      {
+         String UserName = "";
+         String Password = "";
+         String fullName = "";
+         String loginName = "";
+         String firstName = "";
+         String lastName = "";
+
+         UserName = ioRequest.getParameter("uname");
+         Password = ioRequest.getParameter("pwd");
+         conn = LMSDatabaseHandler.getConnection();
+         stmtSelectUser = conn.prepareStatement( sqlSelectUser );
+
+         ResultSet userRS = null;
+
+         synchronized( stmtSelectUser )
+         {
+            stmtSelectUser.setString( 1, UserName);
+            userRS = stmtSelectUser.executeQuery();
+         }
+
+         // Verifies that the username was found by checking to see if the result
+         // set 'userRS' is empty.  If the username was found, it checks to see if 
+         // the entered password is correct.  If the username was not found, the 
+         // variable 'action' is changed to indicate this.
+         if( (userRS != null) && (userRS.next()) )
+         {
+            String userID = userRS.getString("UserID");
+
+            if(userID.equals(UserName))
+            {
+               String passwd = userRS.getString("Password");
+               boolean active = userRS.getBoolean("Active");
+               firstName = userRS.getString("FirstName");
+               lastName = userRS.getString("LastName");
+               fullName = lastName + ", " + firstName;
+               loginName = firstName + ' ' + lastName;
+
+               if (! active )
+               {
+                  action = "deactivated";
+               }
+
+               // Verifies that the password that was entered is not blank and that 
+               // it matches the password found to belong to the username.  If either
+               // of these conditions is incorrect, the variable 'action' is changed
+               // to indicate this.
+               if( ! PasswordHash.validatePassword(Password, passwd) )
+               {
+                  action = "invalidpwd";      
+               }
+            }
+            else
+            {
+               action = "invaliduname";
+            }
+
+         }
+         else
+         {
+            action = "invaliduname";
+         }
+
+         // Verifies that no errors were found with the login by checking to see 
+         // if the action variable has been assigned anything.  If 'action' is
+         //  null, no errors were found and the session variables 'USERID' and
+         //  'RTEADMIN' are set.  
+         if ( action == null )
+         {
+            ioRequest.getSession().setAttribute("USERID", UserName);
+            ioRequest.getSession().setAttribute("USERNAME", fullName);
+            ioRequest.getSession().setAttribute("LOGINNAME", loginName);
+
+            String admin = userRS.getString("Admin"); 
+
+            // Checks to see if the user has admin rights and sets the 'RTEADMIN'
+            // variable accordingly.
+            if ( (admin != null) && (admin.equals("1")) ) 
+            {
+               ioRequest.getSession().setAttribute("RTEADMIN", new String("true"));
+            }
+            else
+            {
+               ioRequest.getSession().setAttribute("RTEADMIN", new String("false"));
+            }
+         }
+
+         userRS.close();
+         stmtSelectUser.close();
+         conn.close();
+      }
+      catch(SQLException e)
+      {
+         System.out.println("login sql exception ");e.printStackTrace();  
+         action = "fail";
+      }
+      catch(Exception e)
+      { 
+         e.printStackTrace();
+         action = "fail";
+      } 
+      return action == null;
+   }
+   
+   private void removeUserFolders(String userid)
+   {
+      removeDirectory(new File(File.separator + SRTEFILESDIR + File.separator + userid));
+   }
+   
+   private boolean removeDirectory(File directory)
+   {
+      if (directory == null) return false;
+      if (!directory.exists()) return true;
+      if (!directory.isDirectory()) return false;
+
+      String[] list = directory.list();
+
+      // Some JVMs return null for File.list() when the
+      // directory is empty.
+      if (list != null)
+      {
+         for (int i = 0; i < list.length; i++)
+         {
+            File entry = new File(directory, list[i]);
+
+            if (entry.isDirectory())
+            {
+               if (!removeDirectory(entry)) return false;
+            }
+            else
+            {
+               if (!entry.delete()) return false;
+            }
+         }
+      }
+
+      return directory.delete();
+   }
+   
+   private synchronized void removeDBRefs(String iUser, List<String> courseIds)
+   {
+      Connection conn = LMSDatabaseHandler.getConnection();
+      Connection csConn = LMSDBHandler.getConnection();
+      PreparedStatement stmtDeleteUserCourse = null;
+      PreparedStatement stmtDeleteCourseStatus = null;
+      PreparedStatement stmtDeleteCourseObjectives = null;
+      try 
+      {
+         stmtDeleteUserCourse = conn.prepareStatement("DELETE FROM UserCourseInfo WHERE UserID = ?");
+         stmtDeleteCourseStatus = csConn.prepareStatement("DELETE FROM CourseStatus WHERE learnerID = ?");
+         stmtDeleteCourseObjectives = csConn.prepareStatement("DELETE FROM Objectives WHERE learnerID = ?");
+
+         stmtDeleteUserCourse.setString(1, iUser);
+         stmtDeleteUserCourse.executeUpdate();
+         
+         stmtDeleteCourseObjectives.setString(1, iUser);
+         stmtDeleteCourseObjectives.executeUpdate();
+         
+         stmtDeleteCourseStatus.setString(1, iUser);
+         stmtDeleteCourseStatus.executeUpdate();
+           
+      }
+      catch (SQLException sqle)
+      {
+         System.out.println("error UserService removeDBRefs try");
+         sqle.printStackTrace();
+      }
+      finally 
+      {
+         try {
+            stmtDeleteUserCourse.close();
+            stmtDeleteCourseStatus.close();
+            stmtDeleteCourseObjectives.close();
+         } 
+         catch (SQLException e) {
+            System.out.println("error UserService removeDBRefs finally");
+            e.printStackTrace();
+         }
+      }
+   }
+
+   public String changePassword(String userid, String password) {
+      Connection connection = LMSDatabaseHandler.getConnection();
+      String result = "true";
+      PreparedStatement psnewpwd = null;
+      try {
+         psnewpwd = connection.prepareStatement(
+               "update UserInfo set Password = ? where UserID = ?");
+      
+      
+      synchronized (psnewpwd)
+      {
+       psnewpwd.setString(1, PasswordHash.createHash(password));
+       psnewpwd.setString(2, userid);
+       psnewpwd.executeUpdate();
+      }
+      
+      psnewpwd.close();
+      } catch (SQLException e) {
+         result = "false";
+         e.printStackTrace();
+      } catch (NoSuchAlgorithmException e) {
+         result = "false";
+         e.printStackTrace();
+      } catch (InvalidKeySpecException e) {
+         result = "false";
+         e.printStackTrace();
+      } finally 
+      {
+         try {
+            if (psnewpwd != null)
+               psnewpwd.close();
+         } 
+         catch (SQLException e) {
+            System.out.println("error UserService changePassword finally");
+            e.printStackTrace();
+            result = "false";
+         }
+      }
       return result;
    }
 }

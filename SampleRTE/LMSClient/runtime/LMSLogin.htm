@@ -97,10 +97,9 @@
    <body id="main_page">
 
       <div id="login_page">
-
-         <form action="LMSLogin.jsp" method="get" id="loginform"
-            onsubmit="return submit1_onclick()" accept-charset="utf-8">
-            <!-- name="loginform" removed (deprecated -->
+         <form method="post" action="../LMSUserAdmin" name="loginform" 
+               id="loginform" onsubmit="return submit1_onclick()" accept-charset="utf-8">
+         <input type="hidden" name="type" value="26" />
             <table>
                <tr>
                   <td>
@@ -146,6 +145,10 @@
             </div>
 
          </form>
+         
+         <div>
+            <a href="/adl/LMSUserAdmin?type=24&setProcess=pref">Sign up</a>
+         </div>
 
          <script type="text/javascript">
 			//<!--[CDATA[

@@ -556,9 +556,9 @@ public class CourseService
     * @param iUserID ID of the user whose courses shall be returned
     * @return String list of the courses
     */
-   public List getRegCourses(String iUserID)
+   public List<String> getRegCourses(String iUserID)
    {
-      List userCourses = new ArrayList();
+      List<String> userCourses = new ArrayList<String>();
       Connection conn;
       PreparedStatement stmtRegSelectUserCourse;
       String sqlSelectUserCourse = "SELECT * FROM UserCourseInfo WHERE UserID = ?";
@@ -796,6 +796,7 @@ public class CourseService
       }
       catch( Exception e )
       {
+         e.printStackTrace();
          result = "false";
       }
 

@@ -60,7 +60,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 %>
 
 <%
-   String userid = (String)session.getAttribute( "USERID" );
+   session.invalidate();
 
    Logger mLogger = Logger.getLogger("org.adl.util.debug.samplerte");
    try
@@ -636,6 +636,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 
 				} else {
 				}
+				
 			}
 		//]]-->
 		</script>
