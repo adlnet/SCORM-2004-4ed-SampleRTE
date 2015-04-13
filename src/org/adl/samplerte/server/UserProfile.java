@@ -45,12 +45,6 @@ package org.adl.samplerte.server;
  */
 public class UserProfile 
 {
-
-   /**
-    * The user's password.
-    */
-   public String mPassword = null;
-
    /**
     * The user's first name.
     */

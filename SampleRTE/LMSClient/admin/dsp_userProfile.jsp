@@ -61,7 +61,6 @@ Nothing in this license impairs or restricts the author's moral rights.
    String userID = user.mUserID;
    String firstName = user.mFirstName;
    String lastName = user.mLastName;
-   String password = user.mPassword;
    String audioLevel = user.mAudioLevel;
    String language = "";
    boolean isAdmin = user.mAdmin;
@@ -103,6 +102,21 @@ Nothing in this license impairs or restricts the author's moral rights.
      {
         window.open(page,"CommentsLMS",
                                 "HEIGHT=550,WIDTH=600 status=no location=no scrollbars=yes");
+     }
+     
+     function validatePassword(form) {
+    	 if (form.oldPassword.value == "" || 
+    			 form.newPassword.value == "" || 
+    			 form.newPassword2.value == "")
+  		 {
+    		  alert("Password Fields cannot be blank.");
+    		  return false;
+  		 }
+    	 if (form.newPassword.value !== form.newPassword2.value)
+    	 {
+    		 alert("New passwords do not match.");
+    		 return false;
+    	 }
      }
    </script>
 
@@ -161,15 +175,6 @@ User Preferences Administration - Edit User Profile
          </td>
          <td>
             <%=firstName%>&nbsp;<%=lastName%>
-         </td>
-      </tr>
-      <tr>
-         <td>
-            <label for="password">Password:</label>  
-         </td>
-         <td>
-            <input type="text" name="password" id="password" 
-               value="<%=password%>" />
          </td>
       </tr>
       <tr>
@@ -236,13 +241,46 @@ User Preferences Administration - Edit User Profile
 
       %>
       <tr>
+         <td colspan=2 align="center">
+            <input type="submit" name="Submit" value="Submit" />
+         </td>
+      </tr>
+      <tr>
          <td colspan="2">
             <hr>
          </td>
       </tr>
+   </table>
+</form>
+<form method="post" action="/adl/LMSUserAdmin" name="userProfile" accept-charset="utf-8" onSubmit="return validatePassword(this);">
+   <input type="hidden" name="type" value="<%= ServletRequestTypes.CHANGE_PASSWORD %>" />
+   <input type="hidden" name="userID" value="<%=userID%>" />
+   <table>
       <tr>
          <td>
-            &nbsp;
+            <label for="oldPassword">
+               Password:</label>
+         </td>
+         <td>
+            <input type="password" name="oldPassword" id="oldPassword" />
+         </td>
+      </tr>
+      <tr>
+         <td>
+            <label for="newPassword1">
+               New Password:</label>
+         </td>
+         <td>
+            <input type="password" name="newPassword" id="newPassword" />
+         </td>
+      </tr>
+      <tr>
+         <td>
+            <label for="newPassword2">
+               New Password:</label>
+         </td>
+         <td>
+            <input type="password" name="newPassword2" id="newPassword2" />
          </td>
       </tr>
       <tr>

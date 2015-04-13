@@ -27,11 +27,16 @@ Nothing in this license impairs or restricts the author's moral rights.
 package org.adl.samplerte.server;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.adl.api.ecmascript.APIErrorManager;
 import org.adl.datamodels.datatypes.LangStringValidator;
 import org.adl.datamodels.datatypes.RealRangeValidator;
+import org.adl.samplerte.util.LMSDatabaseHandler;
 
 
 /**
@@ -159,8 +165,7 @@ public class LMSUserAdmin extends HttpServlet
          case ServletRequestTypes.GET_PREF: 
             userService = new UserService();
             userProfile = new UserProfile();
-            userProfile = userService.getUser(iRequest.getParameter("userId"));          
-            
+            userProfile = userService.getUser(iRequest.getParameter("userId"));  
             // Send the results to the JSP view
             iRequest.setAttribute("userProfile", userProfile);
             iRequest.setAttribute("caller",caller);
@@ -187,48 +192,41 @@ public class LMSUserAdmin extends HttpServlet
 
 
          case ServletRequestTypes.ADD_USERS:
-            userService = new UserService();
-            result = "";
-            reqOp = "Add User";            
-            Vector currentProfiles = new Vector();
-            currentProfiles = userService.getUsers(false);                       
-            boolean duplicate = false;            
-            userProfile = new UserProfile();
-            userProfile.mAdmin = 
-                (iRequest.getParameter("admin")).equalsIgnoreCase("true");
-            userProfile.mFirstName = iRequest.getParameter("firstName");
-            userProfile.mLastName = iRequest.getParameter("lastName");
-            userProfile.mPassword = iRequest.getParameter("password");
-            userProfile.mUserID = iRequest.getParameter("userID");
+            userService = new UserService();          
+            userProfile = createUserProfile(iRequest);           
             
-            // Compare new user to current list of active users
-            int i = 0; 
-            String oldID = new String();
-            UserProfile iUserProfile = new UserProfile();
-            while ( ! duplicate && i < currentProfiles.size() )             
-            {                                    
-                iUserProfile = (UserProfile)currentProfiles.elementAt(i++);
-                oldID = iUserProfile.mUserID;
-                if ( oldID.equals( userProfile.mUserID) ) 
-                {
-                    duplicate = true;
-                }
-            }            
-            
-            if ( duplicate == true) 
+            if ( isProfileDuplicate(userProfile, userService.getUsers(false)) ) 
             {   
-                reqOp = "duplicate_user";
                 iRequest.setAttribute("result","false");
-                iRequest.setAttribute("reqOp",reqOp);
+                iRequest.setAttribute("reqOp","duplicate_user");
                 iRequest.setAttribute("userProfile", userProfile);
                 launchView(DSP_NEWUSER, iRequest, oResponse);
             }
             else
             {
-                result = userService.addUser(userProfile);
-                iRequest.setAttribute("result",result);
-                iRequest.setAttribute("reqOp",reqOp);
+                iRequest.setAttribute("result", userService.addUser(userProfile,iRequest.getParameter("password")));
+                iRequest.setAttribute("reqOp","Add User");
                 launchView(DSP_OUTCOME, iRequest, oResponse);
+            }
+            break;
+         
+         case ServletRequestTypes.NEW_SIGN_UP:
+            userService = new UserService();          
+            userProfile = createUserProfile(iRequest);           
+            
+            if ( isProfileDuplicate(userProfile, userService.getUsers(false)) ) 
+            {   
+                iRequest.setAttribute("result","false");
+                iRequest.setAttribute("reqOp","duplicate_user");
+                iRequest.setAttribute("userProfile", userProfile);
+                launchView(DSP_NEWUSER, iRequest, oResponse);
+            }
+            else
+            {
+               userService.addUser(userProfile, iRequest.getParameter("password")); 
+               launchView("/LMSUserAdmin?type=" + ServletRequestTypes.LOG_IN + 
+                      "&uname=" + iRequest.getParameter("userID") + 
+                      "&pwd=" + iRequest.getParameter("password"), iRequest, oResponse);
             }
             break;
 
@@ -237,18 +235,8 @@ public class LMSUserAdmin extends HttpServlet
             result = "false";
             String errorHeader = "Please correct the following fields:  ";
             String errorMsg = "";
-            userProfile = new UserProfile();
+            userProfile = createUserProfile(iRequest);
             reqOp = "Update Profile";
-            userProfile.mFirstName = iRequest.getParameter("firstName");
-            userProfile.mLastName = iRequest.getParameter("lastName");
-            userProfile.mUserID = iRequest.getParameter("userID");
-            userProfile.mAudioLevel = iRequest.getParameter("audioLevel");
-            userProfile.mAudioCaptioning = iRequest.getParameter("audioCaptioning");
-            userProfile.mDeliverySpeed = iRequest.getParameter("deliverySpeed");
-            userProfile.mLanguage = iRequest.getParameter("language");             
-            userProfile.mPassword = iRequest.getParameter("password");
-            String mAdminString = iRequest.getParameter("admin");
-            userProfile.mAdmin = mAdminString.equals("true");
             RealRangeValidator rrv = 
                                   new RealRangeValidator(new Double(0.0), null);
 
@@ -291,14 +279,6 @@ public class LMSUserAdmin extends HttpServlet
                errorMsg += "can only contain the values -1, 0, 1.";       
             }
 
-            if ( (userProfile.mPassword == null) || 
-                 (userProfile.mPassword.length() == 0) ||  
-                 (userProfile.mPassword.trim().equals("")) )
-            {
-               validationError = true;
-               errorMsg += "<br>Password cannot be empty";
-            }
-
             if ( validationError )
             {
                iRequest.setAttribute("errorMsg", errorMsg);
@@ -315,6 +295,14 @@ public class LMSUserAdmin extends HttpServlet
                launchView(DSP_OUTCOME, iRequest, oResponse);
             }
             break;
+            
+         case ServletRequestTypes.CHANGE_PASSWORD:
+            userService = new UserService();
+            result = userService.changePassword(iRequest.getParameter("userID"),
+                                                iRequest.getParameter("newPassword"));
+            iRequest.setAttribute("reqOp", "Change password");
+            iRequest.setAttribute("result", result);
+            launchView(DSP_OUTCOME, iRequest, oResponse);
 
          case ServletRequestTypes.DELETE_USERS:
             userService = new UserService();
@@ -325,11 +313,47 @@ public class LMSUserAdmin extends HttpServlet
             iRequest.setAttribute("result", delRes);
             launchView(DSP_OUTCOME, iRequest, oResponse);
             break;
+         
+         case ServletRequestTypes.LOG_IN:
+            userService = new UserService();
+            if ( userService.loginUser(iRequest, oResponse) )
+            {
+               launchView("/LMSCourseAdmin?type=" + ServletRequestTypes.GO_HOME + "&userID=" + iRequest.getSession().getAttribute("USERID"), iRequest, oResponse);
+            }
+            else
+            {
+               launchView("/runtime/LMSLogin2.htm", iRequest, oResponse);
+            }
+            break;
             
          default: 
             // Todo -- put in the error page.
             System.out.println("Default Case -- LMSUserAdmin.java -- Error");
       }
+   }
+
+   private boolean isProfileDuplicate(UserProfile userProfile, Vector currentProfiles) {
+      // Compare new user to current list of active users
+      boolean duplicate = false;
+      for (int i = 0; ! duplicate && i < currentProfiles.size(); i++)             
+      {                                    
+          duplicate = ((UserProfile)currentProfiles.elementAt(i)).mUserID.equals( userProfile.mUserID);
+      }
+      return duplicate;
+   }
+
+   private UserProfile createUserProfile(HttpServletRequest iRequest) {
+      UserProfile userProfile = new UserProfile();
+      
+      userProfile.mFirstName = iRequest.getParameter("firstName");
+      userProfile.mLastName = iRequest.getParameter("lastName");
+      userProfile.mUserID = iRequest.getParameter("userID");
+      userProfile.mAudioLevel = iRequest.getParameter("audioLevel");
+      userProfile.mAudioCaptioning = iRequest.getParameter("audioCaptioning");
+      userProfile.mDeliverySpeed = iRequest.getParameter("deliverySpeed");
+      userProfile.mLanguage = iRequest.getParameter("language");
+      userProfile.mAdmin = Boolean.parseBoolean(iRequest.getParameter("admin"));
+      return userProfile;
    }
 
    /**

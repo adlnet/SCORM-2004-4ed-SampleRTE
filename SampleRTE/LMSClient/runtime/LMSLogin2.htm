@@ -61,7 +61,7 @@ Nothing in this license impairs or restricts the author's moral rights.
       <title>SCORM 2004 4th Edition Sample Run-Time Environment
          Version 1.1.1 - Login</title>
 
-      <link href="../includes/sampleRTE_style.css" rel="stylesheet"
+      <link href="includes/sampleRTE_style.css" rel="stylesheet"
          type="text/css" />
 
       <script type="text/javascript">
@@ -97,11 +97,9 @@ function submit1_onclick()
             <b> An invalid username or password has been entered! <br />
                Please try again. </b>
          </div>
-
-         <form action="LMSLogin.jsp" method="get" id="loginform"
-            onsubmit="return submit1_onclick()" accept-charset="utf-8">
-            <!-- name="loginform" removed (deprecated) -->
-
+         <form method="post" action="LMSUserAdmin" name="loginform" 
+         id="loginform" onsubmit="return submit1_onclick()" accept-charset="utf-8">
+         <input type="hidden" name="type" value="26" />
             <table>
                <tr>
                   <td>
