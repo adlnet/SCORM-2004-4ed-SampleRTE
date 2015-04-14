@@ -88,7 +88,7 @@ public class UserService
 
       if (iOnlyActive == true)
       {
-         sqlSelectUser = sqlSelectUser + " WHERE Active = yes";
+    	  sqlSelectUser = sqlSelectUser + " WHERE Active = 1";
       }
 
       try
@@ -275,6 +275,7 @@ public class UserService
 
          // The SQL string is created and converted to a prepared statement.
          String sqlUpdateUser = "delete from UserInfo where UserID = ?";
+
          stmtUpdateUser = conn.prepareStatement(sqlUpdateUser);
 
          synchronized(stmtUpdateUser)

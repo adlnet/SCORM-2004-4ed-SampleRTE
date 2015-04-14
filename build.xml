@@ -19,7 +19,9 @@
         <delete dir="${buildDir}" />
         <delete dir="${tomcatDir}" /> 
         <delete includeEmptyDirs = "true" quiet="true">
-           <fileset dir="${CATALINA_HOME}\work\Catalina\localhost" />  
+            <fileset dir="${CATALINA_HOME}\work\Catalina\localhost" />
+            <fileset dir="${ccHome}\source\databases" includes="*.db"/>
+            <fileset dir="${CATALINA_HOME}\databases" includes="*.db"/>
         </delete>
         <delete dir="C:\SCORM4EDSampleRTE111Files" />
     </target>

@@ -9,6 +9,7 @@
         <mkdir dir="${tomcatDir}/WEB-INF/classes/org/adl/samplerte/server" />
         <mkdir dir="${tomcatDir}/CourseImports" />
         <mkdir dir="${tomcatDir}/xml" />
+        <mkdir dir="${ccHome}/source/databases" />
         <echo message="deleting existing jar files" />
         <delete >
             <fileset dir="${buildDir}" >
@@ -40,7 +41,13 @@
        <ant antfile="buildcmid.xml" target="SRTE" />
     </target>
 
-    <target name="buildLMSClient" depends="buildCmiDataModel">
+    <!-- This will build the necessary dbs and tables in SQLite (only creates the dbs if don't exist in databases/-->
+    <target name="buildSQLite" depends="buildCmiDataModel" >
+        <echo message="Setting up the databases"/>
+        <ant antfile="buildSQLite.xml" target="run" />
+    </target>
+
+    <target name="buildLMSClient" depends="buildSQLite">
         <ant antfile="buildLMSClient.xml" />
     </target>
 
@@ -64,9 +71,13 @@
             <fileset dir="${buildDir}/org/adl/samplerte/server/" />
         </copy>
 
+        <copy todir="${tomcatDir}/META-INF/">
+            <fileset dir="${ccHome}/source/SampleRTE/Tomcat_Modifications/META-INF">
+            </fileset>
+        </copy>
+
         <!-- Tomcat Modifications -->
         <copy todir="${tomcatDir}/WEB-INF" file="${ccHome}/source/SampleRTE/Tomcat_Modifications/WEB-INF/web.xml" />
-
         <copy todir="${tomcatDir}/server/lib" file="${ccHome}/source/SampleRTE/Tomcat_Modifications/server/lib/catalina.jar" />
         <copy todir="${tomcatDir}/conf" file="${ccHome}/source/SampleRTE/Tomcat_Modifications/conf/web.xml" />
         <copy todir="${tomcatDir}/conf" file="${ccHome}/source/SampleRTE/Tomcat_Modifications/conf/server.xml" />
@@ -76,8 +87,9 @@
         <copy todir="${tomcatDir}/bin" file="${ccHome}/source/SampleRTE/Tomcat_Modifications/bin/newshutdown.bat" />
 
         <copy todir="${tomcatDir}" >
-        <fileset dir="${ccHome}/source/SampleRTE/LMSClient/" />
+            <fileset dir="${ccHome}/source/SampleRTE/LMSClient/" />
         </copy>
+
 
 	  <copy todir="${tomcatDir}/css/" >
         <fileset dir="${ccHome}/css/" />
@@ -111,7 +123,7 @@
                 <include name="commons-io-1.2.jar" />
 		        <include name="ant.jar" />
 		        <include name="xalan.jar" />
-				<include name="gson-2.3.1.jar" />
+                <include name="sqlite-jdbc-3.7.2.jar" />
             </fileset>
         </copy>
         <!--end add for java file upload -->
@@ -126,6 +138,9 @@
             <fileset dir="${buildDir}" >
                 <include name="*.jar" />
             </fileset>
+            <fileset dir="${ccHome}/source/lib" >
+                <include name="sqlite-jdbc-3.7.2.jar" />
+            </fileset>
         </copy>
 
         <copy todir="${tomcatDir}/" >
@@ -133,6 +148,13 @@
                <include name="*.jar" />
            </fileset>
        </copy>
+
+        <!-- Copy databases to catalina home if they don't exist -->
+        <copy todir="${CATALINA_HOME}/databases" >
+            <fileset dir="${ccHome}/source/databases" >
+                <include name="*.db" />
+            </fileset>
+        </copy>
 
         <!--Copy adllog.properties-->
        <copy todir="${tomcatDir}/config/" >

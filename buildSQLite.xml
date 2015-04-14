@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<project name="ADL" default="run" >
+    <description>Executes java file that makes sure the correct dbs/tables are created</description>
+
+    <target name="compile">
+        <mkdir dir="${buildDir}/org/adl/databases" />
+        <javac destdir="${buildDir}/org/adl/databases" srcdir="${src}/org/adl/databases">
+        </javac>
+    </target>
+
+    <target name="run" depends="compile">
+        <java classname="SQLiteJDBC">
+            <classpath path="${buildDir}/org/adl/databases;${lib}/sqlite-jdbc-3.7.2.jar" />
+        </java>
+    </target>
+</project>

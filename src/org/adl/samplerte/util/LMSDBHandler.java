@@ -32,6 +32,10 @@ import java.sql.SQLException;
 
 import org.adl.util.debug.DebugIndicator;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 
 /**
  * <strong>Filename:</strong> LMSDBHandler.java<br><br>
@@ -62,123 +66,113 @@ import org.adl.util.debug.DebugIndicator;
 public class LMSDBHandler 
 {
 
-   /**
+    /**
     * This controls display of log messages to the java console
     */
-   private static boolean _Debug = DebugIndicator.ON;
+    private static boolean _Debug = DebugIndicator.ON;
    
    
-   /**
+    /**
     * Connection to the DB.
     */
-   private static Connection conn = null; 
+    private static Connection conn = null;
 
-   /**
+    /**
     * Default Constructor
     *
     */
-   public LMSDBHandler()
-   {
-      LMSDBHandler.getConnection();
-   }
+    public LMSDBHandler()
+    {
+        LMSDBHandler.getConnection();
+    }
 
-   /**
-    * Initializes the database connection.
-    * 
-    * @return A connection to the DB or <code>null</code> if the connection can
-    *         not be established.
-    */
-   public static Connection getConnection()
-   {  
-      if ( conn == null )
-      {
-         try
-         {
-            if ( _Debug )
-            {
-               System.out.println("  ::--> Connecting to the Obj DB");
+/**
+* Initializes the database connection.
+*
+* @return A connection to the DB or <code>null</code> if the connection can
+*         not be established.
+*/
+public static Connection getConnection()
+{
+    if ( conn == null )
+    {
+        try
+        {
+            if ( _Debug ) {
+                System.out.println("  ::--> Connecting to the Obj DB");
             }
-           
-            String driverName = "sun.jdbc.odbc.JdbcOdbcDriver";
-            String connectionURL = "jdbc:odbc:SCORM4EDGlobalObjs111";
-
-            java.util.Properties prop = new java.util.Properties();
-            prop.put("charSet", "utf-8");
-                        
-            Class.forName(driverName).newInstance();
-            conn = DriverManager.getConnection(connectionURL, prop);
-
+            Context initCtx = new InitialContext();
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/GlobalObjectives");
+            conn = ds.getConnection();
             if ( _Debug )
             {
-               System.out.println("  ::--> Connection successful");
+                System.out.println("  ::--> Connection successful");
             }
-
-         }
-         catch ( SQLException ex )
-         {
+        }
+        catch ( SQLException ex )
+        {
             if ( _Debug )
             {
-               System.out.println("  ::--> ERROR:  Could not connect to " +
-                                  "Obj DB");
-               System.out.println("  ::-->  " + ex.getSQLState());
+                System.out.println("  ::--> ERROR:  Could not connect to " + "Obj DB");
+                System.out.println("  ::-->  " + ex.getSQLState());
             }
             ex.printStackTrace();
-         }
-         catch ( Exception e )
-         {
+        }
+        catch ( Exception e )
+        {
             if ( _Debug )
             {
-               System.out.println("  ::--> ERROR:  Unexpected exception");
+                System.out.println("  ::--> ERROR:  Unexpected exception");
             }
             e.printStackTrace();
-         }
-      }
+        }
+    }
 
-      return conn;
-   }
+    return conn;
+}
 
 
-   /**
+    /**
     * Closes the connection to the global objectives DB.
     */
-   public static void closeConnection()
-   {   
-      try{
-  
-         if ( ( conn != null) && ( ! conn.isClosed() )   )
-         {
-            try
-            {
-               if ( _Debug )
-               {
-                  System.out.println("  ::--> Closing Obj DB connection.");
-               }
+    public static void closeConnection()
+    {
+        try{
 
-               //conn.commit();
-               conn.close();
-            }
-            catch ( SQLException ex )
+            if ( ( conn != null) && ( ! conn.isClosed() )   )
             {
-               if ( _Debug )
-               {
-                  System.out.println("  ::--> ERROR:  Could not close Obj DB");
-                  System.out.println("  ::-->  " + ex.getSQLState());
-               }
-               ex.printStackTrace();
-            }
-         }
+                try
+                {
+                    if ( _Debug )
+                    {
+                        System.out.println("  ::--> Closing Obj DB connection.");
+                    }
 
-         conn = null;
-      }
-      catch ( SQLException ex )
-         {
+                    //conn.commit();
+                    conn.close();
+                }
+                catch ( SQLException ex )
+                {
+                    if ( _Debug )
+                {
+                    System.out.println("  ::--> ERROR:  Could not close Obj DB");
+                    System.out.println("  ::-->  " + ex.getSQLState());
+                }
+                    ex.printStackTrace();
+                }
+            }
+
+            conn = null;
+        }
+        catch ( SQLException ex ) {
             if ( _Debug )
             {
-               System.out.println("  ::--> ERROR: in conn.IsClosed Obj DB ");
-               System.out.println("  ::-->  " + ex.getSQLState());
+                System.out.println("  ::--> ERROR: in conn.IsClosed Obj DB ");
+                System.out.println("  ::-->  " + ex.getSQLState());
             }
             ex.printStackTrace();
-         }
-   }
+        }
+    }
 
 }  // LMSDBHandler

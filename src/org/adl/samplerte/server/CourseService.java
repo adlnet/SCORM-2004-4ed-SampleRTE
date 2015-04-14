@@ -218,14 +218,14 @@ public class CourseService
       mUserID = iUserID;
       if( mUserID.equals("") )
       {        
-         sqlGetCourses = "SELECT * FROM CourseInfo WHERE Active = yes ORDER BY " + sortType + " " + iSortOrder;
+         sqlGetCourses = "SELECT * FROM CourseInfo WHERE Active = 1 ORDER BY " + sortType + " " + iSortOrder;
       }
       else
       {      
          sqlGetCourses = "SELECT CourseInfo.CourseID, CourseInfo.CourseTitle, CourseInfo.ImportDateTime, " 
             + "CourseInfo.Start, CourseInfo.TOC, UserCourseInfo.SuspendAll  FROM "
             + "CourseInfo, UserCourseInfo WHERE UserCourseInfo.UserID = ? AND "
-            + "CourseInfo.CourseID = UserCourseInfo.CourseID AND CourseInfo.Active = yes "
+            + "CourseInfo.CourseID = UserCourseInfo.CourseID AND CourseInfo.Active = 1 "
             + "ORDER BY CourseInfo." + sortType + " " + iSortOrder;   
       }
       Vector courses = new Vector();
@@ -517,7 +517,7 @@ public class CourseService
       String courseID = "";
       Connection conn;
       PreparedStatement stmtUpdateCourse;
-      String sqlUpdateCourse = "UPDATE CourseInfo set Active = no where CourseID = ?";
+      String sqlUpdateCourse = "UPDATE CourseInfo set Active = 0 where CourseID = ?";
       
       try
       {
