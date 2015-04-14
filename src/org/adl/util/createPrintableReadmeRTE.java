@@ -42,7 +42,7 @@ public class createPrintableReadmeRTE
    } 
    public void startCopy()
    {
-      String RTEReadmeLocation = EnvironmentVariable.getValue("SCORM4ED_TS111_HOME")
+      String RTEReadmeLocation = EnvironmentVariable.getValue("SCORM4ED_SRTE111_HOME")
       + File.separatorChar + "Sample_RTE"
       + File.separatorChar + "source"
 	  + File.separatorChar + "SampleRTE"
