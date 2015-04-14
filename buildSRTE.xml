@@ -41,17 +41,19 @@
        <ant antfile="buildcmid.xml" target="SRTE" />
     </target>
 
-    <!-- This will build the necessary dbs and tables in SQLite (only creates the dbs if don't exist in databases/-->
-    <target name="buildSQLite" depends="buildCmiDataModel" >
+    
+
+    <target name="buildLMSClient" depends="buildCmiDataModel">
+        <ant antfile="buildLMSClient.xml" />
+    </target>
+	
+	<!-- This will build the necessary dbs and tables in SQLite (only creates the dbs if don't exist in databases/-->
+    <target name="buildSQLite" depends="buildLMSClient" >
         <echo message="Setting up the databases"/>
         <ant antfile="buildSQLite.xml" target="run" />
     </target>
 
-    <target name="buildLMSClient" depends="buildSQLite">
-        <ant antfile="buildLMSClient.xml" />
-    </target>
-
-    <target name="createPrintableReadme" depends="buildLMSClient">
+    <target name="createPrintableReadme" depends="buildSQLite">
         <echo message="Creating RTE Printable Readme" />
 		<java classname="org.adl.util.createPrintableReadmeRTE" fork="true" failonerror="true">
 			<classpath>
