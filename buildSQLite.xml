@@ -4,13 +4,19 @@
 
     <target name="compile">
         <mkdir dir="${buildDir}/org/adl/databases" />
-        <javac destdir="${buildDir}/org/adl/databases" srcdir="${src}/org/adl/databases">
-        </javac>
+        <javac destdir="${buildDir}" srcdir="${src}/org/adl/databases">
+			<classpath>
+				<pathelement path="${buildDir}/" />
+			</classpath>
+		</javac>
     </target>
 
     <target name="run" depends="compile">
-        <java classname="SQLiteJDBC">
-            <classpath path="${buildDir}/org/adl/databases;${lib}/sqlite-jdbc-3.7.2.jar" />
-        </java>
+		<java classname="org.adl.databases.SQLiteJDBC" fork="true" failonerror="true">
+			<classpath>
+				<pathelement location="${buildDir}/" />
+				<pathelement location="${lib}/sqlite-jdbc-3.7.2.jar" />
+			</classpath>
+		</java>
     </target>
 </project>
