@@ -124,7 +124,7 @@ public class UnZipHandler
       try
       {
          mExtractToDir = System.getProperty("java.io.tmpdir") +
-                         "tempZipFolder" + File.separator + 
+                         File.separator + "tempZipFolder" + File.separator +
                          "Course1" + File.separator;
       }
       catch ( NullPointerException npe )

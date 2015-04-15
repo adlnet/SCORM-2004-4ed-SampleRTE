@@ -37,5 +37,5 @@ public class DebugIndicator
    /**
     * This controls display of log messages to the java console 
     */
-   public static boolean ON = true;
+   public static boolean ON = false;
 }

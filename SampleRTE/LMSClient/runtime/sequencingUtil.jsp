@@ -161,8 +161,8 @@ Nothing in this license impairs or restricts the author's moral rights.
                                         String iCourse )
    {
     boolean result = true;
-    String sampleRTERoot = File.separator + "SCORM4EDSampleRTE111Files";
-    String userDir = sampleRTERoot + File.separator + iUser + File.separator + 
+    String sampleRTERoot = System.getProperty("user.home") + File.separator + "SCORM4EDSampleRTE111Files";
+    String userDir = sampleRTERoot + File.separator + iUser + File.separator +
        iCourse;
     String theWebPath = getServletConfig().getServletContext().
                         getRealPath( "/" );

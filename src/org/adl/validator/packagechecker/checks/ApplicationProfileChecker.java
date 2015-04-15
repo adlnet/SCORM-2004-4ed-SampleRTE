@@ -203,7 +203,6 @@ public class ApplicationProfileChecker extends PackageChecker
    {
       // Reset the parser and perform the checks
       mParser = new SchematronValidationDOMParser(false);
-      
       final boolean success = mParser.performParse(iSchematron, iXMLName);        
       mErrorMessages.addAll(mParser.getErrorMessages());
       

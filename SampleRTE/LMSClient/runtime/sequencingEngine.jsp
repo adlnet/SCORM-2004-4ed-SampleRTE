@@ -253,7 +253,7 @@ Nothing in this license impairs or restricts the author's moral rights.
             //  Get the users record of the course items
             FileInputStream in = 
             new FileInputStream
-            (File.separator + "SCORM4EDSampleRTE111Files"+ File.separator + userID + 
+            (System.getProperty("user.home") + File.separator + "SCORM4EDSampleRTE111Files"+ File.separator + userID +
                 File.separator + courseID + File.separator + "serialize.obj");
         	  ObjectInputStream i = new ObjectInputStream(in);
             mactivityTree = (SeqActivityTree)i.readObject();

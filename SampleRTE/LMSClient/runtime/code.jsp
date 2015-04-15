@@ -225,7 +225,7 @@ var menu = new MTMenu();
    {
       hasAMenu = true;
       FileInputStream in = 
-         new FileInputStream(File.separator + "SCORM4EDSampleRTE111Files"+ File.separator + userID +
+         new FileInputStream(System.getProperty("user.home") + File.separator + "SCORM4EDSampleRTE111Files"+ File.separator + userID +
          File.separator + courseID + File.separator + "serialize.obj");
       ObjectInputStream ois = new ObjectInputStream(in);
       activityTree = (SeqActivityTree)ois.readObject();

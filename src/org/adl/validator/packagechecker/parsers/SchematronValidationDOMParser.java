@@ -186,13 +186,11 @@ public class SchematronValidationDOMParser
             (List<String>)CheckerStateData.getInstance().getObjectValue(ValidatorKeyNames.IDENTIFIER_LIST);
          mIDList = 
             (List<String>)CheckerStateData.getInstance().getObjectValue(ValidatorKeyNames.ID_LIST);
-         
          if ( mIdentiferList == null || mIDList == null )
          {
             UniqueIDSaxParser uniqueParser = new UniqueIDSaxParser();
 
              success = uniqueParser.performParse(iFile);
-
             if ( success )
             {
                mIdentiferList = uniqueParser.getIdentiferList();
@@ -210,20 +208,17 @@ public class SchematronValidationDOMParser
                   addReservedKey(ValidatorKeyNames.ID_LIST);
            }
          }
-         
          // Prepare the schematron schema
          Document newSchematronSchema = parse(mSchematronSchema);
-         newSchematronSchema = fixImports( newSchematronSchema, mSchematronSkeletonSchema );         
-         
+         newSchematronSchema = fixImports( newSchematronSchema, mSchematronSkeletonSchema );
          // Prepare the schematron rule file
          Document transform = transform(iSchematron, newSchematronSchema);
 
          // Clean up unused DOM objects
          newSchematronSchema = null;
-         
          // Try to get JDom object of xml instance from CheckerStateData
          mXMLInstance = (Document)CheckerStateData.getInstance().getObjectValue(ValidatorKeyNames.XML_FILE_JDOM_KEY);
-         if ( mXMLInstance == null )
+          if ( mXMLInstance == null )
          {
             // The instance was not in memory, parse and create it
             mXMLInstance = parse(iFile);            
@@ -232,7 +227,6 @@ public class SchematronValidationDOMParser
             CheckerStateData.getInstance().setObject(ValidatorKeyNames.XML_FILE_JDOM_KEY, mXMLInstance);
             CheckerStateData.getInstance().addReservedKey(ValidatorKeyNames.XML_FILE_JDOM_KEY);
          }
-
          // Test to see if submanifest is present
          XPath subManifest = XPath.newInstance("imscp:manifest/imscp:manifest");         
          subManifest.addNamespace("imscp", IMSCP);
@@ -241,17 +235,14 @@ public class SchematronValidationDOMParser
          {
             mDoesSubmanifestExist = true;
          }
-         
          // If XML is not to be validated including submanifests, remove the submanifests
          if ( !mValidateSubmanifest && mDoesSubmanifestExist )
          {
             Namespace ns = Namespace.getNamespace(IMSCP);
             mXMLInstance.getRootElement().removeChildren("manifest", ns);
          }
-         
          // Validate the xml instance against the schematron rules
          List  messageList = transform(mXMLInstance, transform);
-
          // Clean up unused DOM objects
          mXMLInstance = null;
          transform = null;
@@ -259,11 +250,11 @@ public class SchematronValidationDOMParser
          // Uncomment to output full schematron results
          // XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
          // out.output(validated, System.out);
-         
+
          mErrorMessages.addAll(messageList);
          
          mErrorMessages.addAll(mReferencedObjectiveMessages);
-         
+
          return success;
       }
       catch ( JDOMException jde )
@@ -411,13 +402,10 @@ public class SchematronValidationDOMParser
          // Create and call a transformer from the saxon 8 parser
          TransformerFactoryImpl transformFactory = new TransformerFactoryImpl();
          Transformer tranformer = transformFactory.newTransformer(transformSource);
-
          // Create ContentHandler to parse the schematron results
          SchematronResultContentHandler handler = new SchematronResultContentHandler();
          SAXResult transformResult = new SAXResult(handler);
-
-         tranformer.transform(docSource, transformResult);
-
+          tranformer.transform(docSource, transformResult);
          return handler.getResultMessages();
       }
       catch ( TransformerConfigurationException tce )
@@ -559,14 +547,15 @@ public class SchematronValidationDOMParser
          resourcePath.addNamespace("imscp", IMSCP);
           List resources = resourcePath.selectNodes(mXMLInstance);
          // If the resource identifier, we do not want to test it
-         if( resources.size() > 1 )
+          if( resources.size() != 1 )
          {
             return "null";
          }
-         
+
          // Get the href value of the resource
          Element resourceElement = (Element)resources.get(0);
-         String href = resourceElement.getAttributeValue("href");
+
+          String href = resourceElement.getAttributeValue("href");
 
          String xmlBase = resourceElement.getAttributeValue("base", XML);
 

@@ -720,9 +720,8 @@ public class CourseService
                   {
                      ADLSeqUtilities.createGlobalObjs(mUserID, scope, theGobalObjectiveList);
                   }
-                  String userDir = File.separator + SRTEFILESDIR + File.separator + mUserID + File.separator
+                  String userDir = "/home/lou" + File.separator + SRTEFILESDIR + File.separator + mUserID + File.separator
                      + courseID;
-
                   File theRTESCODataDir = new File(userDir);
 
                   // The course directory should not exist yet
@@ -733,9 +732,9 @@ public class CourseService
 
                   //Serialize the activity tree out to the user directory
                   String sampleRTERoot = File.separator + SRTEFILESDIR;
-                  String serializeFileName = sampleRTERoot + File.separator + mUserID + File.separator + courseID
-                     + File.separator + "serialize.obj";
 
+                  String serializeFileName = "/home/lou" + sampleRTERoot + File.separator + mUserID + File.separator + courseID
+                     + File.separator + "serialize.obj";
                   FileOutputStream outFile = new FileOutputStream(serializeFileName);
                   ObjectOutputStream s = new ObjectOutputStream(outFile);
                   s.writeObject(mySeqActivityTree);
@@ -1450,8 +1449,8 @@ public class CourseService
          String fileSeparator = java.io.File.separator;
         
          String theWebPath = iWebPath;
-          String mDrive = theWebPath.substring(0, nthIndexOf(theWebPath, "/", 3));
-         uploadDir = mDrive + fileSeparator + SRTEFILESDIR + fileSeparator + 
+         String mDrive = System.getProperty("user.home");
+         uploadDir = mDrive + fileSeparator + SRTEFILESDIR + fileSeparator +
              "tempUploads" + fileSeparator + sessionID;
          File theRTEUploadDir = new File(uploadDir);
          boolean isMultipart = FileUpload.isMultipartContent(iRequest);
@@ -1586,7 +1585,7 @@ public class CourseService
          sessionID = iSessionID;
          String fileSeparator = java.io.File.separator;
          String theWebPath = iWebPath;
-         String mDrive = theWebPath.substring(0, nthIndexOf(theWebPath, "/", 3));
+         String mDrive = System.getProperty("user.home");
          uploadDir = mDrive + fileSeparator + SRTEFILESDIR + fileSeparator +
              "tempUploads" + fileSeparator + sessionID;
           File theRTEUploadDir = new File(uploadDir);
@@ -1606,7 +1605,6 @@ public class CourseService
         
          String theXSDPath = theWebPath.substring(0, theWebPath.
                                           lastIndexOf(fileSeparator));
-
          // Create a manifest handler instance
          myManifestHandler = new LMSManifestHandler(theXSDPath);
 
@@ -1625,14 +1623,4 @@ public class CourseService
 
       return validationResults;
    }
-    public static int nthIndexOf(String source, String sought, int n){
-        int index = source.indexOf(sought);
-        if (index == -1) return -1;
-
-        for (int i=1; i<n; i++){
-            index = source.indexOf(sought, index + 1);
-            if (index == -1) return -1;
-        }
-        return index;
-    }
 }

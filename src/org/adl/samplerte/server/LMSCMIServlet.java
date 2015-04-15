@@ -107,7 +107,7 @@ public class LMSCMIServlet extends HttpServlet
    /**
     * This string contains the name of the SampleRTEFiles directory.
     */
-   private final String SRTEFILESDIR = "SCORM4EDSampleRTE111Files";
+   private final String SRTEFILESDIR = System.getProperty("user.home") + File.separator + "SCORM4EDSampleRTE111Files";
    
    private final String INITIALIZED_DM_EXT = "initialized";
 
@@ -187,14 +187,14 @@ public class LMSCMIServlet extends HttpServlet
          // Set the run-time data model path
          if( numAttempt != null )
          {
-            scoFile = File.separator + SRTEFILESDIR + File.separator + userID + File.separator + courseID
+            scoFile = SRTEFILESDIR + File.separator + userID + File.separator + courseID
                + File.separator + scoID + "__" + numAttempt;
          }
          else
          {
             logger.fine("  ERROR: NULL # attempt");
 
-            scoFile = File.separator + SRTEFILESDIR + File.separator + userID + File.separator + courseID
+            scoFile = SRTEFILESDIR + File.separator + userID + File.separator + courseID
                + File.separator + scoID;
          }
 
@@ -221,10 +221,10 @@ public class LMSCMIServlet extends HttpServlet
                SeqActivityTree mSeqActivityTree = new SeqActivityTree();
                
                // location of the stored data store, assuming there is one
-               SeqActivityTree.dataStoreLoc = File.separator + SRTEFILESDIR + File.separator + userID + File.separator + courseID
+               SeqActivityTree.dataStoreLoc = SRTEFILESDIR + File.separator + userID + File.separator + courseID
                + File.separator + "DS.obj";
                
-               String mTreePath = File.separator + SRTEFILESDIR + File.separator + userID + File.separator + courseID
+               String mTreePath = SRTEFILESDIR + File.separator + userID + File.separator + courseID
                   + File.separator + "serialize.obj";
 
                FileInputStream mFileIn = new FileInputStream(mTreePath);
@@ -476,8 +476,7 @@ public class LMSCMIServlet extends HttpServlet
       
       iResponse = new LMSCMIServletResponse();
 
-      String sampleRTERoot = File.separator + SRTEFILESDIR;
-      String userDir = sampleRTERoot + File.separator + iUserID + File.separator + iCourseID;
+      String userDir = SRTEFILESDIR + File.separator + iUserID + File.separator + iCourseID;
       
       boolean setPrimaryObjScore = false;
       boolean suspended = false;

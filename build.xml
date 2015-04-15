@@ -23,7 +23,7 @@
             <fileset dir="${ccHome}\source\databases" includes="*.db"/>
             <fileset dir="${CATALINA_HOME}\databases" includes="*.db"/>
         </delete>
-        <delete dir="C:\SCORM4EDSampleRTE111Files" />
+        <delete dir="${rteFilesDir}\SCORM4EDSampleRTE111Files" />
     </target>
 
 </project>
