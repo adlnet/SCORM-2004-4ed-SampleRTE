@@ -423,7 +423,7 @@ public class ADLTracking implements Serializable
    /**
     * Retrieves the activity's Completion status.
     * 
-    * @return The Activity’s current completion status.   
+    * @return The Activity's current completion status.
     */
    String getCompletionStatus(boolean iUseCurrent)
    {
@@ -446,7 +446,7 @@ public class ADLTracking implements Serializable
 
    /**
     * Sets an activity's progress measure.  If a completion threshold is defined, 
-    * the activity’s status may be set based on a threshold evaluation.
+    * the activity's status may be set based on a threshold evaluation.
     * 
     * @param iProMeasure Desired progress measure
     * 
@@ -492,7 +492,7 @@ public class ADLTracking implements Serializable
    /**
     * Retrieves the activity's progress measure.
     * 
-    * @return The Activity’s current progress measure.   
+    * @return The Activity's current progress measure.
     */
    double getProgressMeasure()
    {

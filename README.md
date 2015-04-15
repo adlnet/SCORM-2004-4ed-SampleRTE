@@ -12,5 +12,6 @@ CATALINA_HOME="path/to/created/dir/SCORM_2004_4th_Ed_Sample_RTE_V1.1.1/Sample_RT
 6. create/download api, bin, css, RTE_Readme folders and place in Sample_RTE folder (simulates running the installer)
 7. make sure jdom, commons-fileupload, commons-io are all in adl/web-inf/lib
 8. make sure all of the previous step jars plus adlvalidation, cmidatamodel, lmsclient, squencer, sqlite, and util are in apache-tomcat/lib
+9. set rteFilesDir in build.properies to your home directory (/home/username)
 
 
