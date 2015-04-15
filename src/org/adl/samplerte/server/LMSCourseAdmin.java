@@ -345,6 +345,7 @@ public class LMSCourseAdmin extends HttpServlet
 
          case ServletRequestTypes.GO_HOME:
             courseService = new CourseService();
+
             userID = iRequest.getParameter("userID");
             courses = new Vector();
             
@@ -359,6 +360,7 @@ public class LMSCourseAdmin extends HttpServlet
             iRequest.setAttribute("showUnregTable", userSettings.mUnregDisplayStatus);
             
             launchView(DSP_MNG_COURSE, iRequest, oResponse);
+            
             break;
 
          case ServletRequestTypes.PROC_REG_COURSE:

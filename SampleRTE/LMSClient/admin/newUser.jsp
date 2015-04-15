@@ -54,13 +54,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 
 <%
    String is_admin = (String)session.getAttribute( "AdminCheck" );
-
-   // Condition statement to determine if the Session Variable has been
-   // properly set.
-   if ( (! (is_admin == null)) && ( is_admin.equals("true")) )
-   {
-%>
-<% 
+ 
    String bodyText = "";
    String newUserMsg = (String)request.getAttribute("reqOp");
    String userID = "";
@@ -81,9 +75,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 
 
       }
-%>
 
-<%
    }
 %>
 <html>
@@ -149,7 +141,9 @@ Nothing in this license impairs or restricts the author's moral rights.
 </head>
 
 <body bgcolor="#FFFFFF">
-
+<% if ((String)session.getAttribute( "USERID" ) != null)
+   {
+%>
 <jsp:include page="../runtime/LMSNavigation.jsp" flush="true">
     <jsp:param value="/adl/help/newUserHelp.htm" name="helpURL"/>
 </jsp:include>
@@ -159,6 +153,18 @@ Nothing in this license impairs or restricts the author's moral rights.
 <b>
    Add a New User
 </b>
+<%
+   }
+else
+{
+%>
+<p class="font_header">
+<b>
+   Sign Up
+</b>
+<%
+}
+%>
 </p>
    <b>
      <%= bodyText %>
@@ -166,8 +172,19 @@ Nothing in this license impairs or restricts the author's moral rights.
 <form method="post" action="/adl/LMSUserAdmin" name="newUser" 
                                                  onSubmit="return checkData()"
                                                  accept-charset="utf-8">
-
+<% if ((String)session.getAttribute( "USERID" ) != null)
+   {
+%>
    <input type="hidden" name="type" value="8" />
+<%
+   }
+else
+{
+%>  
+   <input type="hidden" name="type" value="<%= ServletRequestTypes.NEW_SIGN_UP %>" />
+<%
+}
+%>
    <table width="450" border="0" align="left">
       <tr>
          <td colspan="2">
@@ -270,6 +287,10 @@ Nothing in this license impairs or restricts the author's moral rights.
                  <input type="password" name="cPassword" id="cPassword">
              </td>
          </tr>
+<%
+if ( (! (is_admin == null)) && ( is_admin.equals("true")) )
+{
+%>
          <tr>
              <td width="37%">
                 <label for="admin">Admin:</label>
@@ -280,6 +301,15 @@ Nothing in this license impairs or restricts the author's moral rights.
                  </select>
              </td>
          </tr>
+<%
+} 
+else
+{
+%>
+         <input type="hidden" name="admin" id="admin" value="false" />
+<%
+}
+%>
          <tr>
             <td colspan="2">
                <hr>
@@ -305,12 +335,3 @@ Nothing in this license impairs or restricts the author's moral rights.
 </p>
 </body>
 </html>
-
-<%
-   }
-   else
-   {
-      // Redirect the user to the RTE Home page.
-      response.sendRedirect( "/adl/LMSCourseAdmin?type=" + ServletRequestTypes.GO_HOME + "&userID=");
-   }
-%>
