@@ -266,7 +266,14 @@ public class LMSManifestHandler implements Serializable
             results.addPackageResult( zipResult );               
             return results;
          }
-         manifestFile = packageLocation + "//imsmanifest.xml";
+
+         if (!System.getProperty("os.name").toLowerCase().startsWith("windows")){
+             manifestFile = packageLocation + "//imsmanifest.xml";
+         }
+         else{
+             manifestFile = packageLocation + "\\imsmanifest.xml";
+         }
+
          
          // Parse and create domument object from manifest
          ADLDOMParser domParser = new ADLDOMParser();

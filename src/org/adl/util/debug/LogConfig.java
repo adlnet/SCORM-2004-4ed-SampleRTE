@@ -153,9 +153,18 @@ public class LogConfig
     */
    public void configure(String iEnvironmentVariable, boolean iAppendFile)
    {
+      String propFileName;
+      String propFile;
       // Use our own file, NOT the default logging file.
-      String propFileName = "//adllog.properties";
-      String propFile = iEnvironmentVariable + "//config" + propFileName;
+      if (!System.getProperty("os.name").toLowerCase().startsWith("windows")){
+          propFileName = "//adllog.properties";
+          propFile = iEnvironmentVariable + "//config" + propFileName;
+      }
+      else{
+          propFileName = "\\adllog.properties";
+          propFile = iEnvironmentVariable + "\\config" + propFileName;
+      }
+
 
       System.setProperty("java.util.logging.config.file", propFile);
 

@@ -6,11 +6,35 @@
     <target name="init">
     </target>
 
+    <target name="checkos" depends="init">
+        <condition property="isWindows" value="true">
+            <os family="windows" />
+        </condition>
+        <condition property="isWindows" value="false">
+            <os family="unix" />
+        </condition>
+    </target>
+
+    <!--&lt;!&ndash; SRTE &ndash;&gt;-->
+   <!--<target name="buildWindowsFiles" depends="checkos" if="isWindows">-->
+        <!--<javac destdir="${buildDir}" srcdir="${src}"-->
+            <!--includes="org/adl/datamodels/"-->
+            <!--classpath="${lib}/sequencer.jar,${buildDir}/util.jar,${lib}/joda-time-1.1.jar" >-->
+            <!--<exclude name="SCORM_1_2_DM.java" />-->
+            <!--<exclude name="SCORM_1_2_DMElement.java" />-->
+            <!--<exclude name="CMITimespanValidator.java" />-->
+            <!--<exclude name="CMITimeValidator.java" />-->
+            <!--<exclude name="ADLDuration.java"/>-->
+            <!--<exclude name="ADLNavigation.java"/>-->
+            <!--<exclude name="NavProcessor.java"/>-->
+        <!--</javac>-->
+    <!--</target>-->
+
     <!-- SRTE -->
-   <target name="buildFiles" depends="init">
+    <target name="buildFiles" depends="checkos">
         <javac destdir="${buildDir}" srcdir="${src}"
-            includes="org/adl/datamodels/"
-            classpath="${lib}/sequencer.jar:${buildDir}/util.jar:${lib}/joda-time-1.1.jar" >
+               includes="org/adl/datamodels/"
+               classpath="${lib}/sequencer.jar;${buildDir}/util.jar;${lib}/joda-time-1.1.jar" >
             <exclude name="SCORM_1_2_DM.java" />
             <exclude name="SCORM_1_2_DMElement.java" />
             <exclude name="CMITimespanValidator.java" />
@@ -20,7 +44,6 @@
             <exclude name="NavProcessor.java"/>
         </javac>
     </target>
-
    <!-- This is necessary for SRTE only -->
     <target name="buildCmidJar" depends="buildFiles">
         <echo message="building jar file from class files"/>

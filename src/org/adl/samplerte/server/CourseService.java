@@ -720,7 +720,7 @@ public class CourseService
                   {
                      ADLSeqUtilities.createGlobalObjs(mUserID, scope, theGobalObjectiveList);
                   }
-                  String userDir = "/home/lou" + File.separator + SRTEFILESDIR + File.separator + mUserID + File.separator
+                  String userDir = System.getProperty("user.home") + File.separator + SRTEFILESDIR + File.separator + mUserID + File.separator
                      + courseID;
                   File theRTESCODataDir = new File(userDir);
 
@@ -731,9 +731,9 @@ public class CourseService
                   }
 
                   //Serialize the activity tree out to the user directory
-                  String sampleRTERoot = File.separator + SRTEFILESDIR;
+                  String sampleRTERoot = System.getProperty("user.home") + File.separator + SRTEFILESDIR;
 
-                  String serializeFileName = "/home/lou" + sampleRTERoot + File.separator + mUserID + File.separator + courseID
+                  String serializeFileName =  sampleRTERoot + File.separator + mUserID + File.separator + courseID
                      + File.separator + "serialize.obj";
                   FileOutputStream outFile = new FileOutputStream(serializeFileName);
                   ObjectOutputStream s = new ObjectOutputStream(outFile);
