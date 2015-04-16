@@ -533,4 +533,18 @@ public class UserService
       }
       return result;
    }
+
+   public boolean prepareForDirectLaunch(String userid, String courseid, String webpath) {
+      CourseService cs = new CourseService();
+      // test if user is registered for course id
+      List<String> reg = cs.getRegCourses(userid);
+      if (! reg.contains(courseid))
+      {
+         Vector c = new Vector();
+         c.add("UN_" + courseid);
+         return Boolean.parseBoolean(cs.updateRegCourses(c, webpath, userid));
+      }
+      return true;
+   }
+
 }
