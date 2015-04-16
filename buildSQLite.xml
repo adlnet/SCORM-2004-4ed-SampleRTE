@@ -12,9 +12,6 @@
     </target>
 
     <target name="run" depends="compile">
-        <!--<java classname="SQLiteJDBC">-->
-            <!--<classpath path="${buildDir}/org/adl/databases:${lib}/sqlite-jdbc-3.7.2.jar" />-->
-        <!--</java>-->
 		<java classname="org.adl.databases.SQLiteJDBC" fork="true" failonerror="true">
 			<classpath>
 				<pathelement location="${buildDir}/" />
