@@ -41,8 +41,6 @@
        <ant antfile="buildcmid.xml" target="SRTE" />
     </target>
 
-    
-
     <target name="buildLMSClient" depends="buildCmiDataModel">
         <ant antfile="buildLMSClient.xml" />
     </target>
@@ -170,7 +168,29 @@
 
     </target>
 
-    <target name="buildSampleRTE" depends="moveFiles" /> 
+    <condition property="isUnix">
+        <os family="unix" />
+    </condition>
+    <target name="unixOnlyMove" depends="moveFiles" if="isUnix">
+        <copy todir="${CATALINA_HOME}/lib/">
+            <fileset dir="${ccHome}/source/lib" >
+                <include name="saxon8.jar" />
+                <include name="jdom.jar" />
+                <include name="jaxen-1.1.1.jar" />
+                <include name="commons-fileupload-1.1.jar" />
+                <include name="commons-io-1.2.jar" />
+                <include name="ant.jar" />
+                <include name="xalan.jar" />
+                <include name="sqlite-jdbc-3.7.2.jar" />
+                <include name="gson-2.3.1.jar" />
+                <include name="xercesImpl.jar" />
+                <include name="xml-apis.jar" />
+                <include name="xmlParserAPIs.jar" />
+                <include name="joda-time-1.1.jar" />
+            </fileset>
+        </copy>
+    </target>
+    <target name="buildSampleRTE" depends="unixOnlyMove" />
 
 </project>
 
