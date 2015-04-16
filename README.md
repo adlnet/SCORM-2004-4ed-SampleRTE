@@ -23,4 +23,4 @@ SCORM4ED_SRTE111_HOME="path/to/created/dir/SCORM_2004_4th_Ed_Sample_RTE_V1.1.1",
 4. add JAVA_HOME and ANT_HOME to Path
 5. run the installer
 6. replace the /source directory with this repo and rename directory source
-7. set retFilesDIr in build.properties to your home directory (C:/)
+7. set retFilesDIr in build.properties to your home directory (C:/Users/username)
