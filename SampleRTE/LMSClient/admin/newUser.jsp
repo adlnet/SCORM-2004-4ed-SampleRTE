@@ -310,6 +310,14 @@ else
 <%
 }
 %>
+<% if ( (String)request.getParameter("courseID") != null && !"".equals((String)request.getParameter("courseID")) )
+{
+%>
+   <input type="hidden" name=courseID id="courseID" value="<%= (String)request.getParameter("courseID") %>" />
+   <input type="hidden" name="path" value="<%=getServletConfig().getServletContext().getRealPath( "/" )%>" />
+<% 
+}
+%>
          <tr>
             <td colspan="2">
                <hr>

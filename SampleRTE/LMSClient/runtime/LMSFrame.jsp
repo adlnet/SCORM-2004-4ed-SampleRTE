@@ -63,10 +63,13 @@ Nothing in this license impairs or restricts the author's moral rights.
    session.invalidate();
 
    Logger mLogger = Logger.getLogger("org.adl.util.debug.samplerte");
+   String adlHome = "";
+   String escpath = "";
    try
    {
       mLogger.entering("-=-LMSFrame", "try()");
-      String adlHome = getServletConfig().getServletContext().getRealPath("/");
+      adlHome = getServletConfig().getServletContext().getRealPath("/");
+      escpath = adlHome.replace("\\", "\\\\");
       adlHome = adlHome.substring(0, adlHome.lastIndexOf(File.separator));
 
       LogConfig logConfig = new LogConfig();
@@ -115,8 +118,14 @@ Nothing in this license impairs or restricts the author's moral rights.
             ***************************************************************************/
             function login_onclick() 
             {
-               DetectBrowser()
-               window.parent.frames['Content'].document.location.href = "LMSLogin.htm";
+               DetectBrowser();
+               var courseID = getParameterByName('courseID', top);
+               var path = "";
+               if (courseID !== "") {
+            	   courseID = "?courseID=" + courseID;
+            	   path = "&path=" + encodeURIComponent('<%= escpath %>');
+               }
+               window.parent.frames['Content'].document.location.href = "LMSLogin.htm" + courseID + path;
                document.getElementById('login').style.visibility = "hidden";
                /*if ( document.layers != null )
                {
@@ -131,6 +140,13 @@ Nothing in this license impairs or restricts the author's moral rights.
                   //Niether IE, Firefox or Netscape is being used
                   //alert("your browser may not be supported");
                }*/
+            }
+            
+            function getParameterByName(name, frame) {
+                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec(frame.location.search);
+                return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
             }
             
             
