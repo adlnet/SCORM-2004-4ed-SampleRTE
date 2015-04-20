@@ -27,30 +27,21 @@ Nothing in this license impairs or restricts the author's moral rights.
 package org.adl.samplerte.server;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.adl.api.ecmascript.APIErrorManager;
 import org.adl.datamodels.datatypes.LangStringValidator;
 import org.adl.datamodels.datatypes.RealRangeValidator;
-import org.adl.samplerte.util.LMSDatabaseHandler;
 
 
 /**
  * The LMSUserAdmin class handles the administration of user information.  This 
- * inforamtion includes the users password and the cmi.learner_preferences 
+ * information includes the users password and the cmi.learner_preferences 
  * data model elements, audio_level, audio_captioning, delivery_speed, and
  * language.<br><br>
  * 
@@ -223,10 +214,12 @@ public class LMSUserAdmin extends HttpServlet
             }
             else
             {
-               userService.addUser(userProfile, iRequest.getParameter("password")); 
+               userService.addUser(userProfile, iRequest.getParameter("password"));
+               String courseid = iRequest.getParameter("courseID");
+               courseid = (courseid != null && !"".equals(courseid)) ? "&courseID=" + courseid : "";
                launchView("/LMSUserAdmin?type=" + ServletRequestTypes.LOG_IN + 
                       "&uname=" + iRequest.getParameter("userID") + 
-                      "&pwd=" + iRequest.getParameter("password"), iRequest, oResponse);
+                      "&pwd=" + iRequest.getParameter("password") + courseid, iRequest, oResponse);
             }
             break;
 
@@ -314,13 +307,46 @@ public class LMSUserAdmin extends HttpServlet
          
          case ServletRequestTypes.LOG_IN:
             userService = new UserService();
+            String courseid = iRequest.getParameter("courseID");
             if ( userService.loginUser(iRequest, oResponse) )
             {
-               launchView("/LMSCourseAdmin?type=" + ServletRequestTypes.GO_HOME + "&userID=" + iRequest.getSession().getAttribute("USERID"), iRequest, oResponse);
+               if (courseid != null && ! "".equals(courseid) && 
+                     new UserService().prepareForDirectLaunch(iRequest.getParameter("uname"), courseid, iRequest.getParameter("path"))) {
+                  String title = "";
+                  boolean start = false;
+                  boolean toc = false;
+                  for (Object o : new CourseService().getCourses(iRequest.getParameter("uname"), "timestamp", "DESC")) 
+                  {
+                     CourseData cd = (CourseData)o;
+                     if (cd.mCourseID.equals(courseid))
+                     {
+                        title = cd.mCourseTitle;
+                        start = cd.mStart;
+                        toc = cd.mTOC;
+                        break;
+                     }
+                  }
+                  iRequest.setAttribute("courseTitle", title);
+                  try {
+                     if (start)
+                        oResponse.sendRedirect("/adl/runtime/sequencingEngine.jsp?courseID=" + courseid + "&courseTitle=" + title);
+                     else if (toc)
+                        oResponse.sendRedirect("/adl/runtime/sequencingEngine.jsp?courseID=" + courseid + "&courseTitle=" + title + "&viewTOC=true");
+                     else
+                        launchView("/LMSCourseAdmin?type=" + ServletRequestTypes.GO_HOME +"&userID=" + iRequest.getSession().getAttribute("USERID"), iRequest, oResponse);
+                  } catch (IOException e) {
+                     launchView("/LMSCourseAdmin?type=" + ServletRequestTypes.GO_HOME + 
+                           "&userID=" + iRequest.getSession().getAttribute("USERID"), iRequest, oResponse);
+                  }
+               }
+               else {
+                  launchView("/LMSCourseAdmin?type=" + ServletRequestTypes.GO_HOME + 
+                                          "&userID=" + iRequest.getSession().getAttribute("USERID"), iRequest, oResponse);
+               }
             }
             else
             {
-               launchView("/runtime/LMSLogin2.htm", iRequest, oResponse);
+               launchView("/runtime/LMSLogin2.jsp", iRequest, oResponse);
             }
             break;
             

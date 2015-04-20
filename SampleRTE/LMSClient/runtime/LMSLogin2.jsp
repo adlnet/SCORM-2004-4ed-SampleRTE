@@ -6,7 +6,7 @@
    <!--
 /*******************************************************************************
 **
-** Filename: LMSLogin2.htm
+** Filename: LMSLogin2.jsp
 **
 ** File Description: This page contains an HTML form that prompts the user 
 **                   for a username and password.  This page is displayed after
@@ -100,6 +100,7 @@ function submit1_onclick()
          <form method="post" action="LMSUserAdmin" name="loginform" 
          id="loginform" onsubmit="return submit1_onclick()" accept-charset="utf-8">
          <input type="hidden" name="type" value="26" />
+         <input type="hidden" name="path" value="<%=getServletConfig().getServletContext().getRealPath( "/" )%>" />
             <table>
                <tr>
                   <td>
@@ -136,6 +137,13 @@ function submit1_onclick()
                   </td>
                </tr>
             </table>
+<% if ( (String)request.getParameter("courseID") != null && !"".equals((String)request.getParameter("courseID")) )
+{
+%>
+   <input type="hidden" name=courseID id="courseID" value="<%= (String)request.getParameter("courseID") %>" />
+<% 
+}
+%>
 
             <div>
 

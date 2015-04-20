@@ -147,7 +147,7 @@
          </form>
          
          <div>
-            <a href="/adl/LMSUserAdmin?type=24&setProcess=pref">Sign up</a>
+            <a id="signuplink" href="/adl/LMSUserAdmin?type=24&setProcess=pref">Sign up</a>
          </div>
 
          <script type="text/javascript">
@@ -159,5 +159,29 @@
 			</script>
 
       </div>
+      <script type="text/javascript">
+         if (window.parent.frames['LMSFrame'].getParameterByName("courseID", this) !== "")
+            setCourseLaunch();
+         function setCourseLaunch() {
+            var courseid = window.parent.frames['LMSFrame'].getParameterByName("courseID", this);
+            var signup = document.getElementById('signuplink');
+            signup.href = signup.href + "&courseID=" + courseid;
+            
+            addHidden(document.forms['loginform'], "courseID", courseid);
+            
+            var path = window.parent.frames['LMSFrame'].getParameterByName("path", this);
+            if (path != undefined && path != "")
+            	   addHidden(document.forms['loginform'], "path", path);
+         }
+         
+         function addHidden(theForm, key, value) {
+        	    // Create a hidden input element, and append it to the form:
+        	    var input = document.createElement('input');
+        	    input.type = 'hidden';
+        	    input.name = key;
+        	    input.value = value;
+        	    theForm.appendChild(input);
+        	}
+      </script>
    </body>
 </html>
