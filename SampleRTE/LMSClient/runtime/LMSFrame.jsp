@@ -87,8 +87,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 	<head>
 		<meta http-equiv="expires" content="Tue, 20 Aug 1999 01:00:00 GMT" />
 		<meta http-equiv="Pragma" content="no-cache" />
-		<title>SCORM 2004 4th Edition Sample Run-Time Environment
-			Version 1.1.1</title>
+		<title>ADL E-Learning Library</title>
 
 		<link href="../includes/sampleRTE_style.css" rel="stylesheet"
 			type="text/css" />
@@ -669,17 +668,14 @@ Nothing in this license impairs or restricts the author's moral rights.
 
 			</div>
 
-			<table width="800">
+			<table width="1200">
 				<tr>
 					<td width="40" colspan="2">
-						<img border="0" align="left" src="adl_tm_80x55.jpg" alt="ADL Logo" />
+						<img border="0" align="left" src="ADL_Logo_2013_small.png" width="80px" alt="ADL Logo" />
 					</td>
 					<td width="670" colspan="4" align="center" valign="middle">
-						<strong class="scorm">Sharable Content Object Reference
-							Model (SCORM<sup>&reg;</sup>) 2004 4<sup>th</sup> Edition </strong>
-						<br />
-						<strong class="srte">Sample Run-Time Environment Version&nbsp;1.1.1</strong>
-						<br />
+						<h1 class="scorm">ADL E-Learning Library 
+						</h1>
 					</td>
 					<td>
 						&nbsp;
@@ -687,9 +683,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 				</tr>
 				<tr>
 					<td colspan="7" valign="bottom" class="topNavLinks" align="right">
-		               <a href="/adl/RTE_Readme/main.html" target="_blank">View Readme</a>  
-                       <br />
-                       <a href="mailto:scormhelpdesk@adlnet.gov">Ask the Experts</a>  
+		               &nbsp; 
 		            </td>                  
 				</tr>
 				<tr>
