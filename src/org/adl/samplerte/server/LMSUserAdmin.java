@@ -313,18 +313,27 @@ public class LMSUserAdmin extends HttpServlet
                if (courseid != null && ! "".equals(courseid) && 
                      new UserService().prepareForDirectLaunch(iRequest.getParameter("uname"), courseid, iRequest.getParameter("path"))) {
                   String title = "";
+                  boolean start = false;
+                  boolean toc = false;
                   for (Object o : new CourseService().getCourses(iRequest.getParameter("uname"), "timestamp", "DESC")) 
                   {
                      CourseData cd = (CourseData)o;
                      if (cd.mCourseID.equals(courseid))
                      {
                         title = cd.mCourseTitle;
+                        start = cd.mStart;
+                        toc = cd.mTOC;
                         break;
                      }
                   }
                   iRequest.setAttribute("courseTitle", title);
                   try {
-                     oResponse.sendRedirect("/adl/runtime/sequencingEngine.jsp?courseID=" + courseid + "&courseTitle=" + title);
+                     if (start)
+                        oResponse.sendRedirect("/adl/runtime/sequencingEngine.jsp?courseID=" + courseid + "&courseTitle=" + title);
+                     else if (toc)
+                        oResponse.sendRedirect("/adl/runtime/sequencingEngine.jsp?courseID=" + courseid + "&courseTitle=" + title + "&viewTOC=true");
+                     else
+                        launchView("/LMSCourseAdmin?type=" + ServletRequestTypes.GO_HOME +"&userID=" + iRequest.getSession().getAttribute("USERID"), iRequest, oResponse);
                   } catch (IOException e) {
                      launchView("/LMSCourseAdmin?type=" + ServletRequestTypes.GO_HOME + 
                            "&userID=" + iRequest.getSession().getAttribute("USERID"), iRequest, oResponse);
