@@ -115,7 +115,7 @@ Nothing in this license impairs or restricts the author's moral rights.
             **               and "hides" the login button.
             **
             ***************************************************************************/
-            function login_onclick() 
+            function setLoginPage() 
             {
                DetectBrowser();
                var courseID = getParameterByName('courseID', top);
@@ -657,7 +657,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 		</script>
 	</head>
 
-	<body onload="init();" id="topNav">
+	<body onload="init();setLoginPage();" id="topNav">
 		<form name="buttonform" action="">
 
 			<div id="applet">
