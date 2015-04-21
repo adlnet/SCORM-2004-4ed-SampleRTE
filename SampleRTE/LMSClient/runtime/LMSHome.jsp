@@ -257,19 +257,24 @@ Nothing in this license impairs or restricts the author's moral rights.
    }
 
 %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!doctype html">
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html lang="en">
 <head>
-<title>SCORM 2004 4th Edition Sample Run-Time Environment  - 
-Course Register</title>
+<title>Home</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="expires" content="Tue, 05 DEC 2000 01:00:00 GMT" />
 <meta http-equiv="Pragma" content="no-cache" />
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
 <link href="includes/sampleRTE_style.css" rel="stylesheet" type="text/css" />
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
 <style type="text/css">
+   .container
+   {
+      margin-left: 15px;
+   }
 
 	table.sep
 	{
@@ -621,23 +626,19 @@ function doRefresh()
 </script>
 </head>
 
-<body bgcolor="#FFFFFF" onload="clearTopFrame();doRefresh();" style="width:700px" >
-
+<body bgcolor="#FFFFFF" onload="clearTopFrame();doRefresh();" style="width:700px; margin-left:15px" >
+   <div class="container">
     <jsp:include page="LMSNavigation.jsp" flush="true">
         <jsp:param value="" name="helpURL"/>
     </jsp:include>
-    
-    <div id="header">
-        <p class="font_header">
-            <b>Sample RTE Home</b>            
-        </p>    
-    </div>
 
-    <div id="results">
-        <p class="font_header">
-            <%= resultBody %>
-        </p>
-    </div> 
+    <div class="row" style="margin-top:4.5em;">
+	    <div class="col-md-12" id="results">
+	        <p class="font_header">
+	            <%= resultBody %>
+	        </p>
+	    </div>
+	 </div> 
 
    <%
    if ( (! (isUserAdmin == null)) && ( isUserAdmin.equals("true")) )
@@ -646,20 +647,13 @@ function doRefresh()
     session.putValue("AdminCheck", new String("true"));
     %>
 
-    <div id="adminOptions">
-       <br/>
-       <div style="float:left;width:600px;">
+    <div class="row" id="adminOptions">
+       <div class="col-md-12">
           <b><font size='3'>Administrative Options</font></b><font size='1'>&nbsp;<a href="javascript:showHideAdminTable()">Show/Hide</a>&nbsp;</font>
        </div>
-       <div style="float:right; width:40px;">
-          <a id="helplinkAdmin" href="javascript:newWindow('/adl/help/rteAdminOptionsHelp.htm');">Help</a>
-       </div>
-       <table id="adminOptionsTable" width="700" class="sep" border="0" style="<%=adminTableDisplayVal %>">
+       <table class="table" id="adminOptionsTable" width="700" class="sep" border="0" style="<%=adminTableDisplayVal %>">
+
           <tr>
-             <td class="white_text" colspan="3">&nbsp;
-             </td>
-          </tr>
-          <tr bgcolor="#FFFFFF">
              <td width="250">
                 <a href="/adl/import/importCourse.jsp">Import Course</a>
              </td>
@@ -670,7 +664,7 @@ function doRefresh()
                 <a href="/adl/LMSUserAdmin?type=<%= ServletRequestTypes.GET_USERS %>&setProcess=allCourse&caller=adminCourseStatus">All User's Course Status</a>
              </td>
           </tr>
-          <tr bgcolor="#FFFFFF">
+          <tr>
              <td>
                 <a href="/adl/import/choseMultipleFilesImport.jsp">Import Multiple Courses</a>
              </td>
@@ -681,7 +675,7 @@ function doRefresh()
                 <a href="/adl/admin/selectAction.jsp">Global Objectives Administration</a>
              </td>             
           </tr>
-          <tr bgcolor="#FFFFFF">
+          <tr>
              <td>
                 <a href="/adl/LMSCourseAdmin?type=<%= ServletRequestTypes.GET_COURSES %>&setProcess=manage">Manage Courses</a>
              </td>
@@ -692,11 +686,6 @@ function doRefresh()
                 <a href="javascript:confirmClearDatabase()">Clear Database</a>
              </td>
           </tr>
-          <tr>
-             <td colspan="3">
-                <hr />
-             </td>
-          </tr>
        </table>    
     </div>
 
@@ -704,32 +693,25 @@ function doRefresh()
         }
     %>
 
-    <div id="spacer1">
-        &nbsp;<br />
-    </div>
- 	
-	<form name="courseRegForm" method="post" action="/adl/LMSCourseAdmin" onSubmit="return checkForm()">
+	 <form name="courseRegForm" method="post" action="/adl/LMSCourseAdmin" onSubmit="return checkForm()">
 
    		<input type="hidden" id="type" name="type" value="" />
    		<input type="hidden" name="path" value="<%=theWebPath%>" />
    		<input type="hidden" name="userID" value="<%=userID%>" />
-        <input type="hidden" id="refreshed" value="no" />
+         <input type="hidden" id="refreshed" value="no" />
 
-		<div id="registeredCourses">
-			<div style="float:left;width:600px;">
-          <b><font size='3'>Registered Courses</font></b><font size='1'>&nbsp;<a href="javascript:showHideRegTable()">Show/Hide</a>&nbsp;</font>
-       </div>
-       <div style="float:right; width:40px;">
-          <a id="helplinkRegistered" href="javascript:newWindow('/adl/help/rteRegisteredCoursesHelp.htm');">Help</a>
-       </div>
-			<table id="registeredCoursesTable" width="700" class="sep" border="0" style="<%=regTableDisplayVal %>">
-	   			<tr>
-	   				<td class="white_text" style="border-right-style: none;" align="left">
-	   					<!-- Checkbox for select/deselect all -->
-						<input id="registeredCheck" type="checkbox" value="0" onclick="javascript:regCheck();"/> All
-	   				</td>
-    				<td class="white_text" style="border-left-style: none;" colspan="4" align="right"> 
-                        <input type="submit" id="reset" name="reset" value="Reset" onClick="javascript:setType(<%=ServletRequestTypes.PROC_RESET_COURSE%>);" />
+		<div class="row" id="registeredCourses">
+			<div class="col-md-12">
+            <b><font size='3'>Registered Courses</font></b><font size='1'>&nbsp;<a href="javascript:showHideRegTable()">Show/Hide</a>&nbsp;</font>
+         </div>
+			<table class="table" id="registeredCoursesTable" width="700" class="sep" border="0" style="<%=regTableDisplayVal %>">
+   			<tr>
+   				<td style="border-right-style: none;" align="left">
+   					<!-- Checkbox for select/deselect all -->
+					<input id="registeredCheck" type="checkbox" value="0" onclick="javascript:regCheck();"/> All
+   				</td>
+   				   <td style="border-left-style: none;" colspan="4" align="right"> 
+                    <input type="submit" id="reset" name="reset" value="Reset" onClick="javascript:setType(<%=ServletRequestTypes.PROC_RESET_COURSE%>);" />
     					<input type="submit" id="submit" name="submit" value="UnRegister" onClick="javascript:setType(<%=ServletRequestTypes.PROC_UNREG_COURSE%>);" />
     					<% if ( (! (isUserAdmin == null)) && ( isUserAdmin.equals("true")) )
     				       {
@@ -739,84 +721,46 @@ function doRefresh()
                            }
                         %>                  
     				</td>
-    			</tr>
-	   			<div id="registeredBody">
-     				<%= regformBody%>     
-    			</div>
-                <tr>
-                    <td colspan="5">
-                        <hr />
-                    </td>
-                </tr>
-    			<tr>
-    				<td colspan="5" align="right">
-                        <input type="submit" id="reset" name="reset" value="Reset" onClick="javascript:setType(<%=ServletRequestTypes.PROC_RESET_COURSE%>);" />
-    					<input type="submit" id="submit" name="submit" value="UnRegister" onClick="javascript:setType(<%=ServletRequestTypes.PROC_UNREG_COURSE%>);" />
-    					<% if ( (! (isUserAdmin == null)) && ( isUserAdmin.equals("true")) )
-                           {
-                        %>                  
-                              <input type="submit" id="submit" name="submit" value="Delete" onClick="javascript:setType(<%=ServletRequestTypes.PROC_UNREG_DELETE%>);return confirm('Are you sure you want to delete?')" />
-                        <%
-                           }
-                        %>
-    				</td>
-    			</tr>
+   			</tr>
+   			<div id="registeredBody">
+    				<%= regformBody%>     
+   			</div>
 			</table>	
 		</div>
 	
-         <div id="spacer2">
-              &nbsp;<br />
-          </div>
+      <div id="spacer2">
+          &nbsp;<br />
+      </div>
    
-		<div id="unregisteredCourses">
-			<br/>
-			<div style="bgcolor=#CDCDCD; float:left;width:600px;">
+		<div class="row" id="unregisteredCourses">
+			<div class="col-md-12">
             <b><font size='3'>Available Courses</font></b><font size='1'>&nbsp;<a href="javascript:showHideUnregTable()">Show/Hide</a>&nbsp;</font>
-       </div>
-       <div style="float:right; width:40px;">
-          <a id="helplinkAvailable" href="javascript:newWindow('/adl/help/rteAvailableCoursesHelp.htm');">Help</a>
-       </div>
-			<table id="unregisteredCoursesTable" class="sep" width="700" style="<%=unregTableDisplayVal %>">
-				<tr>
-	   				<td style="border-right-style: none;" class="white_text" align="left">
-	   					<!-- Checkbox for select/deselect all -->
+         </div>
+			<table class="table" id="unregisteredCoursesTable" class="sep" width="700" style="<%=unregTableDisplayVal %>">
+            <tr>
+					<td style="border-right-style: none;" align="left">
+						<!-- Checkbox for select/deselect all -->
 						<input id="unregisteredCheck" type="checkbox" value="0" onclick="javascript:unregCheck();"/> All
-	   				</td>
-    				<td style="border-left-style: none;" class="white_text" colspan="4" align="right"> 
+					</td>
+    				<td style="border-left-style: none;" colspan="4" align="right"> 
     					<input type="submit" id="submit" name="submit" value="Register" onClick="javascript:setType(<%=ServletRequestTypes.PROC_REG_COURSE%>);"/>
     					<% if ( (! (isUserAdmin == null)) && ( isUserAdmin.equals("true")) )
-                           {
-                        %>                  
-                              <input type="submit" id="submit" name="submit" value="Delete" onClick="javascript:setType(<%=ServletRequestTypes.PROC_REG_DELETE%>);return confirm('Are you sure you want to delete?')" />
-                        <%
-                           }
-                        %>
+                     {
+                  %>                  
+                        <input type="submit" id="submit" name="submit" value="Delete" onClick="javascript:setType(<%=ServletRequestTypes.PROC_REG_DELETE%>);return confirm('Are you sure you want to delete?')" />
+                  <%
+                     }
+                  %>
     				</td>
     			</tr>		
 	   			<div id="unregisteredBody">
      				<%= unregformBody%>     
     			</div>
-                <tr>
-                    <td colspan="5">
-                        <hr />
-                    </td>
-                </tr>
-    			<tr >
-    				<td colspan="5" align="right">
-    					<input type="submit" id="submit" name="submit" value="Register" onClick="javascript:setType(<%=ServletRequestTypes.PROC_REG_COURSE%>);"/>
-    					<% if ( (! (isUserAdmin == null)) && ( isUserAdmin.equals("true")) )
-                           {
-                        %>                  
-                              <input type="submit" id="submit" name="submit" value="Delete" onClick="javascript:setType(<%=ServletRequestTypes.PROC_REG_DELETE%>);return confirm('Are you sure you want to delete?')" />
-                        <%
-                           }
-                        %>
-    				</td>
-    			</tr>
 			</table>
 	
 		</div>
 		<br/>
    	</form>
+   </div>
 </body>
 </html>

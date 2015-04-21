@@ -78,13 +78,17 @@ Nothing in this license impairs or restricts the author's moral rights.
 
    }
 %>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-   <title>SCORM 2004 4th Edition Sample Run-Time Environment Version 1.1.1 - 
-    Add New User</title>
+   <title> Add New User</title>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    
-   <link href="includes/sampleRTE_style.css" rel="stylesheet" type="text/css">
+   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+   <link href="includes/sampleRTE_style.css" rel="stylesheet" type="text/css" />
+   <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
 
    <script language="JavaScript">
    /****************************************************************************
@@ -140,206 +144,147 @@ Nothing in this license impairs or restricts the author's moral rights.
    </script>
 </head>
 
-<body bgcolor="#FFFFFF">
-<% if ((String)session.getAttribute( "USERID" ) != null)
-   {
-%>
-<jsp:include page="../runtime/LMSNavigation.jsp" flush="true">
-    <jsp:param value="/adl/help/newUserHelp.htm" name="helpURL"/>
-</jsp:include>
-
-
-<p class="font_header">
-<b>
-   Add a New User
-</b>
-<%
-   }
-else
-{
-%>
-<p class="font_header">
-<b>
-   Sign Up
-</b>
-<%
-}
-%>
-</p>
-   <b>
-     <%= bodyText %>
-   </b>   
-<form method="post" action="/adl/LMSUserAdmin" name="newUser" 
-                                                 onSubmit="return checkData()"
-                                                 accept-charset="utf-8">
-<% if ((String)session.getAttribute( "USERID" ) != null)
-   {
-%>
-   <input type="hidden" name="type" value="8" />
-<%
-   }
-else
-{
-%>  
-   <input type="hidden" name="type" value="<%= ServletRequestTypes.NEW_SIGN_UP %>" />
-<%
-}
-%>
-   <table width="450" border="0" align="left">
-      <tr>
-         <td colspan="2">
-            <hr>
-         </td>
-      </tr>
-      <tr>
-         <td bgcolor="#5E60BD" colspan="2" class="white_text">
-            <b>
-               &nbsp;Please provide the following new user information:
-         </b>
-         </td>
-      </tr>
-      <tr>
-         <td width="37%">
-            <label for="userID">User ID:</label>
-         </td>
-         <td width="63%">
-
-<%
-   if ( userID != null )
-   {
-%>
-               <input type="text" name="userID" id="userID" value="<%= userID %>">
-<%
-   }
-   else
-   {
-%>
-               <input type="text" name="userID" id="userID"> 
-<%
-  }
-%>
-
-         </td>
-      </tr>
-      <tr>
-         <td width="37%"><label for="firstName">First Name:</label></td>
-            <td width="63%">
-
-<%
-  if ( firstName != null )
-  {
-%>
-
-              <input type="text" name="firstName" id="firstName" value="<%= firstName %>">
-
-<%
-  }
-  else
-  {
-%>
-
-              <input type="text" name="firstName">
-
-<%
-  }
-%>
-
-           </td>
-        </tr>
-        <tr>
-          <td width="37%"><label for="lastName">Last Name:</label></td>
-             <td width="63%">
-
-<%
-  if ( lastName != null )
-  {
-%>
-
-               <input type="text" name="lastName" id="lastName" value="<%= lastName %>">
-
-<%
-  }
-  else
-  {
-%>
-
-               <input type="text" name="lastName" id="lastName">
-
-<%
-   }
-%>
-
-             </td>
-         </tr>
-         <tr>
-             <td width="37%">
-                <label for="password">Password:</label>
-             </td>
-             <td width="63%">
-                 <input type="password" name="password" id="password">
-             </td>
-         </tr>
-         <tr>
-             <td width="37%">
-                <label for="cPassword">Password Confirmation:</label>
-             </td>
-             <td width="63%">
-                 <input type="password" name="cPassword" id="cPassword">
-             </td>
-         </tr>
-<%
-if ( (! (is_admin == null)) && ( is_admin.equals("true")) )
-{
-%>
-         <tr>
-             <td width="37%">
-                <label for="admin">Admin:</label>
-             </td>
-             <td width="63%">
-                 <select name="admin" id="admin">
-                     <option value="false">No</option> <option value="true">Yes</option>
-                 </select>
-             </td>
-         </tr>
-<%
-} 
-else
-{
-%>
-         <input type="hidden" name="admin" id="admin" value="false" />
-<%
-}
-%>
-<% if ( (String)request.getParameter("courseID") != null && !"".equals((String)request.getParameter("courseID")) )
-{
-%>
-   <input type="hidden" name=courseID id="courseID" value="<%= (String)request.getParameter("courseID") %>" />
-   <input type="hidden" name="path" value="<%=getServletConfig().getServletContext().getRealPath( "/" )%>" />
-<% 
-}
-%>
-         <tr>
-            <td colspan="2">
-               <hr>
-            </td>
-         </tr>
-         <tr>
-             <td width="37%">
-                &nbsp;
-             </td>
-             <td width="63%">
-                &nbsp;
-             </td>
-         </tr>
-         <tr>
-            <td colspan="2" align="center">
-               <input type="submit" name="Submit" value="Submit">
-            </td>
-         </tr>
-     </table>
-</form>
-<p>
-&nbsp;
-</p>
+<body bgcolor="#FFFFFF" style="margin-top: 4.5em;">
+	<% if ((String)session.getAttribute( "USERID" ) != null)
+	   {
+	%>
+		<jsp:include page="../runtime/LMSNavigation.jsp" flush="true">
+		    <jsp:param value="/adl/help/newUserHelp.htm" name="helpURL"/>
+		</jsp:include>
+		
+		<div class="container">
+		   <h2>Add a New User</h2>
+	<%
+	   }
+	else
+	{
+	%>
+		<div class="container">
+		   <h2>Sign Up</h2>
+	<%
+	}
+	%>
+	   <div class="row">
+	      <div class="col-md-12">
+	         <%= bodyText %>
+	      </div>
+	   </div>   
+	   <form class="form-horizontal" method="post" action="/adl/LMSUserAdmin" name="newUser" onSubmit="return checkData()" accept-charset="utf-8">
+			<% if ((String)session.getAttribute( "USERID" ) != null)
+			   {
+			%>
+			   <input type="hidden" name="type" value="8" />
+			<%
+			   }
+			else
+			{
+			%>  
+			   <input type="hidden" name="type" value="<%= ServletRequestTypes.NEW_SIGN_UP %>" />
+			<%
+			}
+			%>
+			
+			<div class="form-group" style="margin-right: .5em; margin-left: .5em;">
+	         <label for="userID">User ID</label>
+	         <%
+				   if ( userID != null )
+				   {
+				%>
+				      <input type="text" class="form-control" id="userID" name="userID" value="<%= userID %>" />
+				<%
+				   }
+				   else
+				   {
+				%>
+				      <input type="text" class="form-control" id="userID" name="userID" placeholder="user name" /> 
+				<%
+				   }
+				%>
+	      </div>
+	      
+	      <div class="form-group" style="margin-right: .5em; margin-left: .5em;">
+	         <label for="firstName">First Name</label>
+	         <%
+				  if ( firstName != null )
+				  {
+				%>
+					  <input type="text" class="form-control" name="firstName" id="firstName" value="<%= firstName %>">
+				
+				<%
+				  }
+				  else
+				  {   
+				%>
+				    <input type="text" class="form-control" name="firstName" id="firstName" placeholder="first name">
+				
+				<%
+				  }
+				%>
+	      </div>
+	      
+	      <div class="form-group" style="margin-right: .5em; margin-left: .5em;">
+	         <label for="lastName">Last Name</label>
+	         <%
+	           if ( lastName != null )
+	           {
+	         %>
+	              <input type="text" class="form-control" name="lastName" id="lastName" value="<%= lastName %>">
+	         
+	         <%
+	           }
+	           else
+	           {
+	         %>
+	             <input type="text" class="form-control" name="lastName" id="lastName" placeholder="last name">
+	         
+	         <%
+	           }
+	         %>
+	      </div>
+	      
+	      <div class="form-group" style="margin-right: .5em;margin-left: .5em;">
+	         <label for="password">Password</label>
+	         <input class="form-control" type="password" name="password" id="password" />
+	      </div>
+			
+			<div class="form-group" style="margin-right: .5em;margin-left: .5em;">
+	         <label for="cPassword">Confirm Password</label>
+	         <input class="form-control" type="password" name="cPassword" id="cPassword" />
+	      </div>
+	      
+	      <%
+				if ( (! (is_admin == null)) && ( is_admin.equals("true")) )
+				{
+			%>
+		         <div class="form-group" style="margin-right: .5em;margin-left: .5em;">
+		            <label for="admin">User Role</label>
+		            <select class="form-control" name="admin" id="admin">
+		               <option value="false">User</option>
+		               <option value="true">Admin</option>
+		            </select>
+		         </div>
+			<%
+				} 
+				else
+				{
+			%>
+				         <input type="hidden" name="admin" id="admin" value="false" />
+			<%
+				}
+			%>
+			
+			<% if ( (String)request.getParameter("courseID") != null && !"".equals((String)request.getParameter("courseID")) )
+				{
+			%>
+				   <input type="hidden" name=courseID id="courseID" value="<%= (String)request.getParameter("courseID") %>" />
+				   <input type="hidden" name="path" value="<%=getServletConfig().getServletContext().getRealPath( "/" )%>" />
+			<% 
+				}
+			%>
+	      
+	      <button type="submit" name="submit" class="btn btn-primary">Save</button>
+	     
+	   </form>
+	</div>
 </body>
 </html>

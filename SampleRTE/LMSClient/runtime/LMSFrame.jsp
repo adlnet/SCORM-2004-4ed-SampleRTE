@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <%@page
 	import="org.adl.util.EnvironmentVariable,org.adl.util.debug.LogConfig,java.io.*,java.util.logging.*"%>
@@ -83,14 +82,16 @@ Nothing in this license impairs or restricts the author's moral rights.
 %>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html lang="en">
 	<head>
 		<meta http-equiv="expires" content="Tue, 20 Aug 1999 01:00:00 GMT" />
 		<meta http-equiv="Pragma" content="no-cache" />
 		<title>ADL E-Learning Library</title>
 
-		<link href="../includes/sampleRTE_style.css" rel="stylesheet"
-			type="text/css" />
+      <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../includes/sampleRTE_style.css" rel="stylesheet" type="text/css" />
+      <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+      <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="BrowserDetect.js"></script>
 		
 		<script type="text/javascript">
@@ -115,7 +116,7 @@ Nothing in this license impairs or restricts the author's moral rights.
             **               and "hides" the login button.
             **
             ***************************************************************************/
-            function setLoginPage() 
+            function login_onclick() 
             {
                DetectBrowser();
                var courseID = getParameterByName('courseID', top);
@@ -657,7 +658,8 @@ Nothing in this license impairs or restricts the author's moral rights.
 		</script>
 	</head>
 
-	<body onload="init();setLoginPage();" id="topNav">
+	<body onload="init();" id="topNav">
+	<div class="container">
 		<form name="buttonform" action="">
 
 			<div id="applet">
@@ -688,15 +690,15 @@ Nothing in this license impairs or restricts the author's moral rights.
 				</tr>
 				<tr>
 					<td align="center">
-						<input type="button" value="Log In" id="login" name="login"
+						<input class="btn btn-default" type="button" value="Log In" id="login" name="login"
 							onclick="return login_onclick();" />
 					</td>
 					<td align="left">
-						<input type="button" value="Suspend" id="suspend" name="suspend"
+						<input class="btn btn-default" type="button" value="Suspend" id="suspend" name="suspend"
 							style="visibility: hidden" onclick="return invokeSuspendAll();" />
 					</td>
 					<td align="center">
-						<input type="button" align="right" id ="quit" value="    Quit    "
+						<input class="btn btn-default" type="button" align="right" id ="quit" value="    Quit    "
 							name="quit" onclick="return invokeQuit();"
 							style="visibility: hidden" />
 					</td>
@@ -706,12 +708,12 @@ Nothing in this license impairs or restricts the author's moral rights.
 					</td>
 					<td align="center">
 
-						<input type="button" align="right" value="&lt;- Previous"
+						<input class="btn btn-default" type="button" align="right" value="&lt;- Previous"
 							id="previous" name="previous" onclick="return previousSCO();"
 							style="visibility: hidden" />
 					</td>
 					<td align="center">
-						<input type="button" align="right" value="Continue -&gt;"
+						<input class="btn btn-default" type="button" align="right" value="Continue -&gt;"
 							id="next" name="next" onclick="return nextSCO();"
 							style="visibility: hidden" />
 					</td>
@@ -732,6 +734,6 @@ Nothing in this license impairs or restricts the author's moral rights.
 			</div>
 
 		</form>
-
+</div><!--  container  -->
 	</body>
 </html>

@@ -159,7 +159,7 @@ function newWindow(pageName)
    <meta http-equiv="Pragma" content="no-cache" />
    <link href="/adl/includes/sampleRTE_style.css" rel="stylesheet" type="text/css" />
 </head>
-   <body>
+   <body style="margin-top: 4.5em;">
 
    <jsp:include page="../runtime/LMSNavigation.jsp" flush="true">
        <jsp:param value="<%= helpPage%>" name="helpURL"/>
