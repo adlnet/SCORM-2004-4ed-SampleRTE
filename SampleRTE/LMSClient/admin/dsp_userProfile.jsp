@@ -87,15 +87,15 @@ Nothing in this license impairs or restricts the author's moral rights.
    String errorHeader = (String)request.getAttribute("errorHeader");
    String errorString = (String)request.getAttribute("errorMsg");
 %>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-   <title>
-      SCORM 2004 4th Edition Sample Run-Time Environment Version 1.1.1 - User
-       Preferences Aministration - Edit User Profile
-   </title>
+   <title>Edit User Profile</title>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <link href='includes/sampleRTE_style.css' rel='stylesheet'
-   type='text/css'>
+   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+	<link href="includes/sampleRTE_style.css" rel="stylesheet" type="text/css" />
+	<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
    <script type="text/javascript">
      function openHelp(page)
@@ -119,177 +119,106 @@ Nothing in this license impairs or restricts the author's moral rights.
     	 }
      }
    </script>
-
-
 </head>
-<body bgcolor='FFFFFF'>
+<body style="margin-top: 4.5em; margin-left: 1em;">
 
-<jsp:include page="../runtime/LMSNavigation.jsp" flush="true">
-    <jsp:param value="<%=helpPage %>" name="helpURL"/>
-</jsp:include>
+	<jsp:include page="../runtime/LMSNavigation.jsp" flush="true">
+	    <jsp:param value="<%=helpPage %>" name="helpURL"/>
+	</jsp:include>
 
-<p><a href="javascript:history.go(-1)">Back</a></p>
-
-<p class="font_header">
-<b>
-User Preferences Administration - Edit User Profile
-</b>
-</p>
-<%
- if ( (errorString != null) && (errorHeader != null) )
-   {
-%>
-<p class="font_two">
-<b>
-<%=errorHeader%>
-</b>
-<%=errorString%>
-<br>
-</p>
-
-<%
-   }
-%>
-<form method="post" action="/adl/LMSUserAdmin" name="userProfile" accept-charset="utf-8">
-   <input type="hidden" name="type" value="<%= ServletRequestTypes.UPDATE_PREF %>" />
-   <input type="hidden" name="userID" value="<%=userID%>" />
-   <input type="hidden" name="firstName" value="<%=firstName%>" />
-   <input type="hidden" name="lastName" value="<%=lastName%>" />
-   <input type="hidden" name="caller" value="<%=caller%>" />
-   <table width="450">
-      <tr>
-         <td colspan="2">
-            <hr>
-         </td>
-      </tr>
-      <tr>
-         <td bgcolor="#5E60BD" colspan="2" class="white_text">
-            <b>
-               &nbsp;Please edit any user information you would like to change:
-         </b>
-         </td>
-      </tr>
-      <tr>
-         <td>
-            Username:
-         </td>
-         <td>
-            <%=firstName%>&nbsp;<%=lastName%>
-         </td>
-      </tr>
-      <tr>
-         <td>
-            <label for="audioLevel">cmi.learner_preference.audio_level:</label> 
-         </td>
-         <td>
-            <input type="text" name="audioLevel" id="audioLevel" 
-               value="<%=audioLevel%>" />
-         </td>
-      </tr>
-      <tr>
-         <td>
-            <label for="language">cmi.learner_preference.language:</label>
-         </td>
-         <td>
-            <input type="text" name="language" id="language" 
-               value="<%=language%>" />
-         </td>
-      </tr>
-      <tr>
-         <td>
-            <label for="deliverySpeed">cmi.learner_preference.delivery_speed:
-            </label>
-         </td>
-         <td>
-            <input type="text" name="deliverySpeed" id="deliverySpeed" 
-               value="<%=deliverySpeed%>" />
-         </td>
-      </tr>
-      <tr>
-         <td>
-            <label for="audioCaptioning">
-               cmi.learner_preference.audio_captioning:</label>
-         </td>
-         <td>
-            <input type="text" name="audioCaptioning" id="audioCaptioning"
-             value="<%=audioCaptioning%>" />
-         </td>
-      </tr>
-      <%
-         if( isUserAdmin.equals( "true" ) )
-         {
-      %>
-      <tr>
-         <td>
-            <label for="admin">User Rights:</label>
-         </td>
-         <td>
-            <select name="admin" id="admin">
-               <option value="true" <%if( isAdmin ){%>SELECTED<%}%>>Admin
-               </option>
-               <option value="false" <%if( !isAdmin ){%>SELECTED<%}%>>User
-               </option>
-            </select>
-         </td>
-      </tr>
-      <%
-         }
-         else
-         { %>
-            <input type="hidden" name="admin" value="<%=isUserAdmin%>" />
-      <% }
-
-      %>
-      <tr>
-         <td colspan=2 align="center">
-            <input type="submit" name="Submit" value="Submit" />
-         </td>
-      </tr>
-      <tr>
-         <td colspan="2">
-            <hr>
-         </td>
-      </tr>
-   </table>
-</form>
-<form method="post" action="/adl/LMSUserAdmin" name="userProfile" accept-charset="utf-8" onSubmit="return validatePassword(this);">
-   <input type="hidden" name="type" value="<%= ServletRequestTypes.CHANGE_PASSWORD %>" />
-   <input type="hidden" name="userID" value="<%=userID%>" />
-   <table>
-      <tr>
-         <td>
-            <label for="oldPassword">
-               Password:</label>
-         </td>
-         <td>
-            <input type="password" name="oldPassword" id="oldPassword" />
-         </td>
-      </tr>
-      <tr>
-         <td>
-            <label for="newPassword1">
-               New Password:</label>
-         </td>
-         <td>
-            <input type="password" name="newPassword" id="newPassword" />
-         </td>
-      </tr>
-      <tr>
-         <td>
-            <label for="newPassword2">
-               New Password:</label>
-         </td>
-         <td>
-            <input type="password" name="newPassword2" id="newPassword2" />
-         </td>
-      </tr>
-      <tr>
-         <td colspan=2 align="center">
-            <input type="submit" name="Submit" value="Submit" />
-         </td>
-      </tr>
-   </table>
-</form>
+   <div class="container">
+   
+	   <h2>Edit User Profile</h2>
+	   
+	   <%
+	      if ( (errorString != null) && (errorHeader != null) )
+		   {
+		%>
+	   <div class="row">
+	      <div class="col-md-12">
+		      <p class="font_two">
+					<b><%=errorHeader%></b>
+					<%=errorString%>
+				</p>
+	      </div>
+	   </div>
+		<%
+		   }
+		%>
+	   
+	   <form class="form-horizontal" method="post" action="/adl/LMSUserAdmin" name="userProfile" accept-charset="utf-8">
+	      <input type="hidden" name="type" value="<%= ServletRequestTypes.UPDATE_PREF %>" />
+		   <input type="hidden" name="userID" value="<%=userID%>" />
+		   <input type="hidden" name="firstName" value="<%=firstName%>" />
+		   <input type="hidden" name="lastName" value="<%=lastName%>" />
+		   <input type="hidden" name="caller" value="<%=caller%>" />
+	      <div class="form-group" style="margin-right: .5em;margin-left: .5em;">
+	         <label for="fullname">User Name</label>
+	         <input readonly type="text" class="form-control" id="fullname" name="fullname" value="<%=firstName%> <%=lastName%>" />
+	      </div>
+	      <div class="form-group" style="margin-right: .5em;margin-left: .5em;">
+	         <label for="audioLevel">Audio Level</label>
+	         <input type="text" class="form-control" name="audioLevel" id="audioLevel" value="<%=audioLevel%>" />
+	      </div>
+	      <div class="form-group" style="margin-right: .5em;margin-left: .5em;">
+	         <label for="language">Language</label>
+            <input type="text" class="form-control" name="language" id="language" value="<%=language%>" />
+	      </div>
+	      <div class="form-group" style="margin-right: .5em;margin-left: .5em;">
+	         <label for="deliverySpeed">Delivery Speed</label>
+            <input type="text" class="form-control" name="deliverySpeed" id="deliverySpeed" value="<%=deliverySpeed%>" />
+	      </div>
+	      <div class="form-group" style="margin-right: .5em;margin-left: .5em;">
+	         <label for="audioCaptioning">Audio Captioning</label>
+            <input type="text" class="form-control" name="audioCaptioning" id="audioCaptioning" value="<%=audioCaptioning%>" />
+	      </div>
+	      <%
+	         if( isUserAdmin.equals( "true" ) )
+	         {
+	      %>
+	      <div class="form-group" style="margin-right: .5em;margin-left: .5em;">
+	         <label for="admin">User Role</label>
+	         <select class="form-control" name="admin" id="admin">
+	            <option value="true" <%if( isAdmin ){%>SELECTED<%}%>>Admin
+	            </option>
+	            <option value="false" <%if( !isAdmin ){%>SELECTED<%}%>>User
+	            </option>
+	         </select>
+	      </div>
+	      <%
+	         }
+	         else
+	         { 
+	      %>
+	            <input type="hidden" name="admin" value="<%=isUserAdmin%>" />
+	      <% 
+	         }
+	      %>
+	      <button type="submit" name="submit" class="btn btn-primary">Save</button>
+	   </form>
+      
+      <h2>Change Password</h2>
+      <form class="form-horizontal" method="post" action="/adl/LMSUserAdmin" name="userProfile" accept-charset="utf-8" onSubmit="return validatePassword(this);">
+         <input type="hidden" name="type" value="<%= ServletRequestTypes.CHANGE_PASSWORD %>" />
+         <input type="hidden" name="userID" value="<%=userID%>" />
+         
+         <div class="form-group" style="margin-right: .5em;margin-left: .5em;">
+            <label for="oldPassword">Password</label>
+            <input class="form-control" type="password" name="oldPassword" id="oldPassword" />
+         </div>
+         
+         <div class="form-group" style="margin-right: .5em;margin-left: .5em;">
+            <label for="newPassword1">New Password:</label>
+            <input class="form-control" type="password" name="newPassword" id="newPassword" />
+         </div>
+         
+         <div class="form-group" style="margin-right: .5em;margin-left: .5em;">
+            <label for="newPassword2">New Password:</label>
+            <input class="form-control"type="password" name="newPassword2" id="newPassword2" />
+         </div>
+         <button type="submit" name="Submit" class="btn btn-default">Update</button>
+      </form>
+   </div>
 </body>
 </html>
 

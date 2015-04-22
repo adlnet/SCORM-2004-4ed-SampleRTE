@@ -210,7 +210,7 @@ Nothing in this license impairs or restricts the author's moral rights.
    
 </head>
    
-<body bgcolor="#FFFFFF">
+<body bgcolor="#FFFFFF" style="margin-top: 4.5em;">
   
    <jsp:include page="../runtime/LMSNavigation.jsp" flush="true">
        <jsp:param value="/adl/help/globalObjectivesHelp.htm" name="helpURL"/>

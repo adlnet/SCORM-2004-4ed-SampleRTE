@@ -9,7 +9,7 @@ BODY
 	font-weight : normal;
 	font-style : normal;
 	background-color : #FBFAF4; 	
-	width : 500px;		
+	width : 800px;		
 }
 BODY.logBody
 {
@@ -17,21 +17,6 @@ BODY.logBody
 	width : auto;
 }
 
-LI
-{
-	font-family : Verdana;
-	font-size : 10pt;
-	font-weight : normal;
-	font-style : normal;
-}
-
-TD
-{
-	font-family : Verdana;
-	font-size : 10pt;
-	font-weight : normal;
-	font-style : normal;
-}
 sup
 {
    font-size: 0.8em;
@@ -42,59 +27,14 @@ td.course45
 	width:45%;	
 }
 
-a:link 
-{ 
-	font-weight: bold; 
-	text-decoration: underline; 
-	color: #363C54;
-}
-
-a:visited 
-{ 
-	font-weight: bold; 
-	text-decoration: underline; 
-	color: #566B87;
-}
-
-a:hover, a:active 
-{ 
-	text-decoration: underline; 
-	color: #E7BC68;
-}
-
 input.unpw
 {
-	width:120px;
+	width:320px;
 }
 
 /* ********************************************************************** */
 /* Classes  */
 /* ********************************************************************** */
-
-.font_two
-{
-	font-family: Verdana;
-	font-size: 10pt;
-	color: black;
-	font-weight: normal;
-	font-style : normal;
-}
-
-.font_header
-{
-	font-family: Verdana;
-	font-size: 12pt;
-	color: #890C08;
-	font-weight: bold;
-	font-style : normal;
-}
-
-.font_header2
-{
-	font-size: 36pt;
-	font-weight: normal;
-	font-style : normal;
-}
 
 .page_title 
 {
@@ -102,15 +42,6 @@ input.unpw
 	font-size: 12pt;
 	color: #890C08;
 	font-weight: bold;
-	font-style : normal;
-}
-
-.font_four
-{
-	font-family: Verdana;
-	font-size: 14pt;
-	color: #566B87;
-	font-weight: normal;
 	font-style : normal;
 }
 
@@ -170,28 +101,6 @@ input.unpw
         font-style : normal;
 }
 
-.font_four_black
-{
-	font-family: Verdana;
-	font-size: 14pt;
-	font-weight: normal;
-	font-style : normal;
-}
-
-strong.scorm
-{
-   font-size : small;
-   font-family :  Verdana;
-}
-
-strong.srte
-{
-   font-size: 10pt;
-   font-family :  Verdana;
-   color: #FFFFFF;
-   background-color: transparent;
-}
-
 .wide
 {
 	font-size: 36pt;
@@ -222,74 +131,13 @@ strong.srte
 
 #topNav
 {
-	background-color : #363C54;
+	background-color : #92ABD4;
 	font-family : Verdana;
-	color: #E7BC68;
+	color: #FFF;
 	width: 400px;
 }
 
-#login_col1
-{
-	float: left;
-	font-family : Verdana;
-	font-size: 10pt;
-	color: #566B87;
-	font-weight:bold;
-	width : 80px;
-	padding : 2px;
-}
 
-#login_col1a
-{
-	float: left;
-	font-family : Verdana;
-	font-size: 10pt;
-	color: #566B87;
-	font-weight:bold;
-	width : 80px;
-	padding : 3px;
-}
-
-#login_col1a_pwd
-{
-	float: left;
-	font-family : Verdana;
-	font-size: 10pt;
-	color: #566B87;
-	font-weight:bold;
-	width : 80px;
-	padding : 3px;
-		
-}
-
-#login_col2
-{
-	float: left;
-	font-family : Verdana;
-	font-size: 10pt;
-	color: #566B87;
-	padding : 0px 5px;
-	width : 50px;
-}
-#login_col3
-{
-	float: left;
-	font-family : Verdana;
-	font-size: 10pt;
-	color: #566B87;
-	padding : 0px 5px;
-	width : 50px;
-}
-#login_page
-{
-	float: left;
-	width : 400px;
-}
-
-#main_page
-{
-	width : 400px;
-}
 
 #code_jsp
 {
@@ -305,7 +153,7 @@ strong.srte
    vertical-align : bottom;
    font-weight: bold;
    font-family : Verdana;
-   color: #E7BC68;
+   color: #F4F27A;
    font-size : 9pt;
    padding: 0px 0px 3px 0px;
    text-decoration: none;
