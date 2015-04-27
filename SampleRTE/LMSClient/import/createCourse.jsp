@@ -22,7 +22,7 @@
       <div class="container">
          <h2>Create an external course</h2>
          
-         <form method="post" action="/adl/LMSUserAdmin" name="newCourse" accept-charset="utf-8">
+         <form method="post" action="/adl/LMSCourseAdmin" name="newCourse" accept-charset="utf-8">
             <input type="hidden" name="type" value="<%= ServletRequestTypes.CREATE_NEW_COURSE %>" />
             <div class="form-group">
 	            <label for="courseID">Course URI</label>
@@ -35,6 +35,7 @@
             
             <button type="submit" name="submit" class="btn btn-primary">Save</button>
          </form>
+         
          
       </div>
    </body>

@@ -267,15 +267,7 @@ public class ServletRequestTypes implements Serializable
     * <br><br>[SERVLET REQUEST TYPE CONSTANT]
     */
    public static final int CHANGE_PASSWORD          =  27;
-   
-   /**
-    * Enumeration of possible Servlet Request Types.<br>
-    * <br>CHANGE_PASSWORD
-    * <br><b>27</b>
-    * <br><br>[SERVLET REQUEST TYPE CONSTANT]
-    */
-   public static final int CREATE_NEW_COURSE          =  28;
-   
+
    /**
     * Enumeration of possible Servlet Request Types.<br>
     * <br>IMPORT_MULTIPLE_COURSES
@@ -315,5 +307,9 @@ public class ServletRequestTypes implements Serializable
     * <br><br>[SERVLET REQUEST TYPE CONSTANT]
     */
    public static final int PROC_SORT_COURSE     =  33;
+   
+   public static final int CREATE_NEW_COURSE = 40;
+   public static final int UPDATE_EXT_COURSE = 41;
+   public static final int ADD_EXT_ITEM = 42;
 
 } // end ServletRequestTypes
