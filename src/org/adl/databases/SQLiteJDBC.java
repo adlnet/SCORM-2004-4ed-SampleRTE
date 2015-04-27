@@ -27,6 +27,7 @@ public class SQLiteJDBC{
             sqlStuff1.add("CREATE TABLE IF NOT EXISTS SCOComments(CommentID INTEGER PRIMARY KEY AUTOINCREMENT,ActivityID BIGINT NOT NULL,Comment LONGTEXT,CommentDateTime CHAR(50),CommentLocation LONGTEXT);");
             sqlStuff1.add("CREATE TABLE IF NOT EXISTS UserCourseInfo(UserID CHAR(50),CourseID CHAR(50),SuspendAll INTEGER CHECK(SuspendAll IN (0,1)));");
             sqlStuff1.add("CREATE TABLE IF NOT EXISTS UserInfo(UserId CHAR(50) PRIMARY KEY,LastName CHAR(50),FirstName CHAR(50),Admin INTEGER CHECK(Admin IN (0,1)),Password CHAR(102),Active INTEGER CHECK(Active IN (0,1)),AudioLevel CHAR(50),AudioCaptioning BIGINT DEFAULT 0,DeliverySpeed CHAR(50),Language CHAR(50) DEFAULT '\"\"');");
+            sqlStuff1.add("CREATE TABLE IF NOT EXISTS LRSInfo(id INTEGER PRIMARY KEY AUTOINCREMENT, UserID CHAR(50), LRSName CHAR(50), Endpoint CHAR(2047), Auth CHAR(255));");
             sqlStuff1.add("INSERT OR IGNORE INTO UserInfo VALUES ('admin', 'Admin', 'Joe', 1, '"+PasswordHash.createHash("admin")+"', 1, '1.0', 0, '1.0', '');");
             sqlStuff1.add("INSERT OR IGNORE INTO ApplicationData VALUES ('nextCourseID', '', 1);");
             for (String sql: sqlStuff1){

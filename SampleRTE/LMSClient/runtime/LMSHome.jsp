@@ -236,7 +236,6 @@ Nothing in this license impairs or restricts the author's moral rights.
                     " | " + 
                     "<a href=\"/adl/LMSCourseAdmin?type=" + ServletRequestTypes.PROC_SORT_COURSE + "&userID=" + userID + "&sortType=RE_name\">Name</a>" + 
                  "</font>" +
-                 "<br /><hr />" +
              "</td>" +
          "</tr>" + regformBody;
    }
@@ -251,7 +250,6 @@ Nothing in this license impairs or restricts the author's moral rights.
                    " | " + 
                    "<a href=\"/adl/LMSCourseAdmin?type=" + ServletRequestTypes.PROC_SORT_COURSE + "&userID=" + userID + "&sortType=UN_name\">Name</a>" + 
                 "</font>" +
-                "<br /><hr />" +
              "</td>" +
          "</tr>" + unregformBody;
    }
@@ -652,7 +650,12 @@ function doRefresh()
           <b><font size='3'>Administrative Options</font></b><font size='1'>&nbsp;<a href="javascript:showHideAdminTable()">Show/Hide</a>&nbsp;</font>
        </div>
        <table class="table" id="adminOptionsTable" width="700" class="sep" border="0" style="<%=adminTableDisplayVal %>">
-
+          
+          <tr>
+             <td width="250" colspan=3>
+                <a href="/adl/import/createCourse.jsp">Create Course</a>
+             </td>
+          </tr>  
           <tr>
              <td width="250">
                 <a href="/adl/import/importCourse.jsp">Import Course</a>

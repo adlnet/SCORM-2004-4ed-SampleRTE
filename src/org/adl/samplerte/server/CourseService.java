@@ -27,8 +27,8 @@ Nothing in this license impairs or restricts the author's moral rights.
 package org.adl.samplerte.server;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -51,7 +51,6 @@ import org.adl.sequencer.ADLSeqUtilities;
 import org.adl.sequencer.SeqActivityTree;
 import org.adl.util.decode.decodeHandler;
 import org.adl.validator.util.ResultCollection;
-
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUpload;
@@ -656,7 +655,7 @@ public class CourseService
 
          RTEFileHandler fileHandler = new RTEFileHandler();
 
-         String regTestString = "UN_Course-";
+         String regTestString = "UN_";
 
          // Process the list of parameters and register for the course if applicable
          
@@ -665,7 +664,7 @@ public class CourseService
             String paramName = (String)iCourseIDs.elementAt(i);
                        
             // This is an Unregister request, put this in the unregister list
-            if ( paramName.indexOf("RE_Course-") != -1 )
+            if ( paramName.indexOf("RE_") != -1 )
             {
                unregisterCourses.add(paramName.substring(3, paramName.length()));
             }
@@ -702,45 +701,64 @@ public class CourseService
                   }
 
                   String tree = iPath + "CourseImports" + File.separator + courseID + File.separator + "serialize.obj";
-                  FileInputStream in = new FileInputStream(tree);
-                  ObjectInputStream ie = new ObjectInputStream(in);
-                  mySeqActivityTree = (SeqActivityTree)ie.readObject();
-                  ie.close();
-                  in.close();
-                  // Set the student ID
-                  mySeqActivityTree.setLearnerID(mUserID);
-
-                  String scope = mySeqActivityTree.getScopeID();
-
-                  // Get any global objectives identified in the manifest
-                  // from the activity tree.
-                  Vector theGobalObjectiveList = mySeqActivityTree.getGlobalObjectives();
-
-                  if( theGobalObjectiveList != null )
-                  {
-                     ADLSeqUtilities.createGlobalObjs(mUserID, scope, theGobalObjectiveList);
+                  FileInputStream in = null;
+                  ObjectInputStream ie = null;
+                  boolean process_serialize = true;
+                  try {
+                     in = new FileInputStream(tree);
+                     ie = new ObjectInputStream(in);
+                     
                   }
-                  String userDir = System.getProperty("user.home") + File.separator + SRTEFILESDIR + File.separator + mUserID + File.separator
-                     + courseID;
-                  File theRTESCODataDir = new File(userDir);
-
-                  // The course directory should not exist yet
-                  if( !theRTESCODataDir.isDirectory() )
-                  {
-                     theRTESCODataDir.mkdirs();
+                  catch (FileNotFoundException fnfe) {
+                     process_serialize = false;
+                     try {
+                        ie.close();
+                     } catch (Exception e) {}
+                     try {
+                        in.close();
+                     } catch (Exception e) {}
                   }
-
-                  //Serialize the activity tree out to the user directory
-                  String sampleRTERoot = System.getProperty("user.home") + File.separator + SRTEFILESDIR;
-
-                  String serializeFileName =  sampleRTERoot + File.separator + mUserID + File.separator + courseID
-                     + File.separator + "serialize.obj";
-                  FileOutputStream outFile = new FileOutputStream(serializeFileName);
-                  ObjectOutputStream s = new ObjectOutputStream(outFile);
-                  s.writeObject(mySeqActivityTree);
-                  s.flush();
-                  s.close();
-                  outFile.close();
+                  
+                  if (process_serialize)
+                  {
+                     mySeqActivityTree = (SeqActivityTree)ie.readObject();
+                     ie.close();
+                     in.close();
+                     // Set the student ID
+                     mySeqActivityTree.setLearnerID(mUserID);
+   
+                     String scope = mySeqActivityTree.getScopeID();
+   
+                     // Get any global objectives identified in the manifest
+                     // from the activity tree.
+                     Vector theGobalObjectiveList = mySeqActivityTree.getGlobalObjectives();
+   
+                     if( theGobalObjectiveList != null )
+                     {
+                        ADLSeqUtilities.createGlobalObjs(mUserID, scope, theGobalObjectiveList);
+                     }
+                     String userDir = System.getProperty("user.home") + File.separator + SRTEFILESDIR + File.separator + mUserID + File.separator
+                        + courseID;
+                     File theRTESCODataDir = new File(userDir);
+   
+                     // The course directory should not exist yet
+                     if( !theRTESCODataDir.isDirectory() )
+                     {
+                        theRTESCODataDir.mkdirs();
+                     }
+   
+                     //Serialize the activity tree out to the user directory
+                     String sampleRTERoot = System.getProperty("user.home") + File.separator + SRTEFILESDIR;
+   
+                     String serializeFileName =  sampleRTERoot + File.separator + mUserID + File.separator + courseID
+                        + File.separator + "serialize.obj";
+                     FileOutputStream outFile = new FileOutputStream(serializeFileName);
+                     ObjectOutputStream s = new ObjectOutputStream(outFile);
+                     s.writeObject(mySeqActivityTree);
+                     s.flush();
+                     s.close();
+                     outFile.close();
+                  }
 
                   userCourseRS.close();
                }
