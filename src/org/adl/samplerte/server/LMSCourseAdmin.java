@@ -748,38 +748,33 @@ public class LMSCourseAdmin extends HttpServlet
             break;
     
          case ServletRequestTypes.CREATE_NEW_COURSE:
-            String c_courseID = iRequest.getParameter("courseID");
-            String c_courseTitle = iRequest.getParameter("courseTitle");
             courseService = new CourseService();
-            System.out.println("course id: " + c_courseID + "\ncourse title: " + c_courseTitle);
-//            iRequest.setAttribute("objs", objectives);
+            iRequest.setAttribute("coursedata", courseService.createCourse(iRequest.getParameter("courseID"), iRequest.getParameter("courseTitle")));
             launchView(EDIT_EXT_COURSE, iRequest, oResponse);
             
             break;
          
          case ServletRequestTypes.UPDATE_EXT_COURSE:
-            String u_courseID = iRequest.getParameter("courseID");
-            String u_courseTitle = iRequest.getParameter("courseTitle");
             courseService = new CourseService();
-            System.out.println("course id: " + u_courseID + "\ncourse title: " + u_courseTitle);
-//            iRequest.setAttribute("objs", objectives);
+            iRequest.setAttribute("coursedata", courseService.updateCourse(iRequest.getParameter("courseID"),iRequest.getParameter("courseTitle")));
             launchView(EDIT_EXT_COURSE, iRequest, oResponse);
             
             break;
             
          case ServletRequestTypes.ADD_EXT_ITEM:
-            String a_courseID = iRequest.getParameter("courseID");
-            String a_courseTitle = iRequest.getParameter("courseTitle");
-            String a_itemID = iRequest.getParameter("itemID");
-            String a_itemTitle = iRequest.getParameter("itemTitle");
-            String a_itemLaunch = iRequest.getParameter("itemLaunch");
-            Map<Integer, ItemData> items = new HashMap<Integer, ItemData>();
-            items.put(0, new ItemData(0, a_itemID, a_itemTitle, a_itemLaunch));
-            iRequest.setAttribute("course_items", items);
             courseService = new CourseService();
-            System.out.println("Add ext item:\ncourse id: " + a_courseID + "\ncourse title: " + a_courseTitle);
+            iRequest.setAttribute("coursedata", 
+                  courseService.addCourseItem(iRequest.getParameter("courseID"), 
+                        iRequest.getParameter("itemID"), iRequest.getParameter("itemTitle"), iRequest.getParameter("itemLaunch")));
             launchView(EDIT_EXT_COURSE, iRequest, oResponse);
             
+            break;
+            
+         case ServletRequestTypes.UPDATE_EXT_ITEM:
+            courseService = new CourseService();
+            iRequest.setAttribute("coursedata", courseService.updateCourseItem(iRequest.getParameter("courseID"), 
+                        iRequest.getParameter("itemID"), iRequest.getParameter("itemTitle"), iRequest.getParameter("itemLaunch")));
+            launchView(EDIT_EXT_COURSE, iRequest, oResponse);
             break;
             
          default:

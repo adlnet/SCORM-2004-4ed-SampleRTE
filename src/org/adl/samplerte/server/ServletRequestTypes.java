@@ -311,5 +311,6 @@ public class ServletRequestTypes implements Serializable
    public static final int CREATE_NEW_COURSE = 40;
    public static final int UPDATE_EXT_COURSE = 41;
    public static final int ADD_EXT_ITEM = 42;
+   public static final int UPDATE_EXT_ITEM = 43;
 
 } // end ServletRequestTypes

@@ -1642,4 +1642,186 @@ public class CourseService
 
       return validationResults;
    }
+   
+   public CourseData createCourse(String courseID, String courseTitle)
+   {
+      CourseData cd = new CourseData();
+      cd.mCourseID = courseID;
+      cd.mCourseTitle = courseTitle;
+      cd.mImportDateTime = DateFormat.getDateTimeInstance().format(new Date());
+
+      try 
+      {
+         updateCourse(cd, false);
+      }
+      catch (SQLException sqle)
+      {
+         return new CourseData(); // dunno what happened, give em a blank one
+      }
+      return cd;
+   }
+
+   public CourseData updateCourse(String courseID, String courseTitle) {
+      try {
+         updateCourse(new CourseData(courseID, courseTitle), true);
+      } catch (SQLException e) {
+         return new CourseData();
+      }
+      
+      return getCourseData(courseID);
+   }
+
+   public CourseData addCourseItem(String courseID, String itemID,
+         String itemTitle, String itemLaunch) {
+      List<ItemData> items = getItems(courseID);
+      
+      Connection conn = LMSDatabaseHandler.getConnection();
+      PreparedStatement stmtItemInfo = null;
+      try {
+         stmtItemInfo = conn.prepareStatement("Insert into ItemInfo(CourseID, ItemIdentifier, Title, Launch, Order) values(?,?,?,?,?)");
+         stmtItemInfo.setString(1, courseID);
+         stmtItemInfo.setString(2, itemID);
+         stmtItemInfo.setString(3, itemTitle);
+         stmtItemInfo.setString(4, itemLaunch);
+         stmtItemInfo.setInt(5, items.size());
+         
+         synchronized (stmtItemInfo) {
+            stmtItemInfo.execute();
+         }
+      } catch (SQLException se) {
+         return new CourseData();
+      } finally {
+         try {
+            if (stmtItemInfo != null) stmtItemInfo.close();
+         } catch (SQLException sse) {}
+      }
+      
+      return getCourseData(courseID);
+   }
+   
+   public CourseData updateCourseItem(String courseID, String itemID,
+         String itemTitle, String itemLaunch) {
+      Connection conn = LMSDatabaseHandler.getConnection();
+      PreparedStatement stmtItemInfo = null;
+      try {
+         stmtItemInfo = conn.prepareStatement("Update ItemInfo "
+                                          + "set ItemIdentifier = ?, Title = ?, Launch = ? "
+                                          + "where CourseID = ?");
+         stmtItemInfo.setString(1, itemID);
+         stmtItemInfo.setString(2, itemTitle);
+         stmtItemInfo.setString(3, itemLaunch);
+         stmtItemInfo.setString(4, courseID);
+         
+         synchronized (stmtItemInfo) {
+            stmtItemInfo.execute();
+         }
+      }  catch (SQLException se) {
+         return new CourseData();
+      } finally {
+         try {
+            if (stmtItemInfo != null) stmtItemInfo.close();
+         } catch (SQLException sse) {}
+      }
+      return getCourseData(courseID);
+   }
+
+   private CourseData getCourseData(String courseID) {
+      CourseData cd = new CourseData();
+      cd.mCourseID = courseID;
+      setCourseData(cd);
+      cd.items = getItems(cd.mCourseID);
+      return cd;
+   }
+
+   private void setCourseData(CourseData cd) {
+      Connection conn = LMSDatabaseHandler.getConnection();
+      PreparedStatement stmtCourseInfo = null;
+      ResultSet course = null;
+      try {
+         stmtCourseInfo = conn.prepareStatement("select * from CourseInfo where CourseID = ?");
+         stmtCourseInfo.setString(1, cd.mCourseID);
+         synchronized (stmtCourseInfo) {
+            course = stmtCourseInfo.executeQuery();
+         }
+         
+         if (course.next())
+         {
+            cd.mCourseTitle = course.getString("CourseTitle");
+            cd.mImportDateTime = course.getString("ImportDateTime");
+            cd.mStart = course.getBoolean("Start");
+            cd.mTOC = course.getBoolean("TOC");
+         }
+         
+      } catch (SQLException se) {
+         
+      } finally { 
+         try {
+            if (course != null) course.close();
+            if (stmtCourseInfo != null) stmtCourseInfo.close();
+         } catch (SQLException sse) {}
+      }
+   }
+   
+   private List<ItemData> getItems(String courseid) {
+      Connection conn = LMSDatabaseHandler.getConnection();
+      PreparedStatement stmtItemInfo = null;
+      ResultSet items = null;
+      List<ItemData> data = new ArrayList<ItemData>();
+      try {
+         stmtItemInfo = conn.prepareStatement("select * from ItemInfo where CourseID = ? order by ItemOrder ASC");
+         stmtItemInfo.setString(1, courseid);
+         synchronized (stmtItemInfo) {
+            items = stmtItemInfo.executeQuery();
+         }
+         
+         while (items.next())
+         {
+            data.add(new ItemData(items.getInt("ActivityID"), items.getString("ItemIdentifier"), 
+                  items.getString("Title"), items.getString("Launch")));
+         }
+         
+      } catch (SQLException se) {
+         
+      } finally { 
+         try {
+            if (stmtItemInfo != null)
+               stmtItemInfo.close();
+         } catch (SQLException sse) {}
+      }
+      return data;
+   }
+   
+   private void updateCourse(CourseData cd, boolean update) throws SQLException
+   {
+      Connection conn = LMSDatabaseHandler.getConnection();
+      PreparedStatement stmtCourseInfo;
+      if (update) 
+      {
+         stmtCourseInfo = conn.prepareStatement("Update CourseInfo " + 
+                  "set CourseTitle = ? " +
+                  "where CourseID = ?");
+         stmtCourseInfo.setString(1, cd.mCourseTitle);
+         stmtCourseInfo.setString(2, cd.mImportDateTime);
+         stmtCourseInfo.setInt(3, (cd.mStart)?1:0);
+         stmtCourseInfo.setInt(4, (cd.mTOC)?1:0);
+      }
+      else //insert
+      {
+         stmtCourseInfo = conn.prepareStatement("Insert into "
+               + "CourseInfo(CourseID, CourseTitle, ImportDateTime, Active, Start, TOC) "
+               + "values(?,?,?,?,?,?)");
+         stmtCourseInfo.setString(1, cd.mCourseID);
+         stmtCourseInfo.setString(2, cd.mCourseTitle);
+         stmtCourseInfo.setString(3, cd.mImportDateTime);
+         stmtCourseInfo.setInt(4, (cd.mStart)?1:0);
+         stmtCourseInfo.setInt(5, (cd.mTOC)?1:0);
+      }
+      
+      synchronized (stmtCourseInfo) {
+         stmtCourseInfo.execute();
+      }
+      
+      stmtCourseInfo.close();
+   }
+
 }
