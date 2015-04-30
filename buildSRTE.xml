@@ -111,6 +111,7 @@
                 <include name="joda-time-1.1.jar" />
                 <include name="xalan.jar" />
 				<include name="gson-2.3.1.jar" />
+				<include name="xapi-0.1.2" />
             </fileset>
         </copy>
          <!--start add for java file upload -->
@@ -125,6 +126,7 @@
 		        <include name="xalan.jar" />
                 <include name="sqlite-jdbc-3.7.2.jar" />
 				<include name="gson-2.3.1.jar" />
+				<include name="xapi-0.1.2" />
             </fileset>
         </copy>
         <!--end add for java file upload -->
