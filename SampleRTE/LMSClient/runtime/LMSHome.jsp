@@ -117,16 +117,29 @@ Nothing in this license impairs or restricts the author's moral rights.
       String status = "";
       
       String checked = "";
-
-      String startCourse = (start) ? "<a href='runtime/sequencingEngine.jsp?courseID="
-            + courseID + "&courseTitle=" + courseTitle +"'>Start Course</a>" : "Start Course";
-            
-	  startCourse = (resume) ? "<a href='runtime/sequencingEngine.jsp?courseID="
-            + courseID + "&courseTitle=" + courseTitle +"'>Resume Course</a>" : startCourse;           
-            
-	  String toc = (TOC) ? "<a href='runtime/sequencingEngine.jsp?courseID="
-            + courseID + "&courseTitle=" + courseTitle + "&viewTOC=true" +"'>View Table Of Contents</a>" : "View Table Of Contents";
-
+      
+      String launch = "";
+      
+      if (!start && !resume && !TOC)
+      {
+         launch = "<td colspan='2' align='center'>" + 
+		               "<br/>" + "<a href='LMSCourseAdmin?type=44&courseID=" + courseID + "'>View Details</a>" +
+		            "</td>";
+      }
+      else
+      {
+	      String startCourse = (start) ? "<a href='runtime/sequencingEngine.jsp?courseID="
+	            + courseID + "&courseTitle=" + courseTitle +"'>Start Course</a>" : "Start Course";
+	            
+		  startCourse = (resume) ? "<a href='runtime/sequencingEngine.jsp?courseID="
+	            + courseID + "&courseTitle=" + courseTitle +"'>Resume Course</a>" : startCourse;           
+	            
+		  String toc = (TOC) ? "<a href='runtime/sequencingEngine.jsp?courseID="
+	            + courseID + "&courseTitle=" + courseTitle + "&viewTOC=true" +"'>View Table Of Contents</a>" : "View Table Of Contents";
+	     launch = "<td colspan='2' align='center'>" + 
+		              "<br/>" + startCourse + "&nbsp;&nbsp;|&nbsp;&nbsp;" + toc +  
+		           "</td>";
+      }
 	  // Registered Courses      
       if(registered)
       {
@@ -141,9 +154,7 @@ Nothing in this license impairs or restricts the author's moral rights.
          			"<b><label for='" + courseID+ "'>" + courseTitle + "</label></b>" +
          			"<br/>Imported On: " + importDateTime +         			
          		"</td>" +         	 
-         		"<td colspan='2' align='center'>" + 
-         			"<br/>" + startCourse + "&nbsp;&nbsp;|&nbsp;&nbsp;" + toc +  
-      			"</td>" +
+         		launch +
          	"</tr>" +
          	"<tr bgcolor='" + regColor + "'>" + 
 	         	"<td>&nbsp;</td>" +

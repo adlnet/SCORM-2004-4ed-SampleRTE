@@ -749,32 +749,49 @@ public class LMSCourseAdmin extends HttpServlet
     
          case ServletRequestTypes.CREATE_NEW_COURSE:
             courseService = new CourseService();
-            iRequest.setAttribute("coursedata", courseService.createCourse(iRequest.getParameter("courseID"), iRequest.getParameter("courseTitle")));
-            launchView(EDIT_EXT_COURSE, iRequest, oResponse);
-            
+            cd = courseService.createCourse(iRequest.getParameter("courseID"), iRequest.getParameter("courseTitle"));
+            if (cd == null) {
+               launchView("/import/createCourse.jsp", iRequest, oResponse);
+            } else {
+               iRequest.setAttribute("coursedata", cd);
+               launchView(EDIT_EXT_COURSE, iRequest, oResponse);
+            }          
             break;
          
          case ServletRequestTypes.UPDATE_EXT_COURSE:
             courseService = new CourseService();
-            iRequest.setAttribute("coursedata", courseService.updateCourse(iRequest.getParameter("courseID"),iRequest.getParameter("courseTitle")));
+            cd = courseService.updateCourse(iRequest.getParameter("courseID"),iRequest.getParameter("courseTitle"));
+            
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
             launchView(EDIT_EXT_COURSE, iRequest, oResponse);
             
             break;
             
          case ServletRequestTypes.ADD_EXT_ITEM:
             courseService = new CourseService();
-            iRequest.setAttribute("coursedata", 
-                  courseService.addCourseItem(iRequest.getParameter("courseID"), 
-                        iRequest.getParameter("itemID"), iRequest.getParameter("itemTitle"), iRequest.getParameter("itemLaunch")));
+            cd = courseService.addCourseItem(iRequest.getParameter("courseID"), 
+                  iRequest.getParameter("itemID"), iRequest.getParameter("itemTitle"), iRequest.getParameter("itemLaunch"));
+            
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
             launchView(EDIT_EXT_COURSE, iRequest, oResponse);
             
             break;
             
          case ServletRequestTypes.UPDATE_EXT_ITEM:
             courseService = new CourseService();
-            iRequest.setAttribute("coursedata", courseService.updateCourseItem(iRequest.getParameter("courseID"), 
-                        iRequest.getParameter("itemID"), iRequest.getParameter("itemTitle"), iRequest.getParameter("itemLaunch")));
+            cd = courseService.updateCourseItem(iRequest.getParameter("courseID"), 
+                  iRequest.getParameter("itemID"), iRequest.getParameter("itemTitle"), iRequest.getParameter("itemLaunch"));
+            
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
             launchView(EDIT_EXT_COURSE, iRequest, oResponse);
+            break;
+            
+         case ServletRequestTypes.EXT_COURSE_DETAILS:
+            courseService = new CourseService();
+            cd = courseService.getCourseData(iRequest.getParameter("courseID"));
+            
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
+            launchView(VIEW_EXT_COURSE, iRequest, oResponse);
             break;
             
          default:

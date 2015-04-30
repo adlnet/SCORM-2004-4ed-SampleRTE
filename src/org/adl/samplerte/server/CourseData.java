@@ -136,7 +136,11 @@ public class CourseData
       mCourseID = courseID;
       mCourseTitle = courseTitle;
    }
-
+   
+   public String toString() 
+   {
+      return mCourseID + ": " + mCourseTitle;
+   }
 }
 
 

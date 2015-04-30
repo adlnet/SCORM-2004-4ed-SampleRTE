@@ -526,16 +526,16 @@ public class CourseService
          stmtUpdateCourse = conn.prepareStatement(sqlUpdateCourse);
          for( int i = 0; i < iCourses.size(); i++ )
          {
-        	courseID = (String) iCourses.elementAt(i);
-        	if (courseID.startsWith("RE_") || (courseID.startsWith("UN_")))
-        	{
-        		courseID = courseID.substring(3, courseID.length());
-        		synchronized (stmtUpdateCourse)
-                {                  
-                   stmtUpdateCourse.setString(1, courseID);
-                   stmtUpdateCourse.executeUpdate();
-                }
-        	}
+           	courseID = (String) iCourses.elementAt(i);
+           	if (courseID.startsWith("RE_") || (courseID.startsWith("UN_")))
+           	{
+           		courseID = courseID.substring(3, courseID.length());
+           		synchronized (stmtUpdateCourse)
+                   {                  
+                      stmtUpdateCourse.setString(1, courseID);
+                      stmtUpdateCourse.executeUpdate();
+                   }
+           	}
          }
          stmtUpdateCourse.close();
          conn.close();
@@ -619,6 +619,8 @@ public class CourseService
       PreparedStatement stmtDeleteUserCourse;
       PreparedStatement stmtDeleteCourseStatus;
       PreparedStatement stmtDeleteCourseObjectives;
+      PreparedStatement stmtInsertItemStatus;
+      PreparedStatement stmtDeleteItemStatus;
 
       String sqlSelectUserCourse = "SELECT * FROM UserCourseInfo WHERE UserID = ? AND CourseID = ?";
 
@@ -631,19 +633,25 @@ public class CourseService
       String sqlInsertCourseStatus = "INSERT INTO CourseStatus (learnerID, courseID) VALUES(?,?)";
 
       String sqlDeleteCourseStatus = "DELETE FROM CourseStatus WHERE learnerID = ? AND courseID = ?";
+      
+      String sqlInsertItemStatus = "INSERT INTO ItemStatus (learnerID, courseID, activityID) VALUES(?,?,?)";
+
+      String sqlDeleteItemStatus = "DELETE FROM ItemStatus WHERE learnerID = ? AND courseID = ?";
 
       String sqlDeleteCourseObjectives = "DELETE FROM Objectives WHERE learnerID = ? AND scopeID = ?";
       
       try
       {
          conn = LMSDatabaseHandler.getConnection();
-         csConn = LMSDBHandler.getConnection();
+         csConn = LMSDatabaseHandler.getConnection(LMSDatabaseHandler.GLOBAL_OBJECTIVES);
          stmtSelectCourse = conn.prepareStatement(sqlSelectCourse);
          stmtSelectUserCourse = conn.prepareStatement(sqlSelectUserCourse);
          stmtInsertUserCourse = conn.prepareStatement(sqlInsertUserCourse);
          stmtDeleteUserCourse = conn.prepareStatement(sqlDeleteUserCourse);
          stmtInsertCourseStatus = csConn.prepareStatement(sqlInsertCourseStatus);
          stmtDeleteCourseStatus = csConn.prepareStatement(sqlDeleteCourseStatus);
+         stmtInsertItemStatus = csConn.prepareStatement(sqlInsertItemStatus);
+         stmtDeleteItemStatus = csConn.prepareStatement(sqlDeleteItemStatus);
          
          stmtDeleteCourseObjectives = csConn.prepareStatement(sqlDeleteCourseObjectives);
          SeqActivityTree mySeqActivityTree;
@@ -698,6 +706,21 @@ public class CourseService
                      stmtInsertCourseStatus.setString(1, mUserID);
                      stmtInsertCourseStatus.setString(2, courseID);
                      stmtInsertCourseStatus.executeUpdate();
+                  }
+                  
+                  // see if this is a fake course... if so we need to create item stati
+                  synchronized( stmtInsertItemStatus )
+                  {
+                     CourseData cd = getCourseData(courseID);
+                     if (! cd.mTOC && ! cd.mStart)
+                     {
+                        for (ItemData id : cd.items) {
+                           stmtInsertItemStatus.setString(1, mUserID);
+                           stmtInsertItemStatus.setString(2, courseID);
+                           stmtInsertItemStatus.setInt(3, id.activityID);
+                           stmtInsertItemStatus.executeUpdate();
+                        }
+                     }
                   }
 
                   String tree = iPath + "CourseImports" + File.separator + courseID + File.separator + "serialize.obj";
@@ -799,6 +822,11 @@ public class CourseService
                   stmtDeleteCourseStatus.setString(1, mUserID);
                   stmtDeleteCourseStatus.setString(2, courseID);
                   stmtDeleteCourseStatus.executeUpdate();
+                  
+                  // remove item status if any existed (should work)
+                  stmtDeleteItemStatus.setString(1, mUserID);
+                  stmtDeleteItemStatus.setString(2, courseID);
+                  stmtDeleteItemStatus.executeUpdate();
                }
                fileHandler.deleteCourseFiles(courseID, mUserID);
             }
@@ -808,9 +836,11 @@ public class CourseService
          stmtInsertUserCourse.close();
          stmtDeleteUserCourse.close();
          stmtInsertCourseStatus.close();
+         stmtInsertItemStatus.close();
+         stmtDeleteItemStatus.close();
          stmtDeleteCourseStatus.close();
          conn.close();
-         LMSDBHandler.closeConnection();
+         csConn.close();
       }
       catch( Exception e )
       {
@@ -1013,6 +1043,8 @@ public class CourseService
          stmtDeleteCourseInfo = conn.prepareStatement(sqlDeleteCourseInfo);
          stmtUpdateApplicationData = conn.prepareStatement(sqlUpdateApplicationData);
 
+         
+         
          RTEFileHandler fileHandler = new RTEFileHandler();
 
          ResultSet userRS = null;
@@ -1043,6 +1075,7 @@ public class CourseService
          {
             File mRTESCODataDir = new File(mCourseDir + File.separator + courseListRS.getString("CourseID"));
             File mScoFiles[] = mRTESCODataDir.listFiles();
+            if (mScoFiles == null) continue;
 
             for( int i = 0; i < mScoFiles.length; i++ )
             {
@@ -1055,10 +1088,16 @@ public class CourseService
          // and to update the ApplicationData table.
          stmtDeleteCourseInfo.executeUpdate();
          stmtUpdateApplicationData.executeUpdate();
+         PreparedStatement delItemInfo = conn.prepareStatement("delete from ItemInfo");
+         delItemInfo.executeUpdate();
+         PreparedStatement delUserCourseInfo = conn.prepareStatement("delete from UserCourseInfo");
+         delUserCourseInfo.executeUpdate();
 
          // Close the statement and the database connection.
          stmtDeleteCourseInfo.close();
          stmtUpdateApplicationData.close();
+         delItemInfo.close();
+         delUserCourseInfo.close();
          conn.close();
 
          // Delete global objectives
@@ -1069,6 +1108,9 @@ public class CourseService
          stmtDeleteStatus = objConn.prepareStatement(sqlDeleteCourseStatus);
          stmtDeleteStatus.executeUpdate();
          stmtDeleteStatus.close();
+         PreparedStatement delItemStatus = objConn.prepareStatement("delete from ItemStatus");
+         delItemStatus.executeUpdate();
+         delItemStatus.close();
          LMSDBHandler.closeConnection();
       }
       catch( SQLException e )
@@ -1650,35 +1692,31 @@ public class CourseService
       cd.mCourseTitle = courseTitle;
       cd.mImportDateTime = DateFormat.getDateTimeInstance().format(new Date());
 
-      try 
-      {
-         updateCourse(cd, false);
+      if (! updateCourse(cd, false)){
+         return null; // dunno what happened, give em null
       }
-      catch (SQLException sqle)
-      {
-         return new CourseData(); // dunno what happened, give em a blank one
-      }
+
       return cd;
    }
 
-   public CourseData updateCourse(String courseID, String courseTitle) {
-      try {
-         updateCourse(new CourseData(courseID, courseTitle), true);
-      } catch (SQLException e) {
-         return new CourseData();
+   public CourseData updateCourse(String courseID, String courseTitle) 
+   {
+      if (! updateCourse(new CourseData(courseID, courseTitle), true)) {
+         return null;
       }
       
       return getCourseData(courseID);
    }
 
-   public CourseData addCourseItem(String courseID, String itemID,
-         String itemTitle, String itemLaunch) {
+   public CourseData addCourseItem(String courseID, String itemID, String itemTitle, String itemLaunch) 
+   {
       List<ItemData> items = getItems(courseID);
       
       Connection conn = LMSDatabaseHandler.getConnection();
       PreparedStatement stmtItemInfo = null;
+      boolean fail = false;
       try {
-         stmtItemInfo = conn.prepareStatement("Insert into ItemInfo(CourseID, ItemIdentifier, Title, Launch, Order) values(?,?,?,?,?)");
+         stmtItemInfo = conn.prepareStatement("Insert into ItemInfo(CourseID, ItemIdentifier, Title, Launch, ItemOrder) values(?,?,?,?,?)");
          stmtItemInfo.setString(1, courseID);
          stmtItemInfo.setString(2, itemID);
          stmtItemInfo.setString(3, itemTitle);
@@ -1689,20 +1727,22 @@ public class CourseService
             stmtItemInfo.execute();
          }
       } catch (SQLException se) {
-         return new CourseData();
+         fail = true;
       } finally {
          try {
             if (stmtItemInfo != null) stmtItemInfo.close();
+            if (conn != null) conn.close();
          } catch (SQLException sse) {}
       }
-      
+      if (fail) return null;
       return getCourseData(courseID);
    }
    
-   public CourseData updateCourseItem(String courseID, String itemID,
-         String itemTitle, String itemLaunch) {
+   public CourseData updateCourseItem(String courseID, String itemID, String itemTitle, String itemLaunch) 
+   {
       Connection conn = LMSDatabaseHandler.getConnection();
       PreparedStatement stmtItemInfo = null;
+      boolean fail = false;
       try {
          stmtItemInfo = conn.prepareStatement("Update ItemInfo "
                                           + "set ItemIdentifier = ?, Title = ?, Launch = ? "
@@ -1711,41 +1751,116 @@ public class CourseService
          stmtItemInfo.setString(2, itemTitle);
          stmtItemInfo.setString(3, itemLaunch);
          stmtItemInfo.setString(4, courseID);
-         
+
          synchronized (stmtItemInfo) {
             stmtItemInfo.execute();
          }
       }  catch (SQLException se) {
-         return new CourseData();
+         fail = true;
       } finally {
          try {
             if (stmtItemInfo != null) stmtItemInfo.close();
+            if (conn != null) conn.close();
          } catch (SQLException sse) {}
       }
+
+      if (fail) return null;
       return getCourseData(courseID);
    }
 
-   private CourseData getCourseData(String courseID) {
-      CourseData cd = new CourseData();
-      cd.mCourseID = courseID;
-      setCourseData(cd);
-      cd.items = getItems(cd.mCourseID);
+   public CourseData getCourseData(String courseID) 
+   {
+      CourseData cd = getCourseInfo(courseID);
+      if (cd != null)
+         cd.items = getItems(cd.mCourseID);
+      return cd;
+   }
+   
+   public CourseData getCourseData(String courseID, String userID)
+   {
+      CourseData cd = getCourseData(courseID);
+      Connection objconn = LMSDatabaseHandler.getConnection(LMSDatabaseHandler.GLOBAL_OBJECTIVES);
+      PreparedStatement stmtCourseStatus = null;
+      ResultSet cstatus = null;
+      PreparedStatement stmtItemStatus = null;
+      ResultSet status = null;
+      try {
+         stmtCourseStatus = objconn.prepareStatement("select * from CourseStatus where learnerID = ? and courseID = ?");
+         stmtCourseStatus.setString(1, userID);
+         stmtCourseStatus.setString(2, courseID);
+         
+         synchronized (stmtCourseStatus) {
+            cstatus = stmtCourseStatus.executeQuery();
+         }
+         
+         if (cstatus.next())
+         {
+            cd.mCompleted = cstatus.getString("completed");
+            cd.mSatisfied = cstatus.getString("satisfied");
+            cd.mMeasure = cstatus.getString("measure");
+            cd.mProgMeasure = cstatus.getString("progmeasure");
+         }
+      } catch (SQLException se) {
+         
+      } finally { 
+         try {
+            if (stmtCourseStatus != null) stmtCourseStatus.close();
+         } catch (SQLException sse) {}
+      }
+      
+      try {
+         for (ItemData id : cd.items)
+         {
+            stmtItemStatus = objconn.prepareStatement("select * from ItemStatus where learnerID = ? AND courseID = ? AND activityID = ?");
+            stmtItemStatus.setString(1, userID);
+            stmtItemStatus.setString(2, courseID);
+            stmtItemStatus.setInt(3, cd.activityID);
+   
+            synchronized (stmtItemStatus) {
+               status = stmtItemStatus.executeQuery();
+            }
+   
+            if (status.next())
+            {
+               id.success = status.getBoolean("success");
+               id.completion = status.getBoolean("completion");
+               id.scaled = status.getFloat("scaled");
+               id.raw = status.getFloat("raw");
+               id.max = status.getFloat("max");
+               id.min = status.getFloat("min");
+               id.response = status.getString("response");
+               id.duration = status.getString("duration");
+            }
+            
+         }
+      } catch (SQLException se) {
+         
+      } finally { 
+         try {
+            if (stmtCourseStatus != null) stmtCourseStatus.close();
+            if (stmtItemStatus != null) stmtItemStatus.close();
+            if (objconn != null) objconn.close();
+         } catch (SQLException sse) {}
+      }
       return cd;
    }
 
-   private void setCourseData(CourseData cd) {
+   private CourseData getCourseInfo(String courseID) 
+   {
       Connection conn = LMSDatabaseHandler.getConnection();
+      CourseData cd = new CourseData();
       PreparedStatement stmtCourseInfo = null;
       ResultSet course = null;
       try {
          stmtCourseInfo = conn.prepareStatement("select * from CourseInfo where CourseID = ?");
-         stmtCourseInfo.setString(1, cd.mCourseID);
+         stmtCourseInfo.setString(1, courseID);
          synchronized (stmtCourseInfo) {
             course = stmtCourseInfo.executeQuery();
          }
          
          if (course.next())
          {
+            cd.mCourseID = course.getString("CourseID");;
             cd.mCourseTitle = course.getString("CourseTitle");
             cd.mImportDateTime = course.getString("ImportDateTime");
             cd.mStart = course.getBoolean("Start");
@@ -1753,27 +1868,32 @@ public class CourseService
          }
          
       } catch (SQLException se) {
-         
+         cd = null;
       } finally { 
          try {
-            if (course != null) course.close();
             if (stmtCourseInfo != null) stmtCourseInfo.close();
+            if (conn != null) conn.close();
          } catch (SQLException sse) {}
       }
+
+      return cd;
    }
    
-   private List<ItemData> getItems(String courseid) {
+   private List<ItemData> getItems(String courseid) 
+   {
       Connection conn = LMSDatabaseHandler.getConnection();
+      Connection otherconn = LMSDBHandler.getConnection();
       PreparedStatement stmtItemInfo = null;
       ResultSet items = null;
       List<ItemData> data = new ArrayList<ItemData>();
       try {
          stmtItemInfo = conn.prepareStatement("select * from ItemInfo where CourseID = ? order by ItemOrder ASC");
          stmtItemInfo.setString(1, courseid);
+
          synchronized (stmtItemInfo) {
             items = stmtItemInfo.executeQuery();
          }
-         
+
          while (items.next())
          {
             data.add(new ItemData(items.getInt("ActivityID"), items.getString("ItemIdentifier"), 
@@ -1784,44 +1904,55 @@ public class CourseService
          
       } finally { 
          try {
-            if (stmtItemInfo != null)
-               stmtItemInfo.close();
+            if (stmtItemInfo != null) stmtItemInfo.close();
+            if (conn != null) conn.close();
+            if (otherconn != null) LMSDBHandler.closeConnection(); //so weird
          } catch (SQLException sse) {}
       }
+
       return data;
    }
    
-   private void updateCourse(CourseData cd, boolean update) throws SQLException
+   private boolean updateCourse(CourseData cd, boolean update)
    {
       Connection conn = LMSDatabaseHandler.getConnection();
-      PreparedStatement stmtCourseInfo;
-      if (update) 
-      {
-         stmtCourseInfo = conn.prepareStatement("Update CourseInfo " + 
-                  "set CourseTitle = ? " +
-                  "where CourseID = ?");
-         stmtCourseInfo.setString(1, cd.mCourseTitle);
-         stmtCourseInfo.setString(2, cd.mImportDateTime);
-         stmtCourseInfo.setInt(3, (cd.mStart)?1:0);
-         stmtCourseInfo.setInt(4, (cd.mTOC)?1:0);
-      }
-      else //insert
-      {
-         stmtCourseInfo = conn.prepareStatement("Insert into "
-               + "CourseInfo(CourseID, CourseTitle, ImportDateTime, Active, Start, TOC) "
-               + "values(?,?,?,?,?,?)");
-         stmtCourseInfo.setString(1, cd.mCourseID);
-         stmtCourseInfo.setString(2, cd.mCourseTitle);
-         stmtCourseInfo.setString(3, cd.mImportDateTime);
-         stmtCourseInfo.setInt(4, (cd.mStart)?1:0);
-         stmtCourseInfo.setInt(5, (cd.mTOC)?1:0);
-      }
-      
-      synchronized (stmtCourseInfo) {
-         stmtCourseInfo.execute();
-      }
-      
-      stmtCourseInfo.close();
+      PreparedStatement stmtCourseInfo = null;
+      boolean ok = true;
+      try {
+         if (update) 
+         {
+            stmtCourseInfo = conn.prepareStatement("Update CourseInfo " + 
+                     "set CourseTitle = ? " +
+                     "where CourseID = ?");
+            stmtCourseInfo.setString(1, cd.mCourseTitle);
+            stmtCourseInfo.setString(2, cd.mCourseID);
+         }
+         else //insert
+         {
+            stmtCourseInfo = conn.prepareStatement("Insert into "
+                  + "CourseInfo(CourseID, CourseTitle, ImportDateTime, Active, Start, TOC) "
+                  + "values(?,?,?,?,?,?)");
+            stmtCourseInfo.setString(1, cd.mCourseID);
+            stmtCourseInfo.setString(2, cd.mCourseTitle);
+            stmtCourseInfo.setString(3, cd.mImportDateTime);
+            stmtCourseInfo.setInt(4, 1); // active
+            stmtCourseInfo.setInt(5, (cd.mStart)?1:0);
+            stmtCourseInfo.setInt(6, (cd.mTOC)?1:0);
+         }
+         
+         synchronized (stmtCourseInfo) {
+            stmtCourseInfo.execute();
+         }
+      }  catch (SQLException se) {
+         ok = false;
+         
+      } finally { 
+         try {
+            if (stmtCourseInfo != null) stmtCourseInfo.close();
+            if (conn != null) conn.close();
+         } catch (SQLException sse) {}
+      }   
+      return ok;
    }
 
 }
