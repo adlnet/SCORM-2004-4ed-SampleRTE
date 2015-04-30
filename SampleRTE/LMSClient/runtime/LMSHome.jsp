@@ -123,7 +123,7 @@ Nothing in this license impairs or restricts the author's moral rights.
       if (!start && !resume && !TOC)
       {
          launch = "<td colspan='2' align='center'>" + 
-		               "<br/>" + "<a href='LMSCourseAdmin?type=44&courseID=" + courseID + "'>View Details</a>" +
+		               "<br/>" + "<a href='LMSCourseAdmin?type=44&courseID=" + courseID + "&userID=" + userID +"'>View Details</a>" +
 		            "</td>";
       }
       else
@@ -155,13 +155,22 @@ Nothing in this license impairs or restricts the author's moral rights.
          			"<br/>Imported On: " + importDateTime +         			
          		"</td>" +         	 
          		launch +
-         	"</tr>" +
-         	"<tr bgcolor='" + regColor + "'>" + 
-	         	"<td>&nbsp;</td>" +
-	         	"<td colspan='4'>" +
-	         		"<a href=\"javascript:showHideStatus(" + status + ", '" + courseID + "')\">Show/Hide Course Status</a>" +
-	      		"</td>" +
-	      	"</tr>" +
+         	"</tr>" + 
+         	((!start && !resume && !TOC) ?
+        	   "<tr bgcolor='" + regColor + "'>" + 
+               "<td>&nbsp;</td>" +
+               "<td colspan='4'>" +
+                  "<em>View Details to see course status</em>" +
+               "</td>" +
+            "</tr>" 
+	      	:
+	      	"<tr bgcolor='" + regColor + "'>" + 
+               "<td>&nbsp;</td>" +
+               "<td colspan='4'>" +
+                  "<a href=\"javascript:showHideStatus(" + status + ", '" + courseID + "')\">Show/Hide Course Status</a>" +
+               "</td>" +
+            "</tr>"
+            ) +
 	      	"<tr class = " + status + " style='display: none' bgcolor='" + regColor + "'>" +
 	      		"<td>&nbsp;</td>" +       	 
 	      		"<td><b><i>Satisfied</i></b></td>" +

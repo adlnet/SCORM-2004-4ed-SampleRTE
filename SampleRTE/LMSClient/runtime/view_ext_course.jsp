@@ -1,5 +1,8 @@
 <%@page import = "org.adl.samplerte.server.ServletRequestTypes, org.adl.samplerte.server.CourseData, org.adl.samplerte.server.ItemData, java.util.List" %>
 <%
+   String userID = (String)session.getAttribute( "USERID" );
+	String isUserAdmin = (String)session.getAttribute( "RTEADMIN" );
+	
    CourseData coursedata = (CourseData)request.getAttribute("coursedata");
    String courseid = request.getParameter("courseID");
    String coursetitle = request.getParameter("courseTitle");
@@ -24,6 +27,28 @@
       </jsp:include>
       <div class="page-header">
          <h1>Course <%= coursetitle %> <small><%= courseid %></small></h1>
+         <div class="row">
+            <div class="col-md-2">
+		         <form class="form-inline" method="post" action="/adl/LMSCourseAdmin" name="updateCourseStatus" accept-charset="utf-8">
+		           <input type="hidden" name="type" value="<%= ServletRequestTypes.UPDATE_EXT_COURSE_STATUS %>" />
+		           <input type="hidden" name="userID" value="<%= userID %>" />
+		           <input type="hidden" name="courseID" value="<%= courseid %>" />
+		           
+		           <button type="submit" name="submit" class="btn btn-primary btn-xs">Update Status</button>
+		        </form>
+	        </div>
+	        <% if ((! (isUserAdmin == null)) && ( isUserAdmin.equals("true"))) { %>
+	        <div class="col-md-2">
+		        <form method="post" action="/adl/LMSCourseAdmin" name="editCourse" accept-charset="utf-8">
+		            <input type="hidden" name="type" value="<%= ServletRequestTypes.UPDATE_EXT_COURSE %>" />
+		            <input type="hidden" name="courseID" id="courseID" value="<%= courseid %>" />
+		           <input type="hidden" name="courseTitle" value="<%= coursetitle %>" />
+		           
+		           <button type="submit" name="submit" class="btn btn-default btn-xs">Edit Course</button>
+		        </form>
+	        </div>
+	        <% } %>
+        </div>
       </div>
    <div class="container">
       <div class="col-md-12" style="margin-bottom:1em; padding-bottom:1em;">
@@ -35,6 +60,17 @@
             <div class="col-md-4"><strong>prog measure: </strong><%= coursedata.mProgMeasure %></div>
             <div class="col-md-4"><strong>measure: </strong><%= coursedata.mMeasure %></div>
          </div>
+       <!--  <div class="row">
+            <div class="col-md-4">
+	            <form class="form-inline" method="post" action="/adl/LMSCourseAdmin" name="updateCourseStatus" accept-charset="utf-8">
+		            <input type="hidden" name="type" value="<%= ServletRequestTypes.UPDATE_EXT_COURSE_STATUS %>" />
+		            <input type="hidden" name="userID" value="<%= userID %>" />
+		            <input type="hidden" name="courseID" value="<%= courseid %>" />
+		            
+		            <button type="submit" name="submit" class="btn btn-primary">Update Status</button>
+		         </form>
+	         </div>
+         </div> -->
       </div>
       <% for (ItemData item : items)
       {
@@ -45,7 +81,7 @@
             </div>
                <% if (item.itemLaunch != null && ! "".equals(item.itemLaunch)) {%>
             <div class="row">
-               <div class="col-md-12"><a href="<%= item.itemLaunch %>"><%= item.itemLaunch %></a></div>
+               <div class="col-md-12"><a target="_blank" href="<%= item.itemLaunch %>"><%= item.itemLaunch %></a></div>
             </div>
                <% } %>
             <div class="row">

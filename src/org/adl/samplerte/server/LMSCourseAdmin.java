@@ -788,8 +788,16 @@ public class LMSCourseAdmin extends HttpServlet
             
          case ServletRequestTypes.EXT_COURSE_DETAILS:
             courseService = new CourseService();
-            cd = courseService.getCourseData(iRequest.getParameter("courseID"));
+            cd = courseService.getCourseData(iRequest.getParameter("courseID"), iRequest.getParameter("userID"));
             
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
+            launchView(VIEW_EXT_COURSE, iRequest, oResponse);
+            break;
+            
+         case ServletRequestTypes.UPDATE_EXT_COURSE_STATUS:
+            courseService = new CourseService();
+            cd = courseService.getCourseData(iRequest.getParameter("courseID"), iRequest.getParameter("userID"));
+            System.out.println("LMSCourseAdmin.processRequest() - update ext course status!!");
             iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
             launchView(VIEW_EXT_COURSE, iRequest, oResponse);
             break;
