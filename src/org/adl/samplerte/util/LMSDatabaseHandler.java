@@ -22,6 +22,7 @@ package org.adl.samplerte.util;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
 import javax.sql.DataSource;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -58,7 +59,16 @@ import org.adl.util.debug.DebugIndicator;
  */
 public class LMSDatabaseHandler
 {
-
+    /**
+     * the data source for the global objectives database
+     */
+    public static final String GLOBAL_OBJECTIVES = "jdbc/GlobalObjectives";
+    
+    /**
+     * the data source for the global objectives database
+     */
+    public static final String SRTE_DATASOURCE = "jdbc/SampleRTE";
+    
     /**
      * This controls display of log messages to the java console
      */
@@ -92,7 +102,37 @@ public class LMSDatabaseHandler
             }
             Context initCtx = new InitialContext();
             Context envCtx = (Context) initCtx.lookup("java:comp/env");
-            DataSource ds = (DataSource) envCtx.lookup("jdbc/SampleRTE");
+            DataSource ds = (DataSource) envCtx.lookup(SRTE_DATASOURCE);
+            conn = ds.getConnection();
+        }
+        catch ( SQLException ex )
+        {
+            System.out.println(" database handler sql exception " +  ex.getSQLState());
+            ex.printStackTrace();
+        }
+        catch ( Exception e )
+        {
+            System.out.println("  LMSDatabaseHandler exception");
+            e.printStackTrace();
+        }
+
+        return conn;
+    }
+    
+    public static Connection getConnection(String datasource)
+    {
+
+        Connection conn = null;
+
+        try
+        {
+            if ( _Debug )
+            {
+                System.out.println("  ::--> Connecting to the DB");
+            }
+            Context initCtx = new InitialContext();
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            DataSource ds = (DataSource) envCtx.lookup(datasource);
             conn = ds.getConnection();
         }
         catch ( SQLException ex )

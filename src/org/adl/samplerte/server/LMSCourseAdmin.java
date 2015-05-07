@@ -29,9 +29,10 @@ package org.adl.samplerte.server;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
-
 import java.io.File;
 
 import javax.servlet.RequestDispatcher;
@@ -127,6 +128,16 @@ public class LMSCourseAdmin extends HttpServlet
     * String Constant for the import results page
     */
    private static final String IMPORT_RESULTS = "/import/dsp_importResults.jsp"; 
+   
+   /**
+    * Path to edit external course jsp 
+    */
+   private static final String EDIT_EXT_COURSE = "/admin/edit_ext_course.jsp";
+   
+   /**
+    * Path to view external course jsp
+    */
+   private static final String VIEW_EXT_COURSE = "/runtime/view_ext_course.jsp";
    
    /**
     * List of settings for each user that has used the system
@@ -736,7 +747,53 @@ public class LMSCourseAdmin extends HttpServlet
             
             break;
     
-
+         case ServletRequestTypes.CREATE_NEW_COURSE:
+            courseService = new CourseService();
+            cd = courseService.createCourse(iRequest.getParameter("courseID"), iRequest.getParameter("courseTitle"));
+            if (cd == null) {
+               launchView("/import/createCourse.jsp", iRequest, oResponse);
+            } else {
+               iRequest.setAttribute("coursedata", cd);
+               launchView(EDIT_EXT_COURSE, iRequest, oResponse);
+            }          
+            break;
+         
+         case ServletRequestTypes.UPDATE_EXT_COURSE:
+            courseService = new CourseService();
+            cd = courseService.updateCourse(iRequest.getParameter("courseID"),iRequest.getParameter("courseTitle"));
+            
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
+            launchView(EDIT_EXT_COURSE, iRequest, oResponse);
+            
+            break;
+            
+         case ServletRequestTypes.ADD_EXT_ITEM:
+            courseService = new CourseService();
+            cd = courseService.addCourseItem(iRequest.getParameter("courseID"), 
+                  iRequest.getParameter("itemID"), iRequest.getParameter("itemTitle"), iRequest.getParameter("itemLaunch"));
+            
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
+            launchView(EDIT_EXT_COURSE, iRequest, oResponse);
+            
+            break;
+            
+         case ServletRequestTypes.UPDATE_EXT_ITEM:
+            courseService = new CourseService();
+            cd = courseService.updateCourseItem(iRequest.getParameter("courseID"), 
+                  iRequest.getParameter("itemID"), iRequest.getParameter("itemTitle"), iRequest.getParameter("itemLaunch"));
+            
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
+            launchView(EDIT_EXT_COURSE, iRequest, oResponse);
+            break;
+            
+         case ServletRequestTypes.EXT_COURSE_DETAILS:
+            courseService = new CourseService();
+            cd = courseService.getCourseData(iRequest.getParameter("courseID"));
+            
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
+            launchView(VIEW_EXT_COURSE, iRequest, oResponse);
+            break;
+            
          default:
             // Todo -- put in the error page.
             System.out.println("Default Case -- LMSCourseAdmin.java -- Error");

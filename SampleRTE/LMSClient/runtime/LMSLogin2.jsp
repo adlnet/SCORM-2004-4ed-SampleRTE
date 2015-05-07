@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!doctype html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html lang="en">
    <!--
 /*******************************************************************************
 **
@@ -58,101 +56,105 @@ Nothing in this license impairs or restricts the author's moral rights.
       <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
       <meta http-equiv="expires" content="Tue, 20 Aug 1999 01:00:00 GMT" />
       <meta http-equiv="Pragma" content="no-cache" />
-      <title>SCORM 2004 4th Edition Sample Run-Time Environment
-         Version 1.1.1 - Login</title>
+      <title>Login</title>
 
-      <link href="includes/sampleRTE_style.css" rel="stylesheet"
-         type="text/css" />
+      <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+      <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+      <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+      <link href="includes/sampleRTE_style.css" rel="stylesheet" type="text/css" />
 
       <script type="text/javascript">
-//<!-- [CDATA[
-/****************************************************************************
-**
-** Function:  submit1_onclick()
-** Input:   none
-** Output:  none
-**
-** Description:  This method checks to see if both text boxes, password and
-**               username have something populating them.
-**
-***************************************************************************/
-function submit1_onclick() 
-{
-   var username = new String(loginform.uname.value);
-   var password = new String(loginform.pwd.value);
-    
-   if (username == "" || password == "")
-   {
-      alert("you must enter a username and a password");
-      return false;
-   }
-   return true;
-}
-//]]-->
-</script>
+		//<!-- [CDATA[
+		/****************************************************************************
+		**
+		** Function:  submit1_onclick()
+		** Input:   none
+		** Output:  none
+		**
+		** Description:  This method checks to see if both text boxes, password and
+		**               username have something populating them.
+		**
+		***************************************************************************/
+		function submit1_onclick() 
+		{
+		   var username = new String(loginform.uname.value);
+		   var password = new String(loginform.pwd.value);
+		    
+		   if (username == "" || password == "")
+		   {
+		      alert("you must enter a username and a password");
+		      return false;
+		   }
+		   return true;
+		}
+		//]]-->
+		</script>
    </head>
-   <body>
-      <div id="login_page">
-         <div class="red_text">
-            <b> An invalid username or password has been entered! <br />
-               Please try again. </b>
-         </div>
-         <form method="post" action="LMSUserAdmin" name="loginform" 
-         id="loginform" onsubmit="return submit1_onclick()" accept-charset="utf-8">
-         <input type="hidden" name="type" value="26" />
-         <input type="hidden" name="path" value="<%=getServletConfig().getServletContext().getRealPath( "/" )%>" />
-            <table>
-               <tr>
-                  <td>
-                     <div id="login_col1">
-                        <div id="login_col1a_user">
-                           <label for="uname">
-                              Username
-                           </label>
-                           <br />
-
-                        </div>
-                     </div>
-                  </td>
-                  <td>
-                     <div id="login_col2">
-                        <input class="unpw" type="text" id="uname" name="uname" value="" />
-                     </div>
-                  </td>
-
-               </tr>
-               <tr>
-                  <td>
-                     <div id="login_col1a_pwd">
-                        <label for="pwd">
-                           Password
-                        </label>
-                        <br />
-                     </div>
-                  </td>
-                  <td>
-                     <div id="login_col3">
-                        <input class="unpw" type="password" id="pwd" name="pwd" value="" />
-                     </div>
-                  </td>
-               </tr>
-            </table>
-<% if ( (String)request.getParameter("courseID") != null && !"".equals((String)request.getParameter("courseID")) )
-{
-%>
-   <input type="hidden" name=courseID id="courseID" value="<%= (String)request.getParameter("courseID") %>" />
-<% 
-}
-%>
-
-            <div>
-
-               <br />
-               <input type="submit" value="Submit" id="submit1"
-                  name="submit1" />
+   
+   <body id="main_page">
+      <div class="container">
+         <div class="row">
+            <div class="col-md-12">
+               <h2>Log in</h2>
             </div>
-
+         </div>
+         <div class="row">
+            <div class="col-md-12 red_text">
+	            <strong> An invalid username or password has been entered! <br />
+	               Please try again. </strong>
+	         </div>
+         </div>
+         
+         <form class="form-horizontal" method="post" action="LMSUserAdmin" name="loginform" 
+                     id="loginform" onsubmit="return submit1_onclick()" accept-charset="utf-8">
+                  
+           <div class="form-group">
+				 <input type="hidden" name="type" value="26" />
+				 <input type="hidden" name="path" value="<%=getServletConfig().getServletContext().getRealPath( "/" )%>" />
+             <div class="col-sm-10">
+             <label class="control-label" for="uname"> Username</label>
+               <input class="form-control unpw" type="text" id="uname" name="uname" value="" placeholder="username" />
+             </div>
+           </div>
+           <div class="form-group">
+             <div class="col-sm-10">
+             <label class="control-label" for="pwd">Password</label>
+               <input class="form-control unpw" type="password" id="pwd" name="pwd" value="" placeholder="password" />
+             </div>
+           </div>
+           
+           <% if ( (String)request.getParameter("courseID") != null && !"".equals((String)request.getParameter("courseID")) )
+				{
+				%>
+				   <input type="hidden" name=courseID id="courseID" value="<%= (String)request.getParameter("courseID") %>" />
+				<% 
+				}
+				%>
+           <div class="form-group">
+             <div class="col-sm-10">
+               <button type="submit" class="btn btn-default" value="Submit" id="submit1" name="submit1">Log in</button>
+             </div>
+           </div>
          </form>
+         
+         <div class="row">
+            <div class="col-md-12" id="login_page">
+               
+               
+               <div>
+                  <a id="signuplink" href="/adl/LMSUserAdmin?type=24&setProcess=pref">Sign up</a>
+               </div>
+      
+               <script type="text/javascript">
+               //<!--[CDATA[
+      
+                  document.getElementById("uname").focus();
+               //]]-->
+      
+               </script>
+      
+            </div>
+         </div>
       </div>
    </body>
 </html>

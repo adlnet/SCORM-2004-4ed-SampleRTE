@@ -124,7 +124,7 @@ function newWindow(pageName)
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link href='includes/sampleRTE_style.css' rel='stylesheet' type='text/css'>
 </head>
-    <body bgcolor='FFFFFF'>
+    <body bgcolor='FFFFFF' style="margin-top: 4.5em;">
 
     <jsp:include page="../runtime/LMSNavigation.jsp" flush="true">
        <jsp:param value="<%= helpLocation %>" name="helpURL"/>

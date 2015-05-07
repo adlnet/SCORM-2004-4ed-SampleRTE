@@ -87,21 +87,22 @@ Nothing in this license impairs or restricts the author's moral rights.
    //]]-->
    </script>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!doctype html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html lang="en">
 
 <head>
 <meta http-equiv="expires" content="Tue, 20 Aug 1999 01:00:00 GMT" />
 <meta http-equiv="Pragma" content="no-cache" />
-<title>SCORM 2004 4th Edition Sample Run-Time Environment Version 1.1.1 - 
-    Navigation</title>
-
+<title>Navigation</title>
+    
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
 <link href="/adl/includes/sampleRTE_style.css" rel="stylesheet" type="text/css" />
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </head>
 
-<body>
+<body class="container">
 <input type="hidden" id="path" value="<%=theWebPath%>" />
 
 <%
@@ -112,34 +113,31 @@ Nothing in this license impairs or restricts the author's moral rights.
    session.removeAttribute( "COURSEID" );
    session.removeAttribute( "TOC" );
 %>
+<nav class="navbar navbar-default navbar-fixed-top">
+   <div class="container-fluid">
+      
+      <div class="navbar-header">
+         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+         </button>
+      </div>
+      
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+			   <li><a id="homelink" href="/adl/LMSCourseAdmin?type=<%= ServletRequestTypes.GO_HOME %>&userID=<%= userid %>">Home</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><p class="navbar-text">Welcome, <%=(String)session.getAttribute( "LOGINNAME" )%>!</p></li>
+				<li><a href="/adl/LMSUserAdmin?type=<%= ServletRequestTypes.GET_PREF %>&userId=<%= userid %>&caller=viewUserPref">Account</a></li>
+				<li><a href="/adl/runtime/logout.jsp">Logout</a></li>
+			</ul>
+		</div>
 
-    <table width="700">
-       <tr>
-          <td align="left">
-             <a id="homelink" href="/adl/LMSCourseAdmin?type=<%= ServletRequestTypes.GO_HOME %>&userID=<%= userid %>">
-             	Home
-             </a>
-          </td>
-          <td align="right">
-             Welcome, <%=(String)session.getAttribute( "LOGINNAME" )%>!
-             &nbsp;|&nbsp;
-             <a href="/adl/LMSUserAdmin?type=<%= ServletRequestTypes.GET_PREF %>&userId=<%= userid %>&caller=viewUserPref">
-             	Account
-             </a>
-             &nbsp;
-             <%= helpLink %>
-             |&nbsp;
-             <a href="/adl/runtime/logout.jsp">
-                Logout
-             </a>
-          </td>          
-       </tr>
-       <tr>
-          <td colspan="2">
-             <hr />
-          </td>
-       </tr>
-    </table>
-
+   </div>
+</nav>
+ 
 </body>
 </html>
