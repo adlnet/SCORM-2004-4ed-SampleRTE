@@ -140,14 +140,28 @@ Nothing in this license impairs or restricts the author's moral rights.
       window.open(pageName, 'Help',
       "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=500,height=500");
    }
+   
+   function goBack()
+   {
+	   var backurl = "/adl/runtime/LMSLogin.htm";
+	   <% if ( (String)request.getParameter("courseID") != null && !"".equals((String)request.getParameter("courseID")) )
+       {
+	    %>
+	          backurl = backurl + "?courseID=<%= (String)request.getParameter("courseID") %>&path=<%= getServletConfig().getServletContext().getRealPath( "/" ) %>"
+	    <% 
+	       }
+	    %>
+	    window.parent.frames['Content'].document.location.href = backurl;
+	    return false;
+   }
 
    </script>
 </head>
 
-<body bgcolor="#FFFFFF" style="margin-top: 4.5em;">
 	<% if ((String)session.getAttribute( "USERID" ) != null)
 	   {
 	%>
+<body bgcolor="#FFFFFF" style="margin-top: 4.5em;">
 		<jsp:include page="../runtime/LMSNavigation.jsp" flush="true">
 		    <jsp:param value="/adl/help/newUserHelp.htm" name="helpURL"/>
 		</jsp:include>
@@ -159,7 +173,19 @@ Nothing in this license impairs or restricts the author's moral rights.
 	else
 	{
 	%>
+	<body bgcolor="#FFFFFF">
 		<div class="container">
+		<p>
+		    <% if ( (String)request.getParameter("courseID") != null && !"".equals((String)request.getParameter("courseID")) )
+	       {
+	       %>
+	             <a href="/adl/runtime/LMSLogin.htm?courseID=<%= (String)request.getParameter("courseID") %>&path=<%= getServletConfig().getServletContext().getRealPath( "/" ) %>">Go Back</a>
+	       <% 
+	          } else {
+	       %>
+	           <a href="/adl/runtime/LMSLogin.htm">Go Back</a>
+	       <% } %>
+		</p>
 		   <h2>Sign Up</h2>
 	<%
 	}

@@ -27,6 +27,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 package org.adl.samplerte.server;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -41,11 +42,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.adl.samplerte.util.Config;
 import org.adl.util.decode.decodeHandler;
 import org.adl.validator.util.ResultCollection;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
+
+import com.google.gson.Gson;
 
 /**
  * <strong>Filename: </strong> LMSCourseAdmin <br>
@@ -269,7 +273,8 @@ public class LMSCourseAdmin extends HttpServlet
       {
          sType = "999";
       }
-      int type = Integer.parseInt(sType);  
+      int type = Integer.parseInt(sType); 
+      
       switch ( type )
       {
          case ServletRequestTypes.GET_COURSES:
@@ -356,7 +361,7 @@ public class LMSCourseAdmin extends HttpServlet
 
          case ServletRequestTypes.GO_HOME:
             courseService = new CourseService();
-
+            
             userID = iRequest.getParameter("userID");
             courses = new Vector();
             
@@ -796,10 +801,28 @@ public class LMSCourseAdmin extends HttpServlet
             
          case ServletRequestTypes.UPDATE_EXT_COURSE_STATUS:
             courseService = new CourseService();
+            courseService.updateCourseStatus(iRequest.getParameter("courseID"), iRequest.getParameter("userID"));
             cd = courseService.getCourseData(iRequest.getParameter("courseID"), iRequest.getParameter("userID"));
-            System.out.println("LMSCourseAdmin.processRequest() - update ext course status!!");
-            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
-            launchView(VIEW_EXT_COURSE, iRequest, oResponse);
+            cd = (cd == null) ? new CourseData() : cd;
+
+            oResponse.setContentType("application/json; charset=utf-8");
+            oResponse.setCharacterEncoding("UTF-8");
+            // Get the printwriter object from response to write the required json object to the output stream      
+            try {
+               PrintWriter out = oResponse.getWriter();
+            
+               Gson gsondm = new Gson();
+              
+               StringBuilder sb = new StringBuilder();
+               sb.append("{\"coursedata\":");
+               sb.append(gsondm.toJson(cd));
+               sb.append("}");
+               out.print(sb.toString());
+            } catch (IOException e) {
+               System.out.println("LMSCourseAdmin.processRequest() - EXT_COURSE_DETAILS - error getting response writer");
+               e.printStackTrace();
+               break;
+            }
             break;
             
          default:

@@ -26,6 +26,13 @@ Nothing in this license impairs or restricts the author's moral rights.
 
 package org.adl.samplerte.server;
 
+import gov.adlnet.xapi.client.StatementClient;
+import gov.adlnet.xapi.model.Account;
+import gov.adlnet.xapi.model.Agent;
+import gov.adlnet.xapi.model.Statement;
+import gov.adlnet.xapi.model.StatementResult;
+import gov.adlnet.xapi.model.Verbs;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,6 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.adl.samplerte.util.Config;
 import org.adl.samplerte.util.LMSDBHandler;
 import org.adl.samplerte.util.LMSDatabaseHandler;
 import org.adl.samplerte.util.RTEFileHandler;
@@ -81,6 +89,10 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  * 
  * @author ADL Technical Team
+ */
+/**
+ * @author creightt
+ *
  */
 public class CourseService
 {
@@ -1843,6 +1855,64 @@ public class CourseService
          } catch (SQLException sse) {}
       }
       return cd;
+   }
+   
+   public void updateCourseStatus(String courseid, String userid) {
+      // get user's lrs info... if blank, return;
+      LRSInfo info = Config.getLRSInfo();
+      if (info == null || "".equals(info.Endpoint)) return;
+      // set up xapi
+      ArrayList<Statement> statements = getStatusStatements(info, userid, courseid);
+      System.out.println("statement: " + ((statements.isEmpty()) ? "empty statements" : statements.get(0)));
+      // get statements by user and course
+      // figure out course status
+      // figure out item status.. prolly better to loop through srte's 
+      //    items and look for statements with results
+   }
+   
+   
+   /**
+    * Get statements by userid, 'terminated', and activityID
+    * @param userid
+    * @param activityID
+    * @return StatementResults or null
+    */
+   private ArrayList<Statement> getStatusStatements(LRSInfo info, String userid, String activityID)
+   {
+      StatementResult res = null;
+      ArrayList<Statement> statements = new ArrayList<Statement>();
+      try {
+         res =  new StatementClient(info.Endpoint, info.UserName, info.Password)
+//                     .filterByActor(new Agent("", new Account(userid, "http://adlnet.gov/xapi/accounts")))
+         .filterByActor(new Agent("", new Account("jonathan.poltrack.ctr@adlnet.gov", "http://cloud.scorm.com")))
+                     .filterByVerb(Verbs.terminated())
+//                        .filterByActivity(activityID)
+                        .filterByActivity("http://adlnet.gov/courses/roses/q2")
+                     .getStatements();
+         System.out.println("CourseService.getStatusStatements() - " + info);
+         System.out.println("CourseService.getStatusStatements() - res: " + res.getStatements());
+         if (res != null && res.getStatements() != null) 
+         {
+            statements = res.getStatements();
+            while (res.hasMore())
+            {
+               res = new StatementClient(info.Endpoint, info.UserName, info.Password)
+               // this is going to have to be given by the user, who knows what their account info is
+//                        .filterByActor(new Agent("", new Account(userid, "http://adlnet.gov/xapi/accounts")))
+                        .filterByActor(new Agent("", new Account("jonathan.poltrack.ctr@adlnet.gov", "http://cloud.scorm.com")))
+                        .filterByVerb(Verbs.terminated())
+//                        .filterByActivity(activityID)
+                        .filterByActivity("http://adlnet.gov/courses/roses/q2")
+                        .getStatements();
+               statements.addAll(res.getStatements());
+            }
+            
+         }
+      } catch (IOException e) {
+         System.out.println("CourseService.getStatusStatements() -- getting xapi statements threw an IO");
+         e.printStackTrace();
+      }
+      return statements;
    }
 
    private CourseData getCourseInfo(String courseID) 

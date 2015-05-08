@@ -34,12 +34,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.adl.samplerte.util.Config;
 import org.adl.samplerte.util.LMSDBHandler;
 import org.adl.samplerte.util.LMSDatabaseHandler;
 
@@ -131,7 +133,6 @@ public class UserService
     */
    public UserProfile getUser(String iUserID)
    {
-
       Connection conn; 
       PreparedStatement stmtSelectUser;
       String sqlSelectUser = "SELECT * FROM UserInfo WHERE UserId = ?";
@@ -170,7 +171,6 @@ public class UserService
          System.out.println("Error in UserService::getUser()");
          e.printStackTrace(); 
       }
-
       return mUserProfile;
    }
 
@@ -546,4 +546,152 @@ public class UserService
       return true;
    }
 
+   public UserAgentInfo updateLRSAccountInfo(HttpServletRequest iRequest) {
+      Connection conn = LMSDatabaseHandler.getConnection();
+      UserAgentInfo info = new UserAgentInfo();
+      
+      String userid = iRequest.getParameter("userID");
+      String mbox = iRequest.getParameter("mbox");
+      mbox = ("".equals(mbox.trim()) || mbox.startsWith("mailto:") ? mbox : "mailto:" + mbox);
+      String homepage = iRequest.getParameter("homepage");
+      String name = iRequest.getParameter("name");
+      String alias = iRequest.getParameter("alias");
+      alias = (alias == null || "".equals(alias)) ? UserAgentInfo.AGENT_ALIAS_DEFAULT : alias;
+      
+      PreparedStatement getAccountInfo = null;
+      PreparedStatement insertUserAgentInfo = null;
+      PreparedStatement updateUserAgentInfo = null;
+      
+      ResultSet accInfo = null;
+      // if mbox is null or if homepage or name are null.. it's a problem 
+      if ( mbox == null || "".equals(mbox.trim()) == ((homepage == null || "".equals(homepage.trim())) || (name == null || "".equals(name.trim()))) )
+      {
+         iRequest.setAttribute("lrs-error-message", "You need to set an email or homepage and name");
+         return info;
+      }
+      try {
+         getAccountInfo = conn.prepareStatement("select * from UserAgentInfo where UserID = ? AND AgentAlias = ?");
+         insertUserAgentInfo = conn.prepareStatement("insert into UserAgentInfo(UserID, AgentAlias, Mbox, HomePage, AccName) values (?,?,?,?,?)");
+         updateUserAgentInfo = conn.prepareStatement("update UserAgentInfo set Mbox = ?, HomePage = ?, AccName = ? where UserID = ? AND AgentAlias = ?");
+         
+         getAccountInfo.setString(1, userid);
+         getAccountInfo.setString(2, alias);
+         synchronized (getAccountInfo) {
+            accInfo = getAccountInfo.executeQuery();
+         }
+         
+         if (accInfo.next())
+         {
+            //update
+            updateUserAgentInfo.setString(1, mbox);
+            updateUserAgentInfo.setString(2, homepage);
+            updateUserAgentInfo.setString(3, name);
+            updateUserAgentInfo.setString(4, userid);
+            updateUserAgentInfo.setString(5, alias);
+            synchronized (updateUserAgentInfo) {
+               updateUserAgentInfo.executeUpdate();
+            }
+         }
+         else
+         {
+            //insert -- using just ADL LRS info for now.. 
+            // if that changes, this would change
+            insertUserAgentInfo.setString(1, userid);
+            insertUserAgentInfo.setString(2, alias);
+            insertUserAgentInfo.setString(3, mbox);
+            insertUserAgentInfo.setString(4, homepage);
+            insertUserAgentInfo.setString(5, name);
+            synchronized (insertUserAgentInfo) {
+               insertUserAgentInfo.executeUpdate();
+            }
+         }
+         // didn't set earlier because i'm just returning info.. 
+         // if we got this far, the values should be saved in the db
+         info = new UserAgentInfo(userid, alias, mbox, homepage, name);
+         iRequest.setAttribute("lrs-ok-message", "LRS Account info successfully saved");
+      } catch (SQLException e) {
+         iRequest.setAttribute("lrs-error-message", "Error saving your account info. Please try again. If this error presists, please contact us");
+         System.out.println("UserService.updateLRSAccountInfo()");
+         e.printStackTrace();
+      } finally {
+            try {
+               if (getAccountInfo != null) getAccountInfo.close();
+               if (updateUserAgentInfo != null) updateUserAgentInfo.close();
+               if (insertUserAgentInfo != null) insertUserAgentInfo.close();
+               if (conn != null) conn.close();
+            } catch (SQLException e) { }
+      }
+
+      return info;
+   }
+   
+   public List<UserAgentInfo> getUserAgentInfos(String userid)
+   {
+      PreparedStatement getAccountInfo = null;
+      Connection conn = LMSDatabaseHandler.getConnection();
+      ResultSet accInfo;
+      List<UserAgentInfo> infos = new ArrayList<UserAgentInfo>();
+      try {
+         getAccountInfo = conn.prepareStatement("select * from UserAgentInfo where UserID = ?");
+         getAccountInfo.setString(1, userid);
+         synchronized (getAccountInfo) { 
+            accInfo = getAccountInfo.executeQuery();
+         }
+         
+         while(accInfo.next())
+         {
+            infos.add(new UserAgentInfo(accInfo.getString("UserID"), accInfo.getString("AgentAlias"), accInfo.getString("Mbox"), accInfo.getString("HomePage"), accInfo.getString("AccName")));
+         }
+         
+      } catch (SQLException e) {
+         System.out.println("UserService.getUserAgentInfos() - sql exception");
+         e.printStackTrace();
+      } finally {
+            try {
+               if (getAccountInfo != null) getAccountInfo.close();
+               if (conn != null) conn.close();
+            } catch (SQLException e) { }
+      }
+      return infos;
+   }
+   
+   public UserAgentInfo getUserAgentInfo(String userid)
+   {
+      return getUserAgentInfo(userid, UserAgentInfo.AGENT_ALIAS_DEFAULT);
+   }
+   
+   private UserAgentInfo getUserAgentInfo(String userid, String alias)
+   {
+      PreparedStatement getAccountInfo = null;
+      Connection conn = LMSDatabaseHandler.getConnection();
+      ResultSet accInfo;
+      UserAgentInfo info = new UserAgentInfo();
+      try {
+         getAccountInfo = conn.prepareStatement("select * from UserAgentInfo where UserID = ? AND AgentAlias = ?");
+         
+         getAccountInfo.setString(1, userid);
+         getAccountInfo.setString(2, alias);
+         synchronized (getAccountInfo) {
+            accInfo = getAccountInfo.executeQuery();
+         }
+         
+         if (accInfo.next())
+         {
+            info.Mbox = accInfo.getString("Mbox");
+            info.HomePage = accInfo.getString("HomePage");
+            info.AccName = accInfo.getString("AccName");
+            info.UserID = userid;
+         }
+      } catch (SQLException e) {
+         System.out.println("UserService.getLRSInfo()");
+         e.printStackTrace();
+      } finally {
+            try {
+               if (getAccountInfo != null) getAccountInfo.close();
+               if (conn != null) conn.close();
+            } catch (SQLException e) { }
+      }
+      
+      return info;
+   }
 }

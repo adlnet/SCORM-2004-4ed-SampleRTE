@@ -28,13 +28,14 @@
       <div class="page-header">
          <h1>Course <%= coursetitle %> <small><%= courseid %></small></h1>
          <div class="row">
-            <div class="col-md-2">
-		         <form class="form-inline" method="post" action="/adl/LMSCourseAdmin" name="updateCourseStatus" accept-charset="utf-8">
+            <div class="col-md-3">
+		         <form class="form-inline" method="post" action="/adl/LMSCourseAdmin" name="updateCourseStatus" id="updateCourseStatus" accept-charset="utf-8">
 		           <input type="hidden" name="type" value="<%= ServletRequestTypes.UPDATE_EXT_COURSE_STATUS %>" />
 		           <input type="hidden" name="userID" value="<%= userID %>" />
 		           <input type="hidden" name="courseID" value="<%= courseid %>" />
 		           
 		           <button type="submit" name="submit" class="btn btn-primary btn-xs">Update Status</button>
+		        <span class="text-primary" id="status_update_text" style="display: none;">updating...</span>
 		        </form>
 	        </div>
 	        <% if ((! (isUserAdmin == null)) && ( isUserAdmin.equals("true"))) { %>
@@ -105,5 +106,15 @@
       }
       %>
    </div>
+   <script>
+      $("#updateCourseStatus").submit(function(e) {
+    	   $('#status_update_text').show();
+    	   e.preventDefault();
+	      $.post("/adl/LMSCourseAdmin", $('#updateCourseStatus').serialize(), function(data, stat, xhr){
+	    	  console.log(data);
+	      }).always(function() { $('#status_update_text').hide("slow"); });
+	      return false;
+      });
+   </script>
 </body>
 </html>
