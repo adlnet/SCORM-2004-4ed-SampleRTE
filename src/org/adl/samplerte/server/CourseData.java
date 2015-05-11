@@ -125,6 +125,12 @@ public class CourseData
    public List<ItemData> items;
    
    /**
+    * If this status was determined by an xAPI Statement, 
+    * this is the statement id
+    */
+   public String refStmtID;
+   
+   /**
     * The key for this record
     */
    public int activityID = 0;

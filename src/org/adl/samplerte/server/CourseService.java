@@ -46,6 +46,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -65,6 +67,7 @@ import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory; 
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.tools.zip.ZipFile;
+import org.joda.time.DateTime;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -96,6 +99,14 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CourseService
 {
+   private final class SortStmtByLatest implements Comparator<Statement> {
+      @Override
+      public int compare(Statement o1, Statement o2) {
+         // i want reverse newest first
+         return -1 * new DateTime(o1.getTimestamp()).compareTo(new DateTime(o2.getTimestamp()));
+      }
+   }
+
    /**
     * The string containing the name of the SampleRTEFiles directory.
     */
@@ -1861,15 +1872,153 @@ public class CourseService
       // get user's lrs info... if blank, return;
       LRSInfo info = Config.getLRSInfo();
       if (info == null || "".equals(info.Endpoint)) return;
-      // set up xapi
-      ArrayList<Statement> statements = getStatusStatements(info, userid, courseid);
-      System.out.println("statement: " + ((statements.isEmpty()) ? "empty statements" : statements.get(0)));
+      updateCourseData(info, courseid, userid);
+      updateItemsData(info, courseid, userid);
       // get statements by user and course
       // figure out course status
       // figure out item status.. prolly better to loop through srte's 
       //    items and look for statements with results
    }
    
+   private void updateCourseData(LRSInfo info, String courseid, String userid)
+   {
+      ArrayList<Statement> statements = new ArrayList<Statement>();
+      List<UserAgentInfo> agents = new UserService().getUserAgentInfos(userid);
+      for (UserAgentInfo ag : agents)
+      {
+         statements.addAll(getStatusStatements(info, getAgent(ag), courseid));
+      }
+      if (statements.isEmpty())
+      {
+         System.out.println("CourseService.updateCourseData() - no statements\nlrs: " + info.Endpoint + "\ncourseid: " + courseid + "\nuserid: " + userid);
+         return;
+      }
+      Collections.sort(statements, new SortStmtByLatest());
+      for (Statement s : statements)
+      {
+         if (s.getResult() != null)
+         {
+            setCourseStatus(s, courseid, userid);
+            break;
+         }
+      }
+   }
+   
+   /**
+    * only gets the results from a statement for status
+    * doesn't deal with progress measure (which is a different statement)
+    * @param s
+    * @param courseid
+    * @param userid
+    */
+   private void setCourseStatus(Statement s, String courseid, String userid)
+   {
+      //CourseStatus(courseID CHAR(255),learnerID CHAR(255),satisfied CHAR(50) DEFAULT 'unknown',measure CHAR(50) DEFAULT 'unknown',completed CHAR(50) DEFAULT 'unknown',progmeasure CHAR(50) DEFAULT 'unknown', refStmtID CHAR(50),PRIMARY KEY (courseID, learnerID));"
+      Connection conn = LMSDatabaseHandler.getConnection(LMSDatabaseHandler.GLOBAL_OBJECTIVES);
+      PreparedStatement status = null;
+      try {
+         status = conn.prepareStatement("update CourseStatus set satisfied = ?, measure = ?, completed = ?, progmeasure = ?, refStmtID = ? where courseID = ? and learnerID = ?");
+         
+         synchronized (status) {
+            status.setString(1, Boolean.toString(s.getResult().isSuccess()));
+            status.setString(2, s.getResult().getScore().getScaled()+"");
+            status.setString(3, Boolean.toString(s.getResult().isCompletion()));
+            status.setString(4, "unknown");
+            status.setString(5, s.getId());
+            status.setString(6, courseid);
+            status.setString(7, userid);
+            status.executeUpdate();
+         }
+      } catch (SQLException e) {
+         System.out.println("CourseService.setCourseStatus() - sqlexception\ncourseid: " + courseid + "\nuserid: " + userid);
+         e.printStackTrace();
+      } finally {
+         try {
+            if (status != null) status.close();
+            if (conn != null) conn.close();
+         } catch (SQLException e) { }
+      }
+   }
+   
+   private void updateItemsData(LRSInfo info, String courseid, String userid)
+   {
+      // --- ItemInfo(ActivityID INTEGER PRIMARY KEY AUTOINCREMENT,CourseID CHAR(255),OrganizationIdentifier CHAR(255),ItemIdentifier CHAR(255),ResourceIdentifier CHAR(255),Launch LONGTEXT,Type CHAR(50),Title CHAR(255),ParameterString LONGTEXT, ItemOrder INTEGER,DataFromLMS LONGTEXT,MinNormalizedMeasure CHAR(50),AttemptAbsoluteDurationLimit CHAR(255),TimeLimitAction CHAR(255),CompletionThreshold CHAR(255),Next INTEGER CHECK(Next IN (0,1)),Previous INTEGER CHECK(Previous IN (0,1)),Exit INTEGER CHECK(Exit IN (0,1)),ExitAll INTEGER CHECK(ExitAll IN (0,1)),Abandon INTEGER CHECK(Abandon IN (0,1)),Suspend INTEGER CHECK(Suspend IN (0,1)));
+      List<UserAgentInfo> agents = new UserService().getUserAgentInfos(userid);
+      Connection srteconn = LMSDatabaseHandler.getConnection(LMSDatabaseHandler.SRTE_DATASOURCE);
+      PreparedStatement getItems = null;
+      ResultSet items = null;
+      
+      try {
+         getItems = srteconn.prepareStatement("select * from ItemInfo where CourseID = ?");
+         getItems.setString(1, courseid);
+         synchronized (getItems) {
+            items = getItems.executeQuery();
+         
+            while (items.next())
+            {
+               String itemid = items.getString("ItemIdentifier");
+               ArrayList<Statement> statements = new ArrayList<Statement>();
+               for (UserAgentInfo ag : agents)
+               {
+                  statements.addAll(getStatusStatements(info, getAgent(ag), itemid));
+               }
+               if (statements.isEmpty())
+               {
+                  System.out.println("CourseService.updateCourseData() - no statements\nlrs: " + info.Endpoint + "\nitemid: " + itemid + "\nuserid: " + userid);
+                  continue;
+               }
+               Collections.sort(statements, new SortStmtByLatest());
+               for (Statement s : statements)
+               {
+                  if (s.getResult() != null)
+                  {
+                     setItemStatus(info, s, courseid, itemid, userid);
+                     break;
+                  }
+               }
+            }
+         }
+      } catch (SQLException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } finally {
+         try {
+            if (getItems != null) getItems.close();
+            if (srteconn != null) srteconn.close();
+         } catch (SQLException e) { }
+      }
+   }
+   
+   private void setItemStatus(LRSInfo info, Statement s, String courseid, String itemid, String userid)
+   {
+      //ItemStatus(activityID INTEGER, courseID CHAR(255),learnerID CHAR(255), scaled FLOAT DEFAULT 0, raw FLOAT DEFAULT 0, min FLOAT DEFAULT 0, max FLOAT DEFAULT 0, success BOOLEAN DEFAULT FALSE, completion BOOLEAN DEFAULT FALSE, response CHAR(1024), duration CHAR(512), refStmtID CHAR(50), PRIMARY KEY (activityID, courseID, learnerID));
+      Connection objconn = LMSDatabaseHandler.getConnection(LMSDatabaseHandler.GLOBAL_OBJECTIVES);
+      PreparedStatement updateItem = null;
+      try {
+         updateItem = objconn.prepareStatement("update ItemStatus set scaled = ?, raw = ?, min = ?, max = ?, success = ?, completion = ?, response = ?, duration = ?, refStmtID = ? where activityID = ? and courseID = ? and learnerID =?");
+         updateItem.setFloat(1, s.getResult().getScore().getScaled());
+         updateItem.setFloat(2, s.getResult().getScore().getRaw());
+         updateItem.setFloat(3, s.getResult().getScore().getMin());
+         updateItem.setFloat(4, s.getResult().getScore().getMax());
+         updateItem.setBoolean(5, s.getResult().isSuccess());
+         updateItem.setBoolean(6, s.getResult().isCompletion());
+         updateItem.setString(7, s.getResult().getResponse());
+         updateItem.setString(8, s.getResult().getDuration());
+         updateItem.setString(9, s.getId());
+         updateItem.setString(10, itemid);
+         updateItem.setString(11, courseid);
+         updateItem.setString(12, userid);
+      } catch (SQLException e) {
+         System.out.println("CourseService.setItemStatus() - sql exception");
+         e.printStackTrace();
+      } finally {
+         try {
+            if (updateItem != null) updateItem.close();
+            if (objconn != null) objconn.close();
+         } catch (SQLException e) { }
+      }
+      
+   }
    
    /**
     * Get statements by userid, 'terminated', and activityID
@@ -1877,17 +2026,15 @@ public class CourseService
     * @param activityID
     * @return StatementResults or null
     */
-   private ArrayList<Statement> getStatusStatements(LRSInfo info, String userid, String activityID)
+   private ArrayList<Statement> getStatusStatements(LRSInfo info, Agent agent, String activityID)
    {
       StatementResult res = null;
       ArrayList<Statement> statements = new ArrayList<Statement>();
       try {
          res =  new StatementClient(info.Endpoint, info.UserName, info.Password)
-//                     .filterByActor(new Agent("", new Account(userid, "http://adlnet.gov/xapi/accounts")))
-         .filterByActor(new Agent("", new Account("jonathan.poltrack.ctr@adlnet.gov", "http://cloud.scorm.com")))
+                     .filterByActor(agent)
                      .filterByVerb(Verbs.terminated())
-//                        .filterByActivity(activityID)
-                        .filterByActivity("http://adlnet.gov/courses/roses/q2")
+                     .filterByActivity(activityID)
                      .getStatements();
          System.out.println("CourseService.getStatusStatements() - " + info);
          System.out.println("CourseService.getStatusStatements() - res: " + res.getStatements());
@@ -1898,11 +2045,11 @@ public class CourseService
             {
                res = new StatementClient(info.Endpoint, info.UserName, info.Password)
                // this is going to have to be given by the user, who knows what their account info is
-//                        .filterByActor(new Agent("", new Account(userid, "http://adlnet.gov/xapi/accounts")))
-                        .filterByActor(new Agent("", new Account("jonathan.poltrack.ctr@adlnet.gov", "http://cloud.scorm.com")))
+                        .filterByActor(agent)
+//                        .filterByActor(new Agent("", new Account("jonathan.poltrack.ctr@adlnet.gov", "http://cloud.scorm.com")))
                         .filterByVerb(Verbs.terminated())
-//                        .filterByActivity(activityID)
-                        .filterByActivity("http://adlnet.gov/courses/roses/q2")
+                        .filterByActivity(activityID)
+//                        .filterByActivity("http://adlnet.gov/courses/roses/q2")
                         .getStatements();
                statements.addAll(res.getStatements());
             }
@@ -1913,6 +2060,15 @@ public class CourseService
          e.printStackTrace();
       }
       return statements;
+   }
+   
+   private Agent getAgent(UserAgentInfo agentInfo)
+   {
+      if (agentInfo.Mbox == null || "".equals(agentInfo.Mbox))
+      {
+         return new Agent("", new Account(agentInfo.AccName, agentInfo.HomePage));
+      }
+      return new Agent("", agentInfo.Mbox);
    }
 
    private CourseData getCourseInfo(String courseID) 

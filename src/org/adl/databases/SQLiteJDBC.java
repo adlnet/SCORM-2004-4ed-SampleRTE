@@ -45,8 +45,8 @@ public class SQLiteJDBC{
             c = DriverManager.getConnection("jdbc:sqlite:./databases/GlobalObjectives.db");
             stmt = c.createStatement();
             ArrayList<String> sqlStuff2 = new ArrayList<String>();
-            sqlStuff2.add("CREATE TABLE IF NOT EXISTS CourseStatus(courseID CHAR(255),learnerID CHAR(255),satisfied CHAR(50) DEFAULT 'unknown',measure CHAR(50) DEFAULT 'unknown',completed CHAR(50) DEFAULT 'unknown',progmeasure CHAR(50) DEFAULT 'unknown',PRIMARY KEY (courseID, learnerID));");
-            sqlStuff2.add("CREATE TABLE IF NOT EXISTS ItemStatus(activityID INTEGER, courseID CHAR(255),learnerID CHAR(255), scaled FLOAT DEFAULT 0, raw FLOAT DEFAULT 0, min FLOAT DEFAULT 0, max FLOAT DEFAULT 0, success BOOLEAN DEFAULT FALSE, completion BOOLEAN DEFAULT FALSE, response CHAR(1024), duration CHAR(512), PRIMARY KEY (activityID, courseID, learnerID));");
+            sqlStuff2.add("CREATE TABLE IF NOT EXISTS CourseStatus(courseID CHAR(255),learnerID CHAR(255),satisfied CHAR(50) DEFAULT 'unknown',measure CHAR(50) DEFAULT 'unknown',completed CHAR(50) DEFAULT 'unknown',progmeasure CHAR(50) DEFAULT 'unknown', refStmtID CHAR(50),PRIMARY KEY (courseID, learnerID));");
+            sqlStuff2.add("CREATE TABLE IF NOT EXISTS ItemStatus(activityID INTEGER, courseID CHAR(255),learnerID CHAR(255), scaled FLOAT DEFAULT 0, raw FLOAT DEFAULT 0, min FLOAT DEFAULT 0, max FLOAT DEFAULT 0, success BOOLEAN DEFAULT FALSE, completion BOOLEAN DEFAULT FALSE, response CHAR(1024), duration CHAR(512), refStmtID CHAR(50), PRIMARY KEY (activityID, courseID, learnerID));");
             sqlStuff2.add("CREATE TABLE IF NOT EXISTS Objectives(objID LONGTEXT NOT NULL,learnerID CHAR(255) NOT NULL,satisfied CHAR(50),measure CHAR(50) DEFAULT 'unknown',scopeID CHAR(255),rawscore CHAR(50) DEFAULT 'unknown',minscore CHAR(50) DEFAULT 'unknown',maxscore CHAR(50) DEFAULT 'unknown',progressmeasure CHAR(50) DEFAULT 'unknown',completion CHAR(50) DEFAULT 'unknown',PRIMARY KEY (objID, learnerID, scopeID));");
             for (String sql: sqlStuff2){
                 stmt.executeUpdate(sql);

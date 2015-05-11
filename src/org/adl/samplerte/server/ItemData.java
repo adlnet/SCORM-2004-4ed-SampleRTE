@@ -17,6 +17,8 @@ public class ItemData {
    
    public String response = null;
    public String duration = null;
+
+   public String refStmtID;
    
    public ItemData(int id, String itemid, String title)
    {
