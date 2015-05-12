@@ -69,6 +69,11 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.tools.zip.ZipFile;
 import org.joda.time.DateTime;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -1837,7 +1842,7 @@ public class CourseService
             stmtItemStatus = objconn.prepareStatement("select * from ItemStatus where learnerID = ? AND courseID = ? AND activityID = ?");
             stmtItemStatus.setString(1, userID);
             stmtItemStatus.setString(2, courseID);
-            stmtItemStatus.setInt(3, cd.activityID);
+            stmtItemStatus.setInt(3, id.activityID);
    
             synchronized (stmtItemStatus) {
                status = stmtItemStatus.executeQuery();
@@ -1853,6 +1858,8 @@ public class CourseService
                id.min = status.getFloat("min");
                id.response = status.getString("response");
                id.duration = status.getString("duration");
+               id.refStmtID = status.getString("refStmtID");
+               id.statement = status.getString("statement");
             }
             
          }
@@ -1921,7 +1928,7 @@ public class CourseService
          
          synchronized (status) {
             status.setString(1, Boolean.toString(s.getResult().isSuccess()));
-            status.setString(2, s.getResult().getScore().getScaled()+"");
+            status.setString(2, (s.getResult().getScore() != null) ? s.getResult().getScore().getScaled()+"" : "unknown");
             status.setString(3, Boolean.toString(s.getResult().isCompletion()));
             status.setString(4, "unknown");
             status.setString(5, s.getId());
@@ -1972,8 +1979,10 @@ public class CourseService
                {
                   if (s.getResult() != null)
                   {
-                     setItemStatus(info, s, courseid, itemid, userid);
-                     break;
+                     synchronized (s) {                        
+                        setItemStatus(info, s, courseid, items.getInt("ActivityID"), userid);
+                        break;
+                     }
                   }
                }
             }
@@ -1989,25 +1998,32 @@ public class CourseService
       }
    }
    
-   private void setItemStatus(LRSInfo info, Statement s, String courseid, String itemid, String userid)
+   private void setItemStatus(LRSInfo info, Statement s, String courseid, int activityid, String userid)
    {
+//      System.out.println("CourseService.setItemStatus()-- start");
+//      System.out.println();
+//      Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//      System.out.println(gson.toJson(s));
+//      System.out.println("=========================================");
       //ItemStatus(activityID INTEGER, courseID CHAR(255),learnerID CHAR(255), scaled FLOAT DEFAULT 0, raw FLOAT DEFAULT 0, min FLOAT DEFAULT 0, max FLOAT DEFAULT 0, success BOOLEAN DEFAULT FALSE, completion BOOLEAN DEFAULT FALSE, response CHAR(1024), duration CHAR(512), refStmtID CHAR(50), PRIMARY KEY (activityID, courseID, learnerID));
       Connection objconn = LMSDatabaseHandler.getConnection(LMSDatabaseHandler.GLOBAL_OBJECTIVES);
       PreparedStatement updateItem = null;
       try {
-         updateItem = objconn.prepareStatement("update ItemStatus set scaled = ?, raw = ?, min = ?, max = ?, success = ?, completion = ?, response = ?, duration = ?, refStmtID = ? where activityID = ? and courseID = ? and learnerID =?");
-         updateItem.setFloat(1, s.getResult().getScore().getScaled());
-         updateItem.setFloat(2, s.getResult().getScore().getRaw());
-         updateItem.setFloat(3, s.getResult().getScore().getMin());
-         updateItem.setFloat(4, s.getResult().getScore().getMax());
-         updateItem.setBoolean(5, s.getResult().isSuccess());
-         updateItem.setBoolean(6, s.getResult().isCompletion());
-         updateItem.setString(7, s.getResult().getResponse());
-         updateItem.setString(8, s.getResult().getDuration());
+         updateItem = objconn.prepareStatement("update ItemStatus set scaled = ?, raw = ?, min = ?, max = ?, success = ?, completion = ?, response = ?, duration = ?, refStmtID = ?, statement = ? where activityID = ? and courseID = ? and learnerID =?");
+         updateItem.setFloat(1, (s.getResult().getScore() != null) ? s.getResult().getScore().getScaled() : 0f);
+         updateItem.setFloat(2, (s.getResult().getScore() != null) ? s.getResult().getScore().getRaw() : 0f);
+         updateItem.setFloat(3, (s.getResult().getScore() != null) ? s.getResult().getScore().getMin() : 0f);
+         updateItem.setFloat(4, (s.getResult().getScore() != null) ? s.getResult().getScore().getMax() : 0f);
+         updateItem.setBoolean(5, norm(s.getResult().isSuccess()));
+         updateItem.setBoolean(6, norm(s.getResult().isCompletion()));
+         updateItem.setString(7, norm(s.getResult().getResponse()));
+         updateItem.setString(8, norm(s.getResult().getDuration()));
          updateItem.setString(9, s.getId());
-         updateItem.setString(10, itemid);
-         updateItem.setString(11, courseid);
-         updateItem.setString(12, userid);
+         updateItem.setString(10, new Gson().toJson(s));
+         updateItem.setInt(11, activityid);
+         updateItem.setString(12, courseid);
+         updateItem.setString(13, userid);
+         updateItem.executeUpdate();
       } catch (SQLException e) {
          System.out.println("CourseService.setItemStatus() - sql exception");
          e.printStackTrace();
@@ -2017,9 +2033,18 @@ public class CourseService
             if (objconn != null) objconn.close();
          } catch (SQLException e) { }
       }
-      
+//      System.out.println("CourseService.setItemStatus() -- done");
    }
-   
+
+   private boolean norm(Boolean val) {
+      // why null Boolean why?
+      return (val == null) ? false : val;
+   }
+
+   private String norm(String st) {
+      return (st == null) ? "" : st;
+   }
+
    /**
     * Get statements by userid, 'terminated', and activityID
     * @param userid
@@ -2036,8 +2061,8 @@ public class CourseService
                      .filterByVerb(Verbs.terminated())
                      .filterByActivity(activityID)
                      .getStatements();
-         System.out.println("CourseService.getStatusStatements() - " + info);
-         System.out.println("CourseService.getStatusStatements() - res: " + res.getStatements());
+//         System.out.println("CourseService.getStatusStatements() - " + info);
+//         System.out.println("CourseService.getStatusStatements() - res: " + res.getStatements());
          if (res != null && res.getStatements() != null) 
          {
             statements = res.getStatements();
