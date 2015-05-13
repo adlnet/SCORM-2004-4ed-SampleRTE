@@ -672,8 +672,11 @@ function doRefresh()
        <table class="table" id="adminOptionsTable" width="700" class="sep" border="0" style="<%=adminTableDisplayVal %>">
           
           <tr>
-             <td width="250" colspan=3>
+             <td width="250">
                 <a href="/adl/import/createCourse.jsp">Create Course</a>
+             </td>
+             <td colspan="2">
+               <a href="/adl/LMSCourseAdmin?type=<%= ServletRequestTypes.GET_EDIT_COURSES %>">Edit Course</a>
              </td>
           </tr>  
           <tr>

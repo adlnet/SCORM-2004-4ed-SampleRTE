@@ -46,6 +46,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1881,10 +1882,53 @@ public class CourseService
       if (info == null || "".equals(info.Endpoint)) return;
       updateCourseData(info, courseid, userid);
       updateItemsData(info, courseid, userid);
-      // get statements by user and course
-      // figure out course status
-      // figure out item status.. prolly better to loop through srte's 
-      //    items and look for statements with results
+   }
+   
+   public List<CourseData> getEditableCourses() {
+      List<CourseData> courses = new ArrayList<CourseData>();
+      Connection conn = LMSDatabaseHandler.getConnection();
+      PreparedStatement getcourses = null;
+      ResultSet cset = null;
+      try {
+         getcourses = conn.prepareStatement("select CourseID, CourseTitle from CourseInfo where TOC = 0 and Start = 0;");
+         synchronized (getcourses) {
+            cset = getcourses.executeQuery();
+         }
+         while (cset.next())
+         {
+            courses.add(new CourseData(cset.getString("CourseID"), cset.getString("CourseTitle")));
+         }
+      } catch (SQLException se) {
+         
+      } finally { 
+         try {
+            if (getcourses != null) getcourses.close();
+            if (conn != null) conn.close();
+         } catch (SQLException sse) {}
+      }
+      return courses;
+   }
+   
+   public void updateCourseActiveStatus(String courseid, int active) {
+      Connection conn = LMSDatabaseHandler.getConnection();
+      PreparedStatement setactive = null;
+      try {
+         setactive = conn.prepareStatement("update CourseInfo set Active = ? where CourseID = ?");
+         
+         synchronized (setactive)
+         {
+            setactive.setInt(1, (active == 1)?1:0);
+            setactive.setString(2, courseid);
+            setactive.executeUpdate();
+         }
+      } catch (SQLException se) {
+         
+      } finally { 
+         try {
+            if (setactive != null) setactive.close();
+            if (conn != null) conn.close();
+         } catch (SQLException sse) {}
+      }
    }
    
    private void updateCourseData(LRSInfo info, String courseid, String userid)
@@ -2116,6 +2160,7 @@ public class CourseService
             cd.mImportDateTime = course.getString("ImportDateTime");
             cd.mStart = course.getBoolean("Start");
             cd.mTOC = course.getBoolean("TOC");
+            cd.active = course.getInt("Active");
          }
          
       } catch (SQLException se) {
@@ -2137,7 +2182,8 @@ public class CourseService
       PreparedStatement stmtItemInfo = null;
       ResultSet items = null;
       List<ItemData> data = new ArrayList<ItemData>();
-      try {
+      try 
+      {
          stmtItemInfo = conn.prepareStatement("select * from ItemInfo where CourseID = ? order by ItemOrder ASC");
          stmtItemInfo.setString(1, courseid);
 
@@ -2151,14 +2197,17 @@ public class CourseService
                   items.getString("Title"), items.getString("Launch")));
          }
          
-      } catch (SQLException se) {
-         
-      } finally { 
-         try {
+      } 
+      catch (SQLException se) { } 
+      finally 
+      { 
+         try 
+         {
             if (stmtItemInfo != null) stmtItemInfo.close();
             if (conn != null) conn.close();
             if (otherconn != null) LMSDBHandler.closeConnection(); //so weird
-         } catch (SQLException sse) {}
+         } 
+         catch (SQLException sse) {}
       }
 
       return data;
@@ -2169,39 +2218,42 @@ public class CourseService
       Connection conn = LMSDatabaseHandler.getConnection();
       PreparedStatement stmtCourseInfo = null;
       boolean ok = true;
-      try {
+      try 
+      {
          if (update) 
          {
             stmtCourseInfo = conn.prepareStatement("Update CourseInfo " + 
-                     "set CourseTitle = ? " +
-                     "where CourseID = ?");
+                     "set CourseTitle = ? where CourseID = ?");
             stmtCourseInfo.setString(1, cd.mCourseTitle);
             stmtCourseInfo.setString(2, cd.mCourseID);
          }
          else //insert
          {
             stmtCourseInfo = conn.prepareStatement("Insert into "
-                  + "CourseInfo(CourseID, CourseTitle, ImportDateTime, Active, Start, TOC) "
-                  + "values(?,?,?,?,?,?)");
+                  + "CourseInfo(CourseID, CourseTitle, ImportDateTime, Start, TOC) "
+                  + "values(?,?,?,?,?)");
             stmtCourseInfo.setString(1, cd.mCourseID);
             stmtCourseInfo.setString(2, cd.mCourseTitle);
             stmtCourseInfo.setString(3, cd.mImportDateTime);
-            stmtCourseInfo.setInt(4, 1); // active
-            stmtCourseInfo.setInt(5, (cd.mStart)?1:0);
-            stmtCourseInfo.setInt(6, (cd.mTOC)?1:0);
+            stmtCourseInfo.setInt(4, (cd.mStart)?1:0);
+            stmtCourseInfo.setInt(5, (cd.mTOC)?1:0);
          }
          
          synchronized (stmtCourseInfo) {
             stmtCourseInfo.execute();
          }
-      }  catch (SQLException se) {
-         ok = false;
-         
-      } finally { 
-         try {
+      }  
+      catch (SQLException se) {
+         ok = false;   
+      } 
+      finally 
+      { 
+         try 
+         {
             if (stmtCourseInfo != null) stmtCourseInfo.close();
             if (conn != null) conn.close();
-         } catch (SQLException sse) {}
+         } 
+         catch (SQLException sse) {}
       }   
       return ok;
    }

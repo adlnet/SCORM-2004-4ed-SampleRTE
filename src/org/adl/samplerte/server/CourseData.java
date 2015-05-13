@@ -130,6 +130,8 @@ public class CourseData
     */
    public String refStmtID;
    
+   public int active = 0;
+   
    /**
     * The key for this record
     */

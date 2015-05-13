@@ -143,6 +143,8 @@ public class LMSCourseAdmin extends HttpServlet
     */
    private static final String VIEW_EXT_COURSE = "/runtime/view_ext_course.jsp";
    
+   private static final String VIEW_EDITABLE_COURSES = "/admin/view_editable_courses.jsp";
+   
    /**
     * List of settings for each user that has used the system
     */
@@ -823,6 +825,28 @@ public class LMSCourseAdmin extends HttpServlet
                e.printStackTrace();
                break;
             }
+            break;
+            
+         case ServletRequestTypes.GET_EDIT_COURSES:
+            courseService = new CourseService();
+            iRequest.setAttribute("courses", courseService.getEditableCourses());
+            launchView(VIEW_EDITABLE_COURSES, iRequest, oResponse);
+            break;
+            
+         case ServletRequestTypes.PUBLISH_EXT_ITEM:
+            courseService = new CourseService();
+            courseService.updateCourseActiveStatus(iRequest.getParameter("courseID"),1);
+            cd = courseService.getCourseData(iRequest.getParameter("courseID"));
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
+            launchView(EDIT_EXT_COURSE, iRequest, oResponse);
+            break;
+            
+         case ServletRequestTypes.UNPUBLISH_EXT_ITEM:
+            courseService = new CourseService();
+            courseService.updateCourseActiveStatus(iRequest.getParameter("courseID"),0);
+            cd = courseService.getCourseData(iRequest.getParameter("courseID"));
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
+            launchView(EDIT_EXT_COURSE, iRequest, oResponse);
             break;
             
          default:

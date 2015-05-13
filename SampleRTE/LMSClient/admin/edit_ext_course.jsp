@@ -9,10 +9,12 @@
       CourseData coursedata = (CourseData)request.getAttribute("coursedata");
       String courseid = request.getParameter("courseID");
       String coursetitle = request.getParameter("courseTitle");
+      int active = -1;
       List<ItemData> items = null;
       if (coursedata != null) {
          courseid = coursedata.mCourseID;
          coursetitle = coursedata.mCourseTitle;
+         active = coursedata.active;
          items = coursedata.items;
       }
 %>
@@ -28,7 +30,33 @@
       <jsp:include page="../runtime/LMSNavigation.jsp" flush="true">
        <jsp:param value="none" name="helpURL"/>
       </jsp:include>
-      <h2>Edit an external course</h2>
+      <h2>Edit an external course
+         <% if (active == 0) {%>
+         <small>
+         <div class="row">
+            <div class="col-md-12">
+               <form method="post" action="/adl/LMSCourseAdmin" name="publish" accept-charset="utf-8">
+                  <input type="hidden" name="type" value="<%= ServletRequestTypes.PUBLISH_EXT_ITEM %>" />
+                  <input type="hidden" name="courseID" id="courseID" value="<%= courseid %>" />
+                  <button type="submit" name="submit" class="btn btn-xs btn-primary">Publish</button>
+               </form>
+            </div>
+         </div>
+         </small>
+         <% } else if (active == 1) { %>
+         <small>
+         <div class="row">
+            <div class="col-md-12">
+               <form method="post" action="/adl/LMSCourseAdmin" name="unpublish" accept-charset="utf-8">
+                  <input type="hidden" name="type" value="<%= ServletRequestTypes.UNPUBLISH_EXT_ITEM %>" />
+                  <input type="hidden" name="courseID" id="courseID" value="<%= courseid %>" />
+                  <button type="submit" name="submit" class="btn btn-xs btn-primary">Unpublish</button>
+               </form>
+            </div>
+         </div>
+         </small>
+         <% } %>
+      </h2>
       <h4><%= request.getParameter("courseID") %></h4>
       <div class="container">
          <form method="post" action="/adl/LMSCourseAdmin" name="newCourse" accept-charset="utf-8">
