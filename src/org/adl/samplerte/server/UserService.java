@@ -41,7 +41,6 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.adl.samplerte.util.Config;
 import org.adl.samplerte.util.LMSDBHandler;
 import org.adl.samplerte.util.LMSDatabaseHandler;
 
@@ -480,23 +479,27 @@ public class UserService
       }
       finally 
       {
-         try {
+         try 
+         {
             stmtDeleteUserCourse.close();
             stmtDeleteCourseStatus.close();
             stmtDeleteCourseObjectives.close();
          } 
-         catch (SQLException e) {
+         catch (SQLException e) 
+         {
             System.out.println("error UserService removeDBRefs finally");
             e.printStackTrace();
          }
       }
    }
 
-   public String changePassword(String userid, String password) {
+   public String changePassword(String userid, String password) 
+   {
       Connection connection = LMSDatabaseHandler.getConnection();
       String result = "true";
       PreparedStatement psnewpwd = null;
-      try {
+      try 
+      {
          psnewpwd = connection.prepareStatement(
                "update UserInfo set Password = ? where UserID = ?");
       
@@ -509,22 +512,30 @@ public class UserService
       }
       
       psnewpwd.close();
-      } catch (SQLException e) {
-         result = "false";
-         e.printStackTrace();
-      } catch (NoSuchAlgorithmException e) {
-         result = "false";
-         e.printStackTrace();
-      } catch (InvalidKeySpecException e) {
-         result = "false";
-         e.printStackTrace();
-      } finally 
+      } 
+      catch (SQLException e) 
       {
-         try {
-            if (psnewpwd != null)
-               psnewpwd.close();
+         result = "false";
+         e.printStackTrace();
+      } 
+      catch (NoSuchAlgorithmException e) 
+      {
+         result = "false";
+         e.printStackTrace();
+      }
+      catch (InvalidKeySpecException e) 
+      {
+         result = "false";
+         e.printStackTrace();
+      } 
+      finally 
+      {
+         try 
+         {
+            if (psnewpwd != null) psnewpwd.close();
          } 
-         catch (SQLException e) {
+         catch (SQLException e) 
+         {
             System.out.println("error UserService changePassword finally");
             e.printStackTrace();
             result = "false";
@@ -533,7 +544,8 @@ public class UserService
       return result;
    }
 
-   public boolean prepareForDirectLaunch(String userid, String courseid, String webpath) {
+   public boolean prepareForDirectLaunch(String userid, String courseid, String webpath) 
+   {
       CourseService cs = new CourseService();
       // test if user is registered for course id
       List<String> reg = cs.getRegCourses(userid);
@@ -546,7 +558,8 @@ public class UserService
       return true;
    }
 
-   public UserAgentInfo updateLRSAccountInfo(HttpServletRequest iRequest) {
+   public UserAgentInfo updateLRSAccountInfo(HttpServletRequest iRequest) 
+   {
       Connection conn = LMSDatabaseHandler.getConnection();
       UserAgentInfo info = new UserAgentInfo();
       
@@ -569,14 +582,16 @@ public class UserService
          iRequest.setAttribute("lrs-error-message", "You need to set an email or homepage and name");
          return info;
       }
-      try {
+      try
+      {
          getAccountInfo = conn.prepareStatement("select * from UserAgentInfo where UserID = ? AND AgentAlias = ?");
          insertUserAgentInfo = conn.prepareStatement("insert into UserAgentInfo(UserID, AgentAlias, Mbox, HomePage, AccName) values (?,?,?,?,?)");
          updateUserAgentInfo = conn.prepareStatement("update UserAgentInfo set Mbox = ?, HomePage = ?, AccName = ? where UserID = ? AND AgentAlias = ?");
          
          getAccountInfo.setString(1, userid);
          getAccountInfo.setString(2, alias);
-         synchronized (getAccountInfo) {
+         synchronized (getAccountInfo) 
+         {
             accInfo = getAccountInfo.executeQuery();
          }
          
@@ -588,7 +603,8 @@ public class UserService
             updateUserAgentInfo.setString(3, name);
             updateUserAgentInfo.setString(4, userid);
             updateUserAgentInfo.setString(5, alias);
-            synchronized (updateUserAgentInfo) {
+            synchronized (updateUserAgentInfo) 
+            {
                updateUserAgentInfo.executeUpdate();
             }
          }
@@ -601,7 +617,8 @@ public class UserService
             insertUserAgentInfo.setString(3, mbox);
             insertUserAgentInfo.setString(4, homepage);
             insertUserAgentInfo.setString(5, name);
-            synchronized (insertUserAgentInfo) {
+            synchronized (insertUserAgentInfo) 
+            {
                insertUserAgentInfo.executeUpdate();
             }
          }
@@ -609,17 +626,22 @@ public class UserService
          // if we got this far, the values should be saved in the db
          info = new UserAgentInfo(userid, alias, mbox, homepage, name);
          iRequest.setAttribute("lrs-ok-message", "LRS Account info successfully saved");
-      } catch (SQLException e) {
+      } 
+      catch (SQLException e) 
+      {
          iRequest.setAttribute("lrs-error-message", "Error saving your account info. Please try again. If this error presists, please contact us");
          System.out.println("UserService.updateLRSAccountInfo()");
          e.printStackTrace();
-      } finally {
-            try {
-               if (getAccountInfo != null) getAccountInfo.close();
-               if (updateUserAgentInfo != null) updateUserAgentInfo.close();
-               if (insertUserAgentInfo != null) insertUserAgentInfo.close();
-               if (conn != null) conn.close();
-            } catch (SQLException e) { }
+      } 
+      finally 
+      {
+         try 
+         {
+            if (getAccountInfo != null) getAccountInfo.close();
+            if (updateUserAgentInfo != null) updateUserAgentInfo.close();
+            if (insertUserAgentInfo != null) insertUserAgentInfo.close();
+            if (conn != null) conn.close();
+         } catch (SQLException e) { }
       }
 
       return info;
@@ -631,26 +653,34 @@ public class UserService
       Connection conn = LMSDatabaseHandler.getConnection();
       ResultSet accInfo;
       List<UserAgentInfo> infos = new ArrayList<UserAgentInfo>();
-      try {
+      try 
+      {
          getAccountInfo = conn.prepareStatement("select * from UserAgentInfo where UserID = ?");
          getAccountInfo.setString(1, userid);
-         synchronized (getAccountInfo) { 
+         synchronized (getAccountInfo) 
+         { 
             accInfo = getAccountInfo.executeQuery();
          }
          
          while(accInfo.next())
          {
-            infos.add(new UserAgentInfo(accInfo.getString("UserID"), accInfo.getString("AgentAlias"), accInfo.getString("Mbox"), accInfo.getString("HomePage"), accInfo.getString("AccName")));
+            infos.add(new UserAgentInfo(accInfo.getString("UserID"), accInfo.getString("AgentAlias"), 
+                  accInfo.getString("Mbox"), accInfo.getString("HomePage"), accInfo.getString("AccName")));
          }
          
-      } catch (SQLException e) {
+      } 
+      catch (SQLException e) 
+      {
          System.out.println("UserService.getUserAgentInfos() - sql exception");
          e.printStackTrace();
-      } finally {
-            try {
-               if (getAccountInfo != null) getAccountInfo.close();
-               if (conn != null) conn.close();
-            } catch (SQLException e) { }
+      } 
+      finally 
+      {
+         try 
+         {
+            if (getAccountInfo != null) getAccountInfo.close();
+            if (conn != null) conn.close();
+         } catch (SQLException e) { }
       }
       return infos;
    }
@@ -666,12 +696,14 @@ public class UserService
       Connection conn = LMSDatabaseHandler.getConnection();
       ResultSet accInfo;
       UserAgentInfo info = new UserAgentInfo();
-      try {
+      try 
+      {
          getAccountInfo = conn.prepareStatement("select * from UserAgentInfo where UserID = ? AND AgentAlias = ?");
          
          getAccountInfo.setString(1, userid);
          getAccountInfo.setString(2, alias);
-         synchronized (getAccountInfo) {
+         synchronized (getAccountInfo) 
+         {
             accInfo = getAccountInfo.executeQuery();
          }
          
@@ -682,14 +714,19 @@ public class UserService
             info.AccName = accInfo.getString("AccName");
             info.UserID = userid;
          }
-      } catch (SQLException e) {
+      } 
+      catch (SQLException e) 
+      {
          System.out.println("UserService.getLRSInfo()");
          e.printStackTrace();
-      } finally {
-            try {
-               if (getAccountInfo != null) getAccountInfo.close();
-               if (conn != null) conn.close();
-            } catch (SQLException e) { }
+      } 
+      finally 
+      {
+         try
+         {
+            if (getAccountInfo != null) getAccountInfo.close();
+            if (conn != null) conn.close();
+         } catch (SQLException e) { }
       }
       
       return info;

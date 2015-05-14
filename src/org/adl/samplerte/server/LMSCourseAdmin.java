@@ -810,9 +810,9 @@ public class LMSCourseAdmin extends HttpServlet
             oResponse.setContentType("application/json; charset=utf-8");
             oResponse.setCharacterEncoding("UTF-8");
             // Get the printwriter object from response to write the required json object to the output stream      
-            try {
+            try 
+            {
                PrintWriter out = oResponse.getWriter();
-            
                Gson gsondm = new Gson();
               
                StringBuilder sb = new StringBuilder();
@@ -820,10 +820,11 @@ public class LMSCourseAdmin extends HttpServlet
                sb.append(gsondm.toJson(cd));
                sb.append("}");
                out.print(sb.toString());
-            } catch (IOException e) {
+            } 
+            catch (IOException e) 
+            {
                System.out.println("LMSCourseAdmin.processRequest() - EXT_COURSE_DETAILS - error getting response writer");
                e.printStackTrace();
-               break;
             }
             break;
             

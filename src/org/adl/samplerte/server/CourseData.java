@@ -27,7 +27,6 @@ Nothing in this license impairs or restricts the author's moral rights.
 package org.adl.samplerte.server;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Encapsulation of information required for launch.<br><br>
