@@ -27,6 +27,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 package org.adl.samplerte.server;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -35,6 +36,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.adl.datamodels.datatypes.LangStringValidator;
 import org.adl.datamodels.datatypes.RealRangeValidator;
 
@@ -157,8 +159,10 @@ public class LMSUserAdmin extends HttpServlet
             userService = new UserService();
             userProfile = new UserProfile();
             userProfile = userService.getUser(iRequest.getParameter("userId"));  
+            List<UserAgentInfo> infos = userService.getUserAgentInfos(iRequest.getParameter("userId"));
             // Send the results to the JSP view
             iRequest.setAttribute("userProfile", userProfile);
+            iRequest.setAttribute("agentinfos", infos);
             iRequest.setAttribute("caller",caller);
             launchView(DSP_USERPROFILE, iRequest, oResponse);
             break;
@@ -229,6 +233,8 @@ public class LMSUserAdmin extends HttpServlet
             String errorHeader = "Please correct the following fields:  ";
             String errorMsg = "";
             userProfile = createUserProfile(iRequest);
+            userService = new UserService();
+            infos = userService.getUserAgentInfos(iRequest.getParameter("userId"));
             reqOp = "Update Profile";
             RealRangeValidator rrv = 
                                   new RealRangeValidator(new Double(0.0), null);
@@ -275,6 +281,7 @@ public class LMSUserAdmin extends HttpServlet
                iRequest.setAttribute("errorMsg", errorMsg);
                iRequest.setAttribute("errorHeader", errorHeader);
                iRequest.setAttribute("userProfile", userProfile);
+               iRequest.setAttribute("agentinfos", infos);
                launchView(DSP_USERPROFILE, iRequest, oResponse);
             }
             else
@@ -348,6 +355,24 @@ public class LMSUserAdmin extends HttpServlet
             {
                launchView("/runtime/LMSLogin2.jsp", iRequest, oResponse);
             }
+            break;
+         
+         case ServletRequestTypes.SET_LRS_INFO:
+            // clear out messages
+            iRequest.setAttribute("lrs-ok-message", "");
+            iRequest.setAttribute("lrs-error-message", "");
+            
+            userService = new UserService();
+            String userid = iRequest.getParameter("userID");
+            userService.updateLRSAccountInfo(iRequest);
+            infos = userService.getUserAgentInfos(userid);
+            userProfile = userService.getUser(userid);
+            
+            iRequest.setAttribute("userProfile", userProfile);
+            iRequest.setAttribute("agentinfos", infos);
+            iRequest.setAttribute("caller",caller);
+            
+            launchView(DSP_USERPROFILE, iRequest, oResponse);
             break;
             
          default: 

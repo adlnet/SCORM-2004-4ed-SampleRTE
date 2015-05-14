@@ -313,5 +313,10 @@ public class ServletRequestTypes implements Serializable
    public static final int ADD_EXT_ITEM = 42;
    public static final int UPDATE_EXT_ITEM = 43;
    public static final int EXT_COURSE_DETAILS = 44;
+   public static final int UPDATE_EXT_COURSE_STATUS = 45;
+   public static final int SET_LRS_INFO = 46;
+   public static final int GET_EDIT_COURSES = 47;
+   public static final int PUBLISH_EXT_ITEM = 49;
+   public static final int UNPUBLISH_EXT_ITEM = 50;
 
 } // end ServletRequestTypes

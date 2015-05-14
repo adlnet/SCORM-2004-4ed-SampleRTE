@@ -26,6 +26,13 @@ Nothing in this license impairs or restricts the author's moral rights.
 
 package org.adl.samplerte.server;
 
+import gov.adlnet.xapi.client.StatementClient;
+import gov.adlnet.xapi.model.Account;
+import gov.adlnet.xapi.model.Agent;
+import gov.adlnet.xapi.model.Statement;
+import gov.adlnet.xapi.model.StatementResult;
+import gov.adlnet.xapi.model.Verbs;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,11 +46,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.adl.samplerte.util.Config;
 import org.adl.samplerte.util.LMSDBHandler;
 import org.adl.samplerte.util.LMSDatabaseHandler;
 import org.adl.samplerte.util.RTEFileHandler;
@@ -56,7 +66,9 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory; 
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.tools.zip.ZipFile;
+import org.joda.time.DateTime;
+
+import com.google.gson.Gson;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -82,8 +94,22 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author ADL Technical Team
  */
+/**
+ * @author creightt
+ *
+ */
 public class CourseService
 {
+   private final class SortStmtByLatest implements Comparator<Statement> 
+   {
+      @Override
+      public int compare(Statement o1, Statement o2) 
+      {
+         // i want reverse newest first
+         return -1 * new DateTime(o1.getTimestamp()).compareTo(new DateTime(o2.getTimestamp()));
+      }
+   }
+
    /**
     * The string containing the name of the SampleRTEFiles directory.
     */
@@ -1692,8 +1718,9 @@ public class CourseService
       cd.mCourseTitle = courseTitle;
       cd.mImportDateTime = DateFormat.getDateTimeInstance().format(new Date());
 
-      if (! updateCourse(cd, false)){
-         return null; // dunno what happened, give em null
+      if (! updateCourse(cd, false))
+      {
+         return null;
       }
 
       return cd;
@@ -1701,7 +1728,8 @@ public class CourseService
 
    public CourseData updateCourse(String courseID, String courseTitle) 
    {
-      if (! updateCourse(new CourseData(courseID, courseTitle), true)) {
+      if (! updateCourse(new CourseData(courseID, courseTitle), true)) 
+      {
          return null;
       }
       
@@ -1715,7 +1743,8 @@ public class CourseService
       Connection conn = LMSDatabaseHandler.getConnection();
       PreparedStatement stmtItemInfo = null;
       boolean fail = false;
-      try {
+      try 
+      {
          stmtItemInfo = conn.prepareStatement("Insert into ItemInfo(CourseID, ItemIdentifier, Title, Launch, ItemOrder) values(?,?,?,?,?)");
          stmtItemInfo.setString(1, courseID);
          stmtItemInfo.setString(2, itemID);
@@ -1723,16 +1752,23 @@ public class CourseService
          stmtItemInfo.setString(4, itemLaunch);
          stmtItemInfo.setInt(5, items.size());
          
-         synchronized (stmtItemInfo) {
+         synchronized (stmtItemInfo) 
+         {
             stmtItemInfo.execute();
          }
-      } catch (SQLException se) {
+      } 
+      catch (SQLException se) 
+      {
          fail = true;
-      } finally {
-         try {
+      } 
+      finally
+      {
+         try 
+         {
             if (stmtItemInfo != null) stmtItemInfo.close();
             if (conn != null) conn.close();
-         } catch (SQLException sse) {}
+         } 
+         catch (SQLException sse) {}
       }
       if (fail) return null;
       return getCourseData(courseID);
@@ -1743,7 +1779,8 @@ public class CourseService
       Connection conn = LMSDatabaseHandler.getConnection();
       PreparedStatement stmtItemInfo = null;
       boolean fail = false;
-      try {
+      try 
+      {
          stmtItemInfo = conn.prepareStatement("Update ItemInfo "
                                           + "set ItemIdentifier = ?, Title = ?, Launch = ? "
                                           + "where CourseID = ?");
@@ -1752,16 +1789,23 @@ public class CourseService
          stmtItemInfo.setString(3, itemLaunch);
          stmtItemInfo.setString(4, courseID);
 
-         synchronized (stmtItemInfo) {
+         synchronized (stmtItemInfo) 
+         {
             stmtItemInfo.execute();
          }
-      }  catch (SQLException se) {
+      }  
+      catch (SQLException se) 
+      {
          fail = true;
-      } finally {
-         try {
+      } 
+      finally 
+      {
+         try 
+         {
             if (stmtItemInfo != null) stmtItemInfo.close();
             if (conn != null) conn.close();
-         } catch (SQLException sse) {}
+         } 
+         catch (SQLException sse) {}
       }
 
       if (fail) return null;
@@ -1771,8 +1815,7 @@ public class CourseService
    public CourseData getCourseData(String courseID) 
    {
       CourseData cd = getCourseInfo(courseID);
-      if (cd != null)
-         cd.items = getItems(cd.mCourseID);
+      if (cd != null) cd.items = getItems(cd.mCourseID);
       return cd;
    }
    
@@ -1782,6 +1825,7 @@ public class CourseService
       Connection objconn = LMSDatabaseHandler.getConnection(LMSDatabaseHandler.GLOBAL_OBJECTIVES);
       PreparedStatement stmtCourseStatus = null;
       ResultSet cstatus = null;
+      
       PreparedStatement stmtItemStatus = null;
       ResultSet status = null;
       try {
@@ -1789,7 +1833,8 @@ public class CourseService
          stmtCourseStatus.setString(1, userID);
          stmtCourseStatus.setString(2, courseID);
          
-         synchronized (stmtCourseStatus) {
+         synchronized (stmtCourseStatus) 
+         {
             cstatus = stmtCourseStatus.executeQuery();
          }
          
@@ -1800,23 +1845,28 @@ public class CourseService
             cd.mMeasure = cstatus.getString("measure");
             cd.mProgMeasure = cstatus.getString("progmeasure");
          }
-      } catch (SQLException se) {
-         
-      } finally { 
-         try {
+      } 
+      catch (SQLException se) {} 
+      finally 
+      { 
+         try 
+         {
             if (stmtCourseStatus != null) stmtCourseStatus.close();
-         } catch (SQLException sse) {}
+         } 
+         catch (SQLException sse) {}
       }
       
-      try {
+      try 
+      {
          for (ItemData id : cd.items)
          {
             stmtItemStatus = objconn.prepareStatement("select * from ItemStatus where learnerID = ? AND courseID = ? AND activityID = ?");
             stmtItemStatus.setString(1, userID);
             stmtItemStatus.setString(2, courseID);
-            stmtItemStatus.setInt(3, cd.activityID);
+            stmtItemStatus.setInt(3, id.activityID);
    
-            synchronized (stmtItemStatus) {
+            synchronized (stmtItemStatus) 
+            {
                status = stmtItemStatus.executeQuery();
             }
    
@@ -1830,19 +1880,312 @@ public class CourseService
                id.min = status.getFloat("min");
                id.response = status.getString("response");
                id.duration = status.getString("duration");
+               id.refStmtID = status.getString("refStmtID");
+               id.statement = status.getString("statement");
             }
             
          }
-      } catch (SQLException se) {
-         
-      } finally { 
-         try {
+      } 
+      catch (SQLException se) {} 
+      finally 
+      { 
+         try 
+         {
             if (stmtCourseStatus != null) stmtCourseStatus.close();
             if (stmtItemStatus != null) stmtItemStatus.close();
             if (objconn != null) objconn.close();
-         } catch (SQLException sse) {}
+         } 
+         catch (SQLException sse) {}
       }
       return cd;
+   }
+   
+   public void updateCourseStatus(String courseid, String userid) 
+   {
+      LRSInfo info = Config.getLRSInfo();
+      if (info == null || "".equals(info.Endpoint)) return;
+      
+      updateCourseData(info, courseid, userid);
+      updateItemsData(info, courseid, userid);
+   }
+   
+   public List<CourseData> getEditableCourses() 
+   {
+      List<CourseData> courses = new ArrayList<CourseData>();
+      Connection conn = LMSDatabaseHandler.getConnection();
+      PreparedStatement getcourses = null;
+      ResultSet cset = null;
+      try 
+      {
+         getcourses = conn.prepareStatement("select CourseID, CourseTitle from CourseInfo where TOC = 0 and Start = 0;");
+         synchronized (getcourses) 
+         {
+            cset = getcourses.executeQuery();
+         }
+         while (cset.next())
+         {
+            courses.add(new CourseData(cset.getString("CourseID"), cset.getString("CourseTitle")));
+         }
+      } 
+      catch (SQLException se) {} 
+      finally 
+      { 
+         try 
+         {
+            if (getcourses != null) getcourses.close();
+            if (conn != null) conn.close();
+         } 
+         catch (SQLException sse) {}
+      }
+      return courses;
+   }
+   
+   public void updateCourseActiveStatus(String courseid, int active) 
+   {
+      Connection conn = LMSDatabaseHandler.getConnection();
+      PreparedStatement setactive = null;
+      try 
+      {
+         setactive = conn.prepareStatement("update CourseInfo set Active = ? where CourseID = ?");
+         
+         synchronized (setactive)
+         {
+            setactive.setInt(1, (active == 1) ? 1 : 0);
+            setactive.setString(2, courseid);
+            setactive.executeUpdate();
+         }
+      } 
+      catch (SQLException se) {} 
+      finally 
+      { 
+         try 
+         {
+            if (setactive != null) setactive.close();
+            if (conn != null) conn.close();
+         } 
+         catch (SQLException sse) {}
+      }
+   }
+   
+   private void updateCourseData(LRSInfo info, String courseid, String userid)
+   {
+      ArrayList<Statement> statements = new ArrayList<Statement>();
+      List<UserAgentInfo> agents = new UserService().getUserAgentInfos(userid);
+      for (UserAgentInfo ag : agents)
+      {
+         statements.addAll(getStatusStatements(info, getAgent(ag), courseid));
+      }
+      if (statements.isEmpty())
+      {
+         System.out.println("CourseService.updateCourseData() - no statements\nlrs: " + info.Endpoint + "\ncourseid: " + courseid + "\nuserid: " + userid);
+         return;
+      }
+      Collections.sort(statements, new SortStmtByLatest());
+      for (Statement s : statements)
+      {
+         if (s.getResult() != null)
+         {
+            setCourseStatus(s, courseid, userid);
+            break;
+         }
+      }
+   }
+   
+   /**
+    * only gets the results from a statement for status
+    * doesn't deal with progress measure (which is a different statement)
+    * @param s
+    * @param courseid
+    * @param userid
+    */
+   private void setCourseStatus(Statement s, String courseid, String userid)
+   {
+      Connection conn = LMSDatabaseHandler.getConnection(LMSDatabaseHandler.GLOBAL_OBJECTIVES);
+      PreparedStatement status = null;
+      try 
+      {
+         status = conn.prepareStatement("update CourseStatus set satisfied = ?, measure = ?, completed = ?, progmeasure = ?, refStmtID = ? where courseID = ? and learnerID = ?");
+         
+         synchronized (status) {
+            status.setString(1, Boolean.toString(s.getResult().isSuccess()));
+            status.setString(2, (s.getResult().getScore() != null) ? s.getResult().getScore().getScaled()+"" : "unknown");
+            status.setString(3, Boolean.toString(s.getResult().isCompletion()));
+            status.setString(4, "unknown");
+            status.setString(5, s.getId());
+            status.setString(6, courseid);
+            status.setString(7, userid);
+            status.executeUpdate();
+         }
+      } 
+      catch (SQLException e) {
+         System.out.println("CourseService.setCourseStatus() - sqlexception\ncourseid: " + courseid + "\nuserid: " + userid);
+         e.printStackTrace();
+      } 
+      finally 
+      {
+         try 
+         {
+            if (status != null) status.close();
+            if (conn != null) conn.close();
+         } 
+         catch (SQLException e) { }
+      }
+   }
+   
+   private void updateItemsData(LRSInfo info, String courseid, String userid)
+   {
+      List<UserAgentInfo> agents = new UserService().getUserAgentInfos(userid);
+      Connection srteconn = LMSDatabaseHandler.getConnection();
+      PreparedStatement getItems = null;
+      ResultSet items = null;
+      
+      try 
+      {
+         getItems = srteconn.prepareStatement("select * from ItemInfo where CourseID = ?");
+         getItems.setString(1, courseid);
+         synchronized (getItems) 
+         {
+            items = getItems.executeQuery();
+         
+            while (items.next())
+            {
+               String itemid = items.getString("ItemIdentifier");
+               ArrayList<Statement> statements = new ArrayList<Statement>();
+               for (UserAgentInfo ag : agents)
+               {
+                  statements.addAll(getStatusStatements(info, getAgent(ag), itemid));
+               }
+               if (statements.isEmpty())
+               {
+                  System.out.println("CourseService.updateCourseData() - no statements\nlrs: " + info.Endpoint + "\nitemid: " + itemid + "\nuserid: " + userid);
+                  continue;
+               }
+               Collections.sort(statements, new SortStmtByLatest());
+               for (Statement s : statements)
+               {
+                  if (s.getResult() != null)
+                  {
+                     synchronized (s) 
+                     {                        
+                        setItemStatus(info, s, courseid, items.getInt("ActivityID"), userid);
+                        break;
+                     }
+                  }
+               }
+            }
+         }
+      } 
+      catch (SQLException e) {
+         e.printStackTrace();
+      } 
+      finally 
+      {
+         try 
+         {
+            if (getItems != null) getItems.close();
+            if (srteconn != null) srteconn.close();
+         } 
+         catch (SQLException e) { }
+      }
+   }
+   
+   private void setItemStatus(LRSInfo info, Statement s, String courseid, int activityid, String userid)
+   {
+      Connection objconn = LMSDatabaseHandler.getConnection(LMSDatabaseHandler.GLOBAL_OBJECTIVES);
+      PreparedStatement updateItem = null;
+      try 
+      {
+         updateItem = objconn.prepareStatement("update ItemStatus set scaled = ?, raw = ?, min = ?, max = ?, success = ?, completion = ?, response = ?, "
+               + "duration = ?, refStmtID = ?, statement = ? where activityID = ? and courseID = ? and learnerID = ?");
+         updateItem.setFloat(1, (s.getResult().getScore() != null) ? s.getResult().getScore().getScaled() : 0f);
+         updateItem.setFloat(2, (s.getResult().getScore() != null) ? s.getResult().getScore().getRaw() : 0f);
+         updateItem.setFloat(3, (s.getResult().getScore() != null) ? s.getResult().getScore().getMin() : 0f);
+         updateItem.setFloat(4, (s.getResult().getScore() != null) ? s.getResult().getScore().getMax() : 0f);
+         updateItem.setBoolean(5, norm(s.getResult().isSuccess()));
+         updateItem.setBoolean(6, norm(s.getResult().isCompletion()));
+         updateItem.setString(7, norm(s.getResult().getResponse()));
+         updateItem.setString(8, norm(s.getResult().getDuration()));
+         updateItem.setString(9, s.getId());
+         updateItem.setString(10, new Gson().toJson(s));
+         updateItem.setInt(11, activityid);
+         updateItem.setString(12, courseid);
+         updateItem.setString(13, userid);
+         updateItem.executeUpdate();
+      } 
+      catch (SQLException e)
+      {
+         System.out.println("CourseService.setItemStatus() - sql exception");
+         e.printStackTrace();
+      }
+      finally 
+      {
+         try 
+         {
+            if (updateItem != null) updateItem.close();
+            if (objconn != null) objconn.close();
+         } 
+         catch (SQLException e) { }
+      }
+   }
+
+   private boolean norm(Boolean val) 
+   {
+      // why null Boolean why?
+      return (val == null) ? false : val;
+   }
+
+   private String norm(String st)
+   {
+      return (st == null) ? "" : st;
+   }
+
+   /**
+    * Get statements by userid, 'terminated', and activityID
+    * @param userid
+    * @param activityID
+    * @return StatementResults or null
+    */
+   private ArrayList<Statement> getStatusStatements(LRSInfo info, Agent agent, String activityID)
+   {
+      StatementResult res = null;
+      ArrayList<Statement> statements = new ArrayList<Statement>();
+      try 
+      {
+         res =  new StatementClient(info.Endpoint, info.UserName, info.Password)
+                     .filterByActor(agent)
+                     .filterByVerb(Verbs.terminated())
+                     .filterByActivity(activityID)
+                     .getStatements();
+         if (res != null && res.getStatements() != null) 
+         {
+            statements = res.getStatements();
+            while (res.hasMore())
+            {
+               res = new StatementClient(info.Endpoint, info.UserName, info.Password)
+                        .filterByActor(agent)
+                        .filterByVerb(Verbs.terminated())
+                        .filterByActivity(activityID)
+                        .getStatements();
+               statements.addAll(res.getStatements());
+            }
+            
+         }
+      } 
+      catch (IOException e) 
+      {
+         System.out.println("CourseService.getStatusStatements() -- getting xapi statements threw an IO");
+         e.printStackTrace();
+      }
+      return statements;
+   }
+   
+   private Agent getAgent(UserAgentInfo agentInfo)
+   {
+      if (agentInfo.Mbox == null || "".equals(agentInfo.Mbox))
+      {
+         return new Agent("", new Account(agentInfo.AccName, agentInfo.HomePage));
+      }
+      return new Agent("", agentInfo.Mbox);
    }
 
    private CourseData getCourseInfo(String courseID) 
@@ -1851,10 +2194,12 @@ public class CourseService
       CourseData cd = new CourseData();
       PreparedStatement stmtCourseInfo = null;
       ResultSet course = null;
-      try {
+      try 
+      {
          stmtCourseInfo = conn.prepareStatement("select * from CourseInfo where CourseID = ?");
          stmtCourseInfo.setString(1, courseID);
-         synchronized (stmtCourseInfo) {
+         synchronized (stmtCourseInfo) 
+         {
             course = stmtCourseInfo.executeQuery();
          }
          
@@ -1865,15 +2210,21 @@ public class CourseService
             cd.mImportDateTime = course.getString("ImportDateTime");
             cd.mStart = course.getBoolean("Start");
             cd.mTOC = course.getBoolean("TOC");
+            cd.active = course.getInt("Active");
          }
-         
-      } catch (SQLException se) {
+      }
+      catch (SQLException se)
+      {
          cd = null;
-      } finally { 
-         try {
+      } 
+      finally 
+      { 
+         try 
+         {
             if (stmtCourseInfo != null) stmtCourseInfo.close();
             if (conn != null) conn.close();
-         } catch (SQLException sse) {}
+         } 
+         catch (SQLException sse) {}
       }
 
       return cd;
@@ -1882,15 +2233,17 @@ public class CourseService
    private List<ItemData> getItems(String courseid) 
    {
       Connection conn = LMSDatabaseHandler.getConnection();
-      Connection otherconn = LMSDBHandler.getConnection();
+      Connection otherconn = LMSDatabaseHandler.getConnection(LMSDatabaseHandler.GLOBAL_OBJECTIVES);
       PreparedStatement stmtItemInfo = null;
       ResultSet items = null;
       List<ItemData> data = new ArrayList<ItemData>();
-      try {
+      try 
+      {
          stmtItemInfo = conn.prepareStatement("select * from ItemInfo where CourseID = ? order by ItemOrder ASC");
          stmtItemInfo.setString(1, courseid);
 
-         synchronized (stmtItemInfo) {
+         synchronized (stmtItemInfo) 
+         {
             items = stmtItemInfo.executeQuery();
          }
 
@@ -1900,14 +2253,17 @@ public class CourseService
                   items.getString("Title"), items.getString("Launch")));
          }
          
-      } catch (SQLException se) {
-         
-      } finally { 
-         try {
+      } 
+      catch (SQLException se) { } 
+      finally 
+      { 
+         try 
+         {
             if (stmtItemInfo != null) stmtItemInfo.close();
             if (conn != null) conn.close();
-            if (otherconn != null) LMSDBHandler.closeConnection(); //so weird
-         } catch (SQLException sse) {}
+            if (otherconn != null) otherconn.close();
+         } 
+         catch (SQLException sse) {}
       }
 
       return data;
@@ -1918,39 +2274,43 @@ public class CourseService
       Connection conn = LMSDatabaseHandler.getConnection();
       PreparedStatement stmtCourseInfo = null;
       boolean ok = true;
-      try {
+      try 
+      {
          if (update) 
          {
             stmtCourseInfo = conn.prepareStatement("Update CourseInfo " + 
-                     "set CourseTitle = ? " +
-                     "where CourseID = ?");
+                     "set CourseTitle = ? where CourseID = ?");
             stmtCourseInfo.setString(1, cd.mCourseTitle);
             stmtCourseInfo.setString(2, cd.mCourseID);
          }
          else //insert
          {
             stmtCourseInfo = conn.prepareStatement("Insert into "
-                  + "CourseInfo(CourseID, CourseTitle, ImportDateTime, Active, Start, TOC) "
-                  + "values(?,?,?,?,?,?)");
+                  + "CourseInfo(CourseID, CourseTitle, ImportDateTime, Start, TOC) "
+                  + "values(?,?,?,?,?)");
             stmtCourseInfo.setString(1, cd.mCourseID);
             stmtCourseInfo.setString(2, cd.mCourseTitle);
             stmtCourseInfo.setString(3, cd.mImportDateTime);
-            stmtCourseInfo.setInt(4, 1); // active
-            stmtCourseInfo.setInt(5, (cd.mStart)?1:0);
-            stmtCourseInfo.setInt(6, (cd.mTOC)?1:0);
+            stmtCourseInfo.setInt(4, (cd.mStart)?1:0);
+            stmtCourseInfo.setInt(5, (cd.mTOC)?1:0);
          }
          
-         synchronized (stmtCourseInfo) {
+         synchronized (stmtCourseInfo) 
+         {
             stmtCourseInfo.execute();
          }
-      }  catch (SQLException se) {
-         ok = false;
-         
-      } finally { 
-         try {
+      }  
+      catch (SQLException se) {
+         ok = false;   
+      } 
+      finally 
+      { 
+         try 
+         {
             if (stmtCourseInfo != null) stmtCourseInfo.close();
             if (conn != null) conn.close();
-         } catch (SQLException sse) {}
+         } 
+         catch (SQLException sse) {}
       }   
       return ok;
    }
