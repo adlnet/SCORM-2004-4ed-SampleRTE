@@ -145,7 +145,8 @@
     		   $('#response_'+item.activityID).text(item.response);
     		   $('#duration_'+item.activityID).text(item.duration);
     		   $('#refStmtID_'+item.activityID).text(item.refStmtID);
-    		   $('#stmt_'+item.activityID).text(JSON.stringify(JSON.parse(item.statement), null, 4));
+    		   if (item.statement)
+    			   $('#stmt_'+item.activityID).text(JSON.stringify(JSON.parse(item.statement), null, 4));
     	   }
       }
    </script>
