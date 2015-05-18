@@ -269,15 +269,14 @@ Nothing in this license impairs or restricts the author's moral rights.
       
       bodyString = header + status + "<br>" + body + closing;      
 %>
-
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>SCORM 2004 4th Edition Sample Run-Time Environment Version 1.1.1 - 
-    Import Course</title>
+    <title>Import Course</title>
     <link href="/adl/includes/sampleRTE_style.css" rel="stylesheet" type="text/css">
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
-<body bgcolor="#FFFFFF">
+<body bgcolor="#FFFFFF" style="margin-top:4.5em;">
 
 <jsp:include page="../runtime/LMSNavigation.jsp" flush="true">
     <jsp:param value="" name="helpURL"/>

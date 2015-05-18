@@ -213,8 +213,7 @@ public class RTEFileHandler
       }
       catch(Exception e)
       {            
-         System.out.println("Error deleting files during un-registration");
-         e.printStackTrace();
+         // files missing or none to begin with.. do nothing
       }
    }
 

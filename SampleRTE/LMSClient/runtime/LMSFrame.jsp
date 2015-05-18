@@ -690,7 +690,7 @@ Nothing in this license impairs or restricts the author's moral rights.
 				</tr>
 				<tr>
 					<td align="center">
-						<input class="btn btn-default" type="button" value="Log In" id="login" name="login"
+						<input class="btn btn-default" type="button" value="Start" id="login" name="login"
 							onclick="return login_onclick();" />
 					</td>
 					<td align="left">

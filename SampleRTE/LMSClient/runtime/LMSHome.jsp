@@ -117,16 +117,29 @@ Nothing in this license impairs or restricts the author's moral rights.
       String status = "";
       
       String checked = "";
-
-      String startCourse = (start) ? "<a href='runtime/sequencingEngine.jsp?courseID="
-            + courseID + "&courseTitle=" + courseTitle +"'>Start Course</a>" : "Start Course";
-            
-	  startCourse = (resume) ? "<a href='runtime/sequencingEngine.jsp?courseID="
-            + courseID + "&courseTitle=" + courseTitle +"'>Resume Course</a>" : startCourse;           
-            
-	  String toc = (TOC) ? "<a href='runtime/sequencingEngine.jsp?courseID="
-            + courseID + "&courseTitle=" + courseTitle + "&viewTOC=true" +"'>View Table Of Contents</a>" : "View Table Of Contents";
-
+      
+      String launch = "";
+      
+      if (!start && !resume && !TOC)
+      {
+         launch = "<td colspan='2' align='center'>" + 
+		               "<br/>" + "<a href='LMSCourseAdmin?type=44&courseID=" + courseID + "&userID=" + userID +"'>View Details</a>" +
+		            "</td>";
+      }
+      else
+      {
+	      String startCourse = (start) ? "<a href='runtime/sequencingEngine.jsp?courseID="
+	            + courseID + "&courseTitle=" + courseTitle +"'>Start Course</a>" : "Start Course";
+	            
+		  startCourse = (resume) ? "<a href='runtime/sequencingEngine.jsp?courseID="
+	            + courseID + "&courseTitle=" + courseTitle +"'>Resume Course</a>" : startCourse;           
+	            
+		  String toc = (TOC) ? "<a href='runtime/sequencingEngine.jsp?courseID="
+	            + courseID + "&courseTitle=" + courseTitle + "&viewTOC=true" +"'>View Table Of Contents</a>" : "View Table Of Contents";
+	     launch = "<td colspan='2' align='center'>" + 
+		              "<br/>" + startCourse + "&nbsp;&nbsp;|&nbsp;&nbsp;" + toc +  
+		           "</td>";
+      }
 	  // Registered Courses      
       if(registered)
       {
@@ -141,16 +154,23 @@ Nothing in this license impairs or restricts the author's moral rights.
          			"<b><label for='" + courseID+ "'>" + courseTitle + "</label></b>" +
          			"<br/>Imported On: " + importDateTime +         			
          		"</td>" +         	 
-         		"<td colspan='2' align='center'>" + 
-         			"<br/>" + startCourse + "&nbsp;&nbsp;|&nbsp;&nbsp;" + toc +  
-      			"</td>" +
-         	"</tr>" +
-         	"<tr bgcolor='" + regColor + "'>" + 
-	         	"<td>&nbsp;</td>" +
-	         	"<td colspan='4'>" +
-	         		"<a href=\"javascript:showHideStatus(" + status + ", '" + courseID + "')\">Show/Hide Course Status</a>" +
-	      		"</td>" +
-	      	"</tr>" +
+         		launch +
+         	"</tr>" + 
+         	((!start && !resume && !TOC) ?
+        	   "<tr bgcolor='" + regColor + "'>" + 
+               "<td>&nbsp;</td>" +
+               "<td colspan='4'>" +
+                  "<em>View Details to see course status</em>" +
+               "</td>" +
+            "</tr>" 
+	      	:
+	      	"<tr bgcolor='" + regColor + "'>" + 
+               "<td>&nbsp;</td>" +
+               "<td colspan='4'>" +
+                  "<a href=\"javascript:showHideStatus(" + status + ", '" + courseID + "')\">Show/Hide Course Status</a>" +
+               "</td>" +
+            "</tr>"
+            ) +
 	      	"<tr class = " + status + " style='display: none' bgcolor='" + regColor + "'>" +
 	      		"<td>&nbsp;</td>" +       	 
 	      		"<td><b><i>Satisfied</i></b></td>" +
@@ -236,7 +256,6 @@ Nothing in this license impairs or restricts the author's moral rights.
                     " | " + 
                     "<a href=\"/adl/LMSCourseAdmin?type=" + ServletRequestTypes.PROC_SORT_COURSE + "&userID=" + userID + "&sortType=RE_name\">Name</a>" + 
                  "</font>" +
-                 "<br /><hr />" +
              "</td>" +
          "</tr>" + regformBody;
    }
@@ -251,7 +270,6 @@ Nothing in this license impairs or restricts the author's moral rights.
                    " | " + 
                    "<a href=\"/adl/LMSCourseAdmin?type=" + ServletRequestTypes.PROC_SORT_COURSE + "&userID=" + userID + "&sortType=UN_name\">Name</a>" + 
                 "</font>" +
-                "<br /><hr />" +
              "</td>" +
          "</tr>" + unregformBody;
    }
@@ -652,7 +670,15 @@ function doRefresh()
           <b><font size='3'>Administrative Options</font></b><font size='1'>&nbsp;<a href="javascript:showHideAdminTable()">Show/Hide</a>&nbsp;</font>
        </div>
        <table class="table" id="adminOptionsTable" width="700" class="sep" border="0" style="<%=adminTableDisplayVal %>">
-
+          
+          <tr>
+             <td width="250">
+                <a href="/adl/import/createCourse.jsp">Create Course</a>
+             </td>
+             <td colspan="2">
+               <a href="/adl/LMSCourseAdmin?type=<%= ServletRequestTypes.GET_EDIT_COURSES %>">Edit Course</a>
+             </td>
+          </tr>  
           <tr>
              <td width="250">
                 <a href="/adl/import/importCourse.jsp">Import Course</a>

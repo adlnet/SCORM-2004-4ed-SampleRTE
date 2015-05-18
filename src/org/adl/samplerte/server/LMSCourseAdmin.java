@@ -27,11 +27,13 @@ Nothing in this license impairs or restricts the author's moral rights.
 package org.adl.samplerte.server;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
-
 import java.io.File;
 
 import javax.servlet.RequestDispatcher;
@@ -40,11 +42,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.adl.samplerte.util.Config;
 import org.adl.util.decode.decodeHandler;
 import org.adl.validator.util.ResultCollection;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
+
+import com.google.gson.Gson;
 
 /**
  * <strong>Filename: </strong> LMSCourseAdmin <br>
@@ -127,6 +132,18 @@ public class LMSCourseAdmin extends HttpServlet
     * String Constant for the import results page
     */
    private static final String IMPORT_RESULTS = "/import/dsp_importResults.jsp"; 
+   
+   /**
+    * Path to edit external course jsp 
+    */
+   private static final String EDIT_EXT_COURSE = "/admin/edit_ext_course.jsp";
+   
+   /**
+    * Path to view external course jsp
+    */
+   private static final String VIEW_EXT_COURSE = "/runtime/view_ext_course.jsp";
+   
+   private static final String VIEW_EDITABLE_COURSES = "/admin/view_editable_courses.jsp";
    
    /**
     * List of settings for each user that has used the system
@@ -258,7 +275,8 @@ public class LMSCourseAdmin extends HttpServlet
       {
          sType = "999";
       }
-      int type = Integer.parseInt(sType);  
+      int type = Integer.parseInt(sType); 
+      
       switch ( type )
       {
          case ServletRequestTypes.GET_COURSES:
@@ -345,7 +363,7 @@ public class LMSCourseAdmin extends HttpServlet
 
          case ServletRequestTypes.GO_HOME:
             courseService = new CourseService();
-
+            
             userID = iRequest.getParameter("userID");
             courses = new Vector();
             
@@ -736,7 +754,102 @@ public class LMSCourseAdmin extends HttpServlet
             
             break;
     
+         case ServletRequestTypes.CREATE_NEW_COURSE:
+            courseService = new CourseService();
+            cd = courseService.createCourse(iRequest.getParameter("courseID"), iRequest.getParameter("courseTitle"));
+            if (cd == null) {
+               launchView("/import/createCourse.jsp", iRequest, oResponse);
+            } else {
+               iRequest.setAttribute("coursedata", cd);
+               launchView(EDIT_EXT_COURSE, iRequest, oResponse);
+            }          
+            break;
+         
+         case ServletRequestTypes.UPDATE_EXT_COURSE:
+            courseService = new CourseService();
+            cd = courseService.updateCourse(iRequest.getParameter("courseID"),iRequest.getParameter("courseTitle"));
+            
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
+            launchView(EDIT_EXT_COURSE, iRequest, oResponse);
+            
+            break;
+            
+         case ServletRequestTypes.ADD_EXT_ITEM:
+            courseService = new CourseService();
+            cd = courseService.addCourseItem(iRequest.getParameter("courseID"), 
+                  iRequest.getParameter("itemID"), iRequest.getParameter("itemTitle"), iRequest.getParameter("itemLaunch"));
+            
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
+            launchView(EDIT_EXT_COURSE, iRequest, oResponse);
+            
+            break;
+            
+         case ServletRequestTypes.UPDATE_EXT_ITEM:
+            courseService = new CourseService();
+            cd = courseService.updateCourseItem(iRequest.getParameter("courseID"), 
+                  iRequest.getParameter("itemID"), iRequest.getParameter("itemTitle"), iRequest.getParameter("itemLaunch"));
+            
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
+            launchView(EDIT_EXT_COURSE, iRequest, oResponse);
+            break;
+            
+         case ServletRequestTypes.EXT_COURSE_DETAILS:
+            courseService = new CourseService();
+            cd = courseService.getCourseData(iRequest.getParameter("courseID"), iRequest.getParameter("userID"));
+            
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
+            launchView(VIEW_EXT_COURSE, iRequest, oResponse);
+            break;
+            
+         case ServletRequestTypes.UPDATE_EXT_COURSE_STATUS:
+            courseService = new CourseService();
+            courseService.updateCourseStatus(iRequest.getParameter("courseID"), iRequest.getParameter("userID"));
+            cd = courseService.getCourseData(iRequest.getParameter("courseID"), iRequest.getParameter("userID"));
+            cd = (cd == null) ? new CourseData() : cd;
 
+            oResponse.setContentType("application/json; charset=utf-8");
+            oResponse.setCharacterEncoding("UTF-8");
+            // Get the printwriter object from response to write the required json object to the output stream      
+            try 
+            {
+               PrintWriter out = oResponse.getWriter();
+               Gson gsondm = new Gson();
+              
+               StringBuilder sb = new StringBuilder();
+               sb.append("{\"coursedata\":");
+               sb.append(gsondm.toJson(cd));
+               sb.append("}");
+               out.print(sb.toString());
+            } 
+            catch (IOException e) 
+            {
+               System.out.println("LMSCourseAdmin.processRequest() - EXT_COURSE_DETAILS - error getting response writer");
+               e.printStackTrace();
+            }
+            break;
+            
+         case ServletRequestTypes.GET_EDIT_COURSES:
+            courseService = new CourseService();
+            iRequest.setAttribute("courses", courseService.getEditableCourses());
+            launchView(VIEW_EDITABLE_COURSES, iRequest, oResponse);
+            break;
+            
+         case ServletRequestTypes.PUBLISH_EXT_ITEM:
+            courseService = new CourseService();
+            courseService.updateCourseActiveStatus(iRequest.getParameter("courseID"),1);
+            cd = courseService.getCourseData(iRequest.getParameter("courseID"));
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
+            launchView(EDIT_EXT_COURSE, iRequest, oResponse);
+            break;
+            
+         case ServletRequestTypes.UNPUBLISH_EXT_ITEM:
+            courseService = new CourseService();
+            courseService.updateCourseActiveStatus(iRequest.getParameter("courseID"),0);
+            cd = courseService.getCourseData(iRequest.getParameter("courseID"));
+            iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
+            launchView(EDIT_EXT_COURSE, iRequest, oResponse);
+            break;
+            
          default:
             // Todo -- put in the error page.
             System.out.println("Default Case -- LMSCourseAdmin.java -- Error");

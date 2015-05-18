@@ -186,58 +186,94 @@ public class PasswordHash
         else
             return hex;
     }
+    
+    private static void test()
+    {
+       try
+       {
+           // Print out 10 hashes
+           for(int i = 0; i < 10; i++)
+               System.out.println(PasswordHash.createHash("p\r\nassw0Rd!" + i*50));
+           
+           System.out.println(PasswordHash.createHash("fleas").length());
+           System.out.println(PasswordHash.createHash("Through three cheese trees three free fleas flew.").length());
+           
+           String spc = "!@#$#$%%$^^%*%^&((*)  #$%#$\u4455^$%&_+_}{{}|{<>?<>?,./,./,";
+           System.out.println("test good special chars: [true] " + validatePassword(spc, createHash(spc)));
+           System.out.println("test bad special chars: [false] " + validatePassword("not special", createHash(spc)));
+
+           // Test password validation
+           boolean failure = false;
+           System.out.println("Running tests...");
+           for(int i = 0; i < 100; i++)
+           {
+               String password = ""+i;
+               String hash = createHash(password);
+               String secondHash = createHash(password);
+               if(hash.equals(secondHash)) {
+                   System.out.println("FAILURE: TWO HASHES ARE EQUAL!");
+                   failure = true;
+               }
+               String wrongPassword = ""+(i+1);
+               if(validatePassword(wrongPassword, hash)) {
+                   System.out.println("FAILURE: WRONG PASSWORD ACCEPTED!");
+                   failure = true;
+               }
+               if(!validatePassword(password, hash)) {
+                   System.out.println("FAILURE: GOOD PASSWORD NOT ACCEPTED!");
+                   failure = true;
+               }
+           }
+           if(failure)
+               System.out.println("TESTS FAILED!");
+           else
+               System.out.println("TESTS PASSED!");
+       }
+       catch(Exception ex)
+       {
+           System.out.println("ERROR: " + ex);
+       }
+    }
 
     /**
-     * Tests the basic functionality of the PasswordHash class
-     *
-     * @param   args        ignored
+     * Simple commands
+     * usage: java PasswordHash create "My password 00!@#"
+     *        java PasswordHash validate "My password nooo" 100:hex:morehex (<-- the hashed password)
+     *        java PasswordHash test 
+     * @param   args  0 = action, 1 = value
+     * @throws InvalidKeySpecException 
+     * @throws NoSuchAlgorithmException 
      */
-    public static void main(String[] args)
+    public static void main(String[] args) throws NoSuchAlgorithmException, InvalidKeySpecException
     {
-        try
-        {
-            // Print out 10 hashes
-            for(int i = 0; i < 10; i++)
-                System.out.println(PasswordHash.createHash("p\r\nassw0Rd!" + i*50));
-            
-            System.out.println(PasswordHash.createHash("fleas").length());
-            System.out.println(PasswordHash.createHash("Through three cheese trees three free fleas flew.").length());
-            
-            String spc = "!@#$#$%%$^^%*%^&((*)  #$%#$\u4455^$%&_+_}{{}|{<>?<>?,./,./,";
-            System.out.println("test good special chars: [true] " + validatePassword(spc, createHash(spc)));
-            System.out.println("test bad special chars: [false] " + validatePassword("not special", createHash(spc)));
+       String pword = "";
 
-            // Test password validation
-            boolean failure = false;
-            System.out.println("Running tests...");
-            for(int i = 0; i < 100; i++)
-            {
-                String password = ""+i;
-                String hash = createHash(password);
-                String secondHash = createHash(password);
-                if(hash.equals(secondHash)) {
-                    System.out.println("FAILURE: TWO HASHES ARE EQUAL!");
-                    failure = true;
-                }
-                String wrongPassword = ""+(i+1);
-                if(validatePassword(wrongPassword, hash)) {
-                    System.out.println("FAILURE: WRONG PASSWORD ACCEPTED!");
-                    failure = true;
-                }
-                if(!validatePassword(password, hash)) {
-                    System.out.println("FAILURE: GOOD PASSWORD NOT ACCEPTED!");
-                    failure = true;
-                }
-            }
-            if(failure)
-                System.out.println("TESTS FAILED!");
-            else
-                System.out.println("TESTS PASSED!");
-        }
-        catch(Exception ex)
-        {
-            System.out.println("ERROR: " + ex);
-        }
+       if (args.length > 0)
+       {
+          if ("test".equals(args[0]))
+          {
+             test();
+             return;
+          }
+          else if ("create".equals(args[0]))
+          {
+             if (args.length > 1)
+             {
+                pword = args[1];
+             }
+             System.out.println(createHash(pword));
+             return;
+          }
+          else if ("validate".equals(args[0]))
+          {
+             if (args.length > 2)
+             {
+                System.out.println("valid match: " + validatePassword(args[1], args[2]));
+                return;
+             }
+          }
+       }
+       System.out.println("you need a command like: \njava PasswordHash create my-password!\njava PasswordHash validate my-password <hashed password> \njava PasswordHash test");
     }
 
 }
