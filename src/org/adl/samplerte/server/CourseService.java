@@ -1774,7 +1774,7 @@ public class CourseService
       return getCourseData(courseID);
    }
    
-   public CourseData updateCourseItem(String courseID, String itemID, String itemTitle, String itemLaunch) 
+   public CourseData updateCourseItem(String activityID, String courseID, String itemID, String itemTitle, String itemLaunch) 
    {
       Connection conn = LMSDatabaseHandler.getConnection();
       PreparedStatement stmtItemInfo = null;
@@ -1783,11 +1783,11 @@ public class CourseService
       {
          stmtItemInfo = conn.prepareStatement("Update ItemInfo "
                                           + "set ItemIdentifier = ?, Title = ?, Launch = ? "
-                                          + "where CourseID = ?");
+                                          + "where activityID = ?");
          stmtItemInfo.setString(1, itemID);
          stmtItemInfo.setString(2, itemTitle);
          stmtItemInfo.setString(3, itemLaunch);
-         stmtItemInfo.setString(4, courseID);
+         stmtItemInfo.setInt(4, Integer.parseInt(activityID));
 
          synchronized (stmtItemInfo) 
          {
