@@ -786,7 +786,7 @@ public class LMSCourseAdmin extends HttpServlet
             
          case ServletRequestTypes.UPDATE_EXT_ITEM:
             courseService = new CourseService();
-            cd = courseService.updateCourseItem(iRequest.getParameter("courseID"), 
+            cd = courseService.updateCourseItem(iRequest.getParameter("activityID"), iRequest.getParameter("courseID"), 
                   iRequest.getParameter("itemID"), iRequest.getParameter("itemTitle"), iRequest.getParameter("itemLaunch"));
             
             iRequest.setAttribute("coursedata", (cd == null) ? new CourseData() : cd);
