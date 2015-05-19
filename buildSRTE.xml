@@ -111,8 +111,8 @@
                 <include name="xmlParserAPIs.jar" />
                 <include name="joda-time-1.1.jar" />
                 <include name="xalan.jar" />
-				<include name="gson-2.3.1.jar" />
-				<include name="xapi-0.1.3.jar" />
+		<include name="gson-2.3.1.jar" />
+		<include name="xapi-0.1.3.jar" />
             </fileset>
         </copy>
          <!--start add for java file upload -->
@@ -123,11 +123,11 @@
                 <include name="jaxen-1.1.1.jar" />
                 <include name="commons-fileupload-1.1.jar" />
                 <include name="commons-io-1.2.jar" />
-		        <include name="ant.jar" />
-		        <include name="xalan.jar" />
+		<include name="ant.jar" />
+		<include name="xalan.jar" />
                 <include name="sqlite-jdbc-3.7.2.jar" />
-				<include name="gson-2.3.1.jar" />
-				<include name="xapi-0.1.3.jar" />
+		<include name="gson-2.3.1.jar" />
+		<include name="xapi-0.1.3.jar" />
             </fileset>
         </copy>
         <!--end add for java file upload -->
@@ -190,6 +190,8 @@
                 <include name="xml-apis.jar" />
                 <include name="xmlParserAPIs.jar" />
                 <include name="joda-time-1.1.jar" />
+                <include name="gson-2.3.1.jar" />
+		<include name="xapi-0.1.3.jar" />
             </fileset>
         </copy>
         <copy todir="${CATALINA_HOME}/bin" file="${srcOrgAdl}/validator/packagechecker/parsers/xsd/iso_schematron_skeleton.xsl" />
