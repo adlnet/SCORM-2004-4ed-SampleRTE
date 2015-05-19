@@ -692,8 +692,8 @@ function doRefresh()
           </tr>
           <tr>
              <td>
-                <a href="/adl/import/choseMultipleFilesImport.jsp">Import Multiple Courses</a>
-             </td>
+<!--                 <a href="/adl/import/choseMultipleFilesImport.jsp">Import Multiple Courses</a>
+ -->             </td>
              <td>
                 <a href="/adl/LMSUserAdmin?type=<%= ServletRequestTypes.GET_USERS %>&setProcess=delete">Delete Users</a>
              </td>
