@@ -65,8 +65,8 @@ Nothing in this license impairs or restricts the author's moral rights.
 <%@include file="importUtil.jsp" %>
 <%
       String currMessage = "";      
-      
-      List results = (List)request.getAttribute("result");
+      ArrayList<String> packageNames = (ArrayList<String>)request.getAttribute("courseName");
+      ArrayList<ResultCollection> results = (ArrayList<ResultCollection>)request.getAttribute("result");
       boolean onlineValidation = Boolean.valueOf(request.getAttribute("onlineValidation").toString()).booleanValue();
       String importAttempted = String.valueOf(request.getAttribute("importAttempted"));
       
@@ -83,164 +83,164 @@ Nothing in this license impairs or restricts the author's moral rights.
       
       if ( importAttempted.equals("true") )
       {        
-         ResultCollection collection = new ResultCollection();           
-         
+         ResultCollection collection = new ResultCollection();
          resultCount = results.size();
-         // Loop through the result collections for each course imported
          Iterator resultIter = results.iterator();
-         while ( resultIter.hasNext() )
+         int place = 0;
+         while (resultIter.hasNext())
          {
-         	Result res = new Result();             
-            boolean courseStatus = true; 
-            boolean offineWithErrors = false;
-            String packageName = ""; 
-            String resultMessages = "";  
-            String offlineResultsMessages = "";
-         
-         	// Get course name
-          	packageName = resultIter.next().toString();
-          	// Get course validation results          	
-         	collection = (ResultCollection)resultIter.next();
-          	
-          	// Check to see if submanifests or external files were referenced
-          	Result subRes = collection.getPackageResult(ValidatorCheckerNames.SUBMANIFEST);
-          	Result extRes = collection.getPackageResult(ValidatorCheckerNames.RES_HREF);
-          	if ( subRes != null && extRes != null )
-          	{
-          	    boolean failImport = subRes.isTestStopped() || extRes.isTestStopped();
-          	    if ( failImport )
-          	    {
-          	      courseStatus = false;
-          	      overallValidation = false;
-          	    }
-          	}
-         	
-         	Iterator collectionIter = collection.getPackageResultsCollection().iterator();
-         	while ( collectionIter.hasNext() )
-         	{         	   
-         	   res = (Result)collectionIter.next();
-         	   
-	           boolean pass = res.isPackageCheckerPassed();
-	            
-	           if ( !pass )
-	           {
-	              if ( !onlineValidation && 
-                       (res.getPackageCheckerName().equals(ValidatorCheckerNames.SCHEMA_VAL) || 
-                       res.getPackageCheckerName().equals(ValidatorCheckerNames.RES_HREF) ) )
-	              {
-                     overallOfflineWithErrors = true;
-                     offineWithErrors = true;
-	              }
-	              else
-	              {
-	                 courseStatus = false;               
-                     overallValidation = false; 
-	              }
-	           }
-	            
-	           List messages = res.getPackageCheckerMessages();
-	           Iterator messageIter = messages.iterator();
-	           int messageType = -1;
-	           ValidatorMessage currValidatorMsg;
-               String tempMessage = "";
-	           while ( messageIter.hasNext() )
-	           {
-	              currValidatorMsg  = (ValidatorMessage)messageIter.next();
-	              messageType = currValidatorMsg.getMessageType();
-	              currMessage = currValidatorMsg.getMessageText();
-	              
-	              currMessage = currMessage.replaceAll("<", "&lt;");         	
-         		  currMessage = currMessage.replaceAll(">", "&gt;");    
-         	
-	              if ( messageType == ValidatorMessage.FAILED )
-	              {
-	                 if ( !onlineValidation && 
-	                       (res.getPackageCheckerName().equals(ValidatorCheckerNames.SCHEMA_VAL) || 
-	                             res.getPackageCheckerName().equals(ValidatorCheckerNames.RES_HREF) ) )
-	                  {
-	                    tempMessage = tempMessage + 
-      	                 "<tr><td class='red_text'>ERROR: " + currMessage + 
-      	                 "</td></tr>";
-	                  }
-	                  else
-	                  {
-	                     resultMessages = resultMessages + 
-                         "<tr><td class='red_text'>ERROR: " + currMessage + 
-                         "</td></tr>";
+
+                Result res = new Result();
+                boolean courseStatus = true;
+                boolean offineWithErrors = false;
+                String packageName = packageNames.get(place);
+                String resultMessages = "";
+                String offlineResultsMessages = "";
+
+                // Get course validation results
+                collection = (ResultCollection)resultIter.next();
+
+                // Check to see if submanifests or external files were referenced
+                Result subRes = collection.getPackageResult(ValidatorCheckerNames.SUBMANIFEST);
+                Result extRes = collection.getPackageResult(ValidatorCheckerNames.RES_HREF);
+                if ( subRes != null && extRes != null )
+                {
+                    boolean failImport = subRes.isTestStopped() || extRes.isTestStopped();
+                    if ( failImport )
+                    {
+                      courseStatus = false;
+                      overallValidation = false;
+                    }
+                }
+
+                Iterator collectionIter = collection.getPackageResultsCollection().iterator();
+                while ( collectionIter.hasNext() )
+                {
+                   res = (Result)collectionIter.next();
+
+                   boolean pass = res.isPackageCheckerPassed();
+
+                   if ( !pass )
+                   {
+                      if ( !onlineValidation &&
+                           (res.getPackageCheckerName().equals(ValidatorCheckerNames.SCHEMA_VAL) ||
+                           res.getPackageCheckerName().equals(ValidatorCheckerNames.RES_HREF) ) )
+                      {
+                         overallOfflineWithErrors = true;
+                         offineWithErrors = true;
                       }
-	              }
-	              if ( messageType == ValidatorMessage.WARNING )
-	              {
-                     if ( !onlineValidation && 
-                           (res.getPackageCheckerName().equals(ValidatorCheckerNames.SCHEMA_VAL) || 
-                                 res.getPackageCheckerName().equals(ValidatorCheckerNames.RES_HREF) ) )
-                     {
-                       tempMessage = tempMessage + 
-                        "<tr><td class='orange_text'>WARNING: " + currMessage + 
-                        "</td></tr>";
-                     }
-                     else
-                     {
-                        resultMessages = resultMessages + 
-                        "<tr><td class='orange_text'>WARNING: " + currMessage + 
-                        "</td></tr>";
-                     }
-	              }
-	              if ( messageType == ValidatorMessage.OTHER )
-	              {
-                    if ( !onlineValidation && 
-                          (res.getPackageCheckerName().equals(ValidatorCheckerNames.SCHEMA_VAL) || 
-                                res.getPackageCheckerName().equals(ValidatorCheckerNames.RES_HREF) ) )
-                     {
-                       tempMessage = tempMessage + 
-                        "<tr><td>" + currMessage + "</td></tr>";
-                     }
-                     else
-                     {
-                        resultMessages = resultMessages + 
-                        "<tr><td>" + currMessage + "</td></tr>";  
-                     }
-	                 
-	              }
-	           }
-	           if ( !tempMessage.equals("") && !onlineValidation && 
-                    res.getPackageCheckerName().equals(ValidatorCheckerNames.SCHEMA_VAL ) )
-               {
-	              offlineResultsMessages = offlineResultsMessages +
-                    "<tr><td class='orange_text'>The following schema validation error(s) occurred during the package import process.  " +   
-                    "These errors may be related to the lack of an internet connection during the import process.</td></tr>" +
-                    "<tr><td><hr /></td></tr>" +
-                    tempMessage + "<tr><td>&nbsp;</td></tr>";
-               }
-	           if ( !tempMessage.equals("") && !onlineValidation && 
-                    res.getPackageCheckerName().equals(ValidatorCheckerNames.RES_HREF ) )
-               {
-                  offlineResultsMessages = offlineResultsMessages +
-                    "<tr><td class='orange_text'>The following file reference error(s) occurred during the package import process.  " +   
-                    "These errors may be related to the lack of an internet connection during the import process.</td></tr>" +
-                    "<tr><td><hr /></td></tr>" +
-                    tempMessage + "<tr><td>&nbsp;</td></tr>";
-               }
-         	}
-         	
-            // Output message for offline import that threw allowable errors
-            if ( offineWithErrors && courseStatus )               
-            {
-               body = body + "<tr><td><br><b>The package <u>" + packageName + 
-               "</u> imported.</b></td></tr>";
-            }	        
-            else if ( courseStatus )	// passed validation
-		    {
-		       body = body + "<tr><td><br><b>The package <u>" + packageName + 
-		       "</u> imported successfully.</b></td></tr>";
-		    }
-		    else	// failed validation
-		    {
-		       body = body + "<tr><td><br><b>The package <u>" + packageName + 
-		       "</u> did not import successfully.</b></td></tr>";	              
-		    }
-	        body = body + resultMessages + "<tr><td>&nbsp;</td></tr>" + offlineResultsMessages;	        
-         }	
+                      else
+                      {
+                         courseStatus = false;
+                         overallValidation = false;
+                      }
+                   }
+
+                   List messages = res.getPackageCheckerMessages();
+                   Iterator messageIter = messages.iterator();
+                   int messageType = -1;
+                   ValidatorMessage currValidatorMsg;
+                   String tempMessage = "";
+                   while ( messageIter.hasNext() )
+                   {
+                      currValidatorMsg  = (ValidatorMessage)messageIter.next();
+                      messageType = currValidatorMsg.getMessageType();
+                      currMessage = currValidatorMsg.getMessageText();
+
+                      currMessage = currMessage.replaceAll("<", "&lt;");
+                      currMessage = currMessage.replaceAll(">", "&gt;");
+
+                      if ( messageType == ValidatorMessage.FAILED )
+                      {
+                         if ( !onlineValidation &&
+                               (res.getPackageCheckerName().equals(ValidatorCheckerNames.SCHEMA_VAL) ||
+                                     res.getPackageCheckerName().equals(ValidatorCheckerNames.RES_HREF) ) )
+                          {
+                            tempMessage = tempMessage +
+                             "<tr><td class='red_text'>ERROR: " + currMessage +
+                             "</td></tr>";
+                          }
+                          else
+                          {
+                             resultMessages = resultMessages +
+                             "<tr><td class='red_text'>ERROR: " + currMessage +
+                             "</td></tr>";
+                          }
+                      }
+                      if ( messageType == ValidatorMessage.WARNING )
+                      {
+                         if ( !onlineValidation &&
+                               (res.getPackageCheckerName().equals(ValidatorCheckerNames.SCHEMA_VAL) ||
+                                     res.getPackageCheckerName().equals(ValidatorCheckerNames.RES_HREF) ) )
+                         {
+                           tempMessage = tempMessage +
+                            "<tr><td class='orange_text'>WARNING: " + currMessage +
+                            "</td></tr>";
+                         }
+                         else
+                         {
+                            resultMessages = resultMessages +
+                            "<tr><td class='orange_text'>WARNING: " + currMessage +
+                            "</td></tr>";
+                         }
+                      }
+                      if ( messageType == ValidatorMessage.OTHER )
+                      {
+                        if ( !onlineValidation &&
+                              (res.getPackageCheckerName().equals(ValidatorCheckerNames.SCHEMA_VAL) ||
+                                    res.getPackageCheckerName().equals(ValidatorCheckerNames.RES_HREF) ) )
+                         {
+                           tempMessage = tempMessage +
+                            "<tr><td>" + currMessage + "</td></tr>";
+                         }
+                         else
+                         {
+                            resultMessages = resultMessages +
+                            "<tr><td>" + currMessage + "</td></tr>";
+                         }
+
+                      }
+                   }
+                   if ( !tempMessage.equals("") && !onlineValidation &&
+                        res.getPackageCheckerName().equals(ValidatorCheckerNames.SCHEMA_VAL ) )
+                   {
+                      offlineResultsMessages = offlineResultsMessages +
+                        "<tr><td class='orange_text'>The following schema validation error(s) occurred during the package import process.  " +
+                        "These errors may be related to the lack of an internet connection during the import process.</td></tr>" +
+                        "<tr><td><hr /></td></tr>" +
+                        tempMessage + "<tr><td>&nbsp;</td></tr>";
+                   }
+                   if ( !tempMessage.equals("") && !onlineValidation &&
+                        res.getPackageCheckerName().equals(ValidatorCheckerNames.RES_HREF ) )
+                   {
+                      offlineResultsMessages = offlineResultsMessages +
+                        "<tr><td class='orange_text'>The following file reference error(s) occurred during the package import process.  " +
+                        "These errors may be related to the lack of an internet connection during the import process.</td></tr>" +
+                        "<tr><td><hr /></td></tr>" +
+                        tempMessage + "<tr><td>&nbsp;</td></tr>";
+                   }
+                }
+
+                // Output message for offline import that threw allowable errors
+                if ( offineWithErrors && courseStatus )
+                {
+                   body = body + "<tr><td><br><b>The package <u>" + packageName +
+                   "</u> imported.</b></td></tr>";
+                }
+                else if ( courseStatus )	// passed validation
+                {
+                   body = body + "<tr><td><br><b>The package <u>" + packageName +
+                   "</u> imported successfully.</b></td></tr>";
+                }
+                else	// failed validation
+                {
+                   body = body + "<tr><td><br><b>The package <u>" + packageName +
+                   "</u> did not import successfully.</b></td></tr>";
+                }
+                body = body + resultMessages + "<tr><td>&nbsp;</td></tr>" + offlineResultsMessages;
+            place++;
+         }
+
       } 
       else // Import process failed
       {

@@ -369,14 +369,25 @@ public class LMSManifestHandler implements Serializable
       LMSImportHandler.cleanImportDirectory( mXSDLocation + File.separator 
                                            + "PackageImport" );
 
-      fileHandler.deleteTempUloadFiles();
+      int count = iFilePath.length() - iFilePath.replace(File.separator, "").length();
+      String subpath = iFilePath.substring(nthIndexOf(iFilePath, File.separator, count-1)+1,nthIndexOf(iFilePath, File.separator, count));
+      fileHandler.deleteTempUploadFiles(subpath);
 
       mLogger.exiting( "---LMSManifestHandler", "processManifest()" ); 
       //  Return boolean signifying whether or not the parsing was successful
       return results;   
    }
 
+    private static int nthIndexOf(String source, String sought, int n) {
+        int index = source.indexOf(sought);
+        if (index == -1) return -1;
 
+        for (int i = 1; i < n; i++) {
+            index = source.indexOf(sought, index + 1);
+            if (index == -1) return -1;
+        }
+        return index;
+    }
    /**
     * This method will copy a course from the specified directory where it
     * already exists, to a new specified directory where it is to be copied to.

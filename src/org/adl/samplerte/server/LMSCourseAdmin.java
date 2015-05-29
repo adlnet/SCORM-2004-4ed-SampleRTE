@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.io.File;
+import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -73,6 +74,7 @@ import com.google.gson.Gson;
  */
 public class LMSCourseAdmin extends HttpServlet
 {
+    private Logger mLogger = Logger.getLogger("org.adl.util.debug.samplerte");
    /**
     * String Constant for the display courses view
     */
@@ -646,27 +648,19 @@ public class LMSCourseAdmin extends HttpServlet
 
          case ServletRequestTypes.IMPORT_COURSE:
             String sessionID = iRequest.getParameter("sessID");
-            List resultList = new ArrayList();
-            String courseFileName = "";
+            ArrayList<String> courseFileName;
             
             String webPath = 
                this.getServletConfig().getServletContext().getRealPath("/");
             courseService = new CourseService();
-                                    
+            ArrayList<ResultCollection> validationResult = courseService.importCourse(iRequest, webPath, sessionID);
 
-            ResultCollection validationResult = 
-                     courseService.importCourse(iRequest, webPath, sessionID);
             
             // Add the package name to the result list            
             courseFileName = courseService.getCourseFileName();
-            resultList.add(courseFileName);
-            
-            // Add the ResultCollection to the result list
-            resultList.add(validationResult);
-            
             //mDspImportStatus = validationResult.getRedirectView();
-            
-            iRequest.setAttribute("result", resultList);
+            iRequest.setAttribute("courseName", courseFileName);
+            iRequest.setAttribute("result", validationResult);
             iRequest.setAttribute("importAttempted", "true");
             iRequest.setAttribute("onlineValidation", Boolean.valueOf(courseService.isOnlineValidation()));
             
@@ -869,8 +863,11 @@ public class LMSCourseAdmin extends HttpServlet
    {
       try
       {
+          System.out.println("------IN LAUNCHVIEW-------");
          RequestDispatcher rd = getServletContext().getRequestDispatcher(iJsp);
-         rd.forward(iRequest,iResponse);
+          mLogger.info("------IN LAUNCHVIEW AFTER RD-------");
+          rd.forward(iRequest,iResponse);
+          mLogger.info("------IN LAUNCHVIEW AFTER FORWARD-------");
       }
       catch(ServletException se)
       {
