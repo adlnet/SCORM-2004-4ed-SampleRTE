@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.io.File;
-import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -74,7 +73,6 @@ import com.google.gson.Gson;
  */
 public class LMSCourseAdmin extends HttpServlet
 {
-    private Logger mLogger = Logger.getLogger("org.adl.util.debug.samplerte");
    /**
     * String Constant for the display courses view
     */
@@ -863,11 +861,8 @@ public class LMSCourseAdmin extends HttpServlet
    {
       try
       {
-          System.out.println("------IN LAUNCHVIEW-------");
          RequestDispatcher rd = getServletContext().getRequestDispatcher(iJsp);
-          mLogger.info("------IN LAUNCHVIEW AFTER RD-------");
-          rd.forward(iRequest,iResponse);
-          mLogger.info("------IN LAUNCHVIEW AFTER FORWARD-------");
+         rd.forward(iRequest,iResponse);
       }
       catch(ServletException se)
       {

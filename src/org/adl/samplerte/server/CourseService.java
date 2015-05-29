@@ -52,7 +52,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Logger;
 
 import org.adl.samplerte.util.Config;
 import org.adl.samplerte.util.LMSDBHandler;
@@ -111,7 +110,6 @@ public class CourseService
          return -1 * new DateTime(o1.getTimestamp()).compareTo(new DateTime(o2.getTimestamp()));
       }
    }
-    private Logger mLogger = Logger.getLogger("org.adl.util.debug.samplerte");
    /**
     * The string containing the name of the SampleRTEFiles directory.
     */
