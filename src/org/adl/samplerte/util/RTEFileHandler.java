@@ -37,6 +37,7 @@ import org.adl.datamodels.DMFactory;
 import org.adl.datamodels.DMInterface;
 import org.adl.datamodels.SCODataManager;
 import org.adl.util.debug.DebugIndicator;
+import org.apache.commons.io.FileUtils;
 
 /**
  * <strong>Filename:</strong> RTEFilehandler.java<br><br>
@@ -222,25 +223,12 @@ public class RTEFileHandler
     * directory.
     * 
     */
-   public void deleteTempUloadFiles()
+   public void deleteTempUploadFiles(String subpath)
    {
       try
       {
-         String tempDir = mSampleRTERoot + File.separator + "tempUploads";
-         File tempUploadDir = new File(tempDir);
-
-         File tempDirs[] = tempUploadDir.listFiles();
-
-         for ( int i = 0; i < tempDirs.length; i++ )
-         {
-            File tempFiles[] = tempDirs[i].listFiles();
-
-            for ( int j = 0; j < tempFiles.length; j++ )
-            {
-               tempFiles[j].delete();
-            }
-            tempDirs[i].delete();
-         }
+         String tempDir = mSampleRTERoot + File.separator + "tempUploads" + File.separator + subpath + File.separator;
+         FileUtils.deleteDirectory(new File(tempDir));
       }
       catch(Exception e)
       {

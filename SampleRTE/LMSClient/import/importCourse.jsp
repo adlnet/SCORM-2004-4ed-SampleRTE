@@ -159,6 +159,41 @@ Nothing in this license impairs or restricts the author's moral rights.
          return false;
       }   
    }
+   function addAnotherFile(){
+       var fileRE = /^coursezipfile/;
+       var fileUploads = [], els = document.getElementsByTagName('*');
+       for (var i=els.length;i--;) if (fileRE.test(els[i].id)) fileUploads.push(els[i]);
+       var numUploads = fileUploads.length;
+
+       var newItem = document.createElement("input");
+       newItem.setAttribute('id', 'coursezipfile' + numUploads);
+       newItem.setAttribute('name', 'coursezipfile' + numUploads);
+       newItem.setAttribute('type', 'file');
+
+       var aButton = document.getElementById("addanother");
+       var parent = aButton.parentNode;
+       parent.insertBefore(newItem, aButton);
+   }
+   function removeAnotherFile(){
+       var fileRE = /^coursezipfile/;
+       var fileUploads = [], els = document.getElementsByTagName('*');
+       for (var i=els.length;i--;) if (fileRE.test(els[i].id)) fileUploads.push(els[i]);
+       fileUploads[0].remove();
+
+   }
+   function checkFiles(event){
+       var fileRE = /^coursezipfile/;
+       var fileUploads = [], els = document.getElementsByTagName('*');
+       for (var i=els.length;i--;) if (fileRE.test(els[i].id)) fileUploads.push(els[i]);
+       var numUploads = fileUploads.length;
+
+       for (i=0;i<fileUploads.length;i++){
+            if (!fileUploads[i].value){
+                event.preventDefault();
+                alert("Please choose a file!");
+            }
+       }
+   }
    //]]-->
    </script>
 </head>
@@ -205,11 +240,12 @@ Nothing in this license impairs or restricts the author's moral rights.
       <tr>
          <td>
             <label for="coursezipfile">Zip File:&nbsp;</label>
-            <input id="coursezipfile" name="coursezipfile" type="file" />
+            <input id="coursezipfile0" name="coursezipfile0" type="file" />
          </td>
       </tr>
       <tr>
-         <td>&nbsp;</td>
+         <td><button type="button" id="addanother" name="addanother" onclick="addAnotherFile()">Add</button>&nbsp;
+         <button type="button" id="removeanother" name="removeanother" onclick="removeAnotherFile()">Remove</button></td>
       </tr>
       <tr>
          <td>
@@ -245,7 +281,7 @@ Nothing in this license impairs or restricts the author's moral rights.
       </tr>
       <tr>
          <td width="100%" colspan="2" align="center">
-            <input id="submitButton" type="submit" name="Submit" value="Submit" />
+            <input id="submitButton" type="submit" name="Submit" value="Submit" onclick="checkFiles(event)" />
          </td>
       </tr>
    </table>

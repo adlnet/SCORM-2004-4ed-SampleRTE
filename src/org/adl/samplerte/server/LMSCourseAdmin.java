@@ -646,27 +646,19 @@ public class LMSCourseAdmin extends HttpServlet
 
          case ServletRequestTypes.IMPORT_COURSE:
             String sessionID = iRequest.getParameter("sessID");
-            List resultList = new ArrayList();
-            String courseFileName = "";
+            ArrayList<String> courseFileName;
             
             String webPath = 
                this.getServletConfig().getServletContext().getRealPath("/");
             courseService = new CourseService();
-                                    
+            ArrayList<ResultCollection> validationResult = courseService.importCourse(iRequest, webPath, sessionID);
 
-            ResultCollection validationResult = 
-                     courseService.importCourse(iRequest, webPath, sessionID);
             
             // Add the package name to the result list            
             courseFileName = courseService.getCourseFileName();
-            resultList.add(courseFileName);
-            
-            // Add the ResultCollection to the result list
-            resultList.add(validationResult);
-            
             //mDspImportStatus = validationResult.getRedirectView();
-            
-            iRequest.setAttribute("result", resultList);
+            iRequest.setAttribute("courseName", courseFileName);
+            iRequest.setAttribute("result", validationResult);
             iRequest.setAttribute("importAttempted", "true");
             iRequest.setAttribute("onlineValidation", Boolean.valueOf(courseService.isOnlineValidation()));
             

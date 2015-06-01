@@ -60,6 +60,7 @@ import org.adl.samplerte.util.RTEFileHandler;
 import org.adl.sequencer.ADLSeqUtilities;
 import org.adl.sequencer.SeqActivityTree;
 import org.adl.util.decode.decodeHandler;
+import org.adl.validator.util.Result;
 import org.adl.validator.util.ResultCollection;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -109,7 +110,6 @@ public class CourseService
          return -1 * new DateTime(o1.getTimestamp()).compareTo(new DateTime(o2.getTimestamp()));
       }
    }
-
    /**
     * The string containing the name of the SampleRTEFiles directory.
     */
@@ -128,7 +128,7 @@ public class CourseService
    /**
     * The string containing the name of the file to be imported. 
     */
-   String mCourseFileName = "";
+   ArrayList<String> mCourseFileName;
    
    /**
     * Default Constructor
@@ -969,7 +969,7 @@ public class CourseService
     * 
     * @return a String containing the name of the file being imported
     */
-   public String getCourseFileName()
+   public ArrayList<String> getCourseFileName()
    {
       return mCourseFileName;
    }
@@ -1519,17 +1519,16 @@ public class CourseService
     *   the validation of the course submitted to be imported to the Sample RTE.
     */
 
-   public ResultCollection importCourse(HttpServletRequest iRequest, 
+   public ArrayList<ResultCollection> importCourse(HttpServletRequest iRequest,
                                          String iWebPath, String iSessionID)
    {
-      ResultCollection validationResults = new ResultCollection();
+      ArrayList<ResultCollection> resultsList = new ArrayList<ResultCollection>();
       String sessionID = "";
       String uploadDir = "";
       String fileName = "";
       String myFileName = "";
       String courseTitle = "";
       LMSManifestHandler myManifestHandler;
-
       try
       {
          sessionID = iSessionID;
@@ -1537,62 +1536,78 @@ public class CourseService
         
          String theWebPath = iWebPath;
          String mDrive = System.getProperty("user.home");
-         uploadDir = mDrive + fileSeparator + SRTEFILESDIR + fileSeparator +
-             "tempUploads" + fileSeparator + sessionID;
-         File theRTEUploadDir = new File(uploadDir);
-         boolean isMultipart = FileUpload.isMultipartContent(iRequest);
-         
+
+         //boolean isMultipart = FileUpload.isMultipartContent(iRequest);
+
          // Create a factory for disk-based file items
          FileItemFactory factory = new DiskFileItemFactory();
          ServletFileUpload upload = new ServletFileUpload(factory);
-         if ( !theRTEUploadDir.isDirectory() )
-         {
-             theRTEUploadDir.mkdirs();
-         }
+
          // Parse the request
          List items = upload.parseRequest(iRequest);
 
-         Iterator iter = items.iterator();
+          Iterator iter = items.iterator();
 
-         FileItem item = (FileItem)iter.next();
+         String validationValue = "";
+         ArrayList<String> myFileNameList = new ArrayList<String>();
+         ArrayList<String> courseTitleList = new ArrayList<String>();
+         ArrayList<String> uploadDirList = new ArrayList<String>();
 
-         String name = item.getFieldName();
-         if ( name.equals("coursezipfile") ) 
-         {
-             fileName = (new File(fileName)).getName();
-             myFileName = item.getName().substring(item.getName().lastIndexOf(fileSeparator) + 1);
-             File fNew= new File( uploadDir, myFileName );
-             courseTitle = fileName;
-             item.write(fNew);
+          while(iter.hasNext()){
+            FileItem item = (FileItem)iter.next();
+            String name = item.getFieldName();
+            if ( name.startsWith("coursezipfile") )
+            {
+                int extra = 0;
+                try{
+                    extra = Integer.parseInt(name.substring(name.length() - 1));
+                }
+                catch (NumberFormatException e){
+                    System.out.println("No field num-defaults to 0");
+                }
+                uploadDir = mDrive + fileSeparator + SRTEFILESDIR + fileSeparator +
+                        "tempUploads" + fileSeparator + sessionID + "-" + extra;
+                uploadDirList.add(uploadDir);
+                File theRTEUploadDir = new File(uploadDir);
+                if ( !theRTEUploadDir.isDirectory() )
+                {
+                    theRTEUploadDir.mkdirs();
+                }
+                fileName = (new File(fileName)).getName();
+                myFileName = item.getName().substring(item.getName().lastIndexOf(fileSeparator) + 1);
+                myFileNameList.add(myFileName);
+                File fNew= new File( uploadDir, myFileName );
+                courseTitle = fileName;
+                courseTitleList.add(courseTitle);
+                item.write(fNew);
+            }
+            else if (name.equals("validate")){
+                validationValue = item.getString();
+                }
          }
-         FileItem item2 = (FileItem)iter.next();
-         String validationValue = item2.getString();       
- 
-         // Set the name of the course being imported so it can be gotten from the outside
-         mCourseFileName = myFileName;
-         mOnlineValidation = validationValue.equals("1");    
- 
-         String zipFile = uploadDir + fileSeparator + myFileName;
-         String theXSDPath = theWebPath.
-                             substring(0, theWebPath.
-                                          lastIndexOf(fileSeparator));
-         // Create a manifest handler instance
-         myManifestHandler = new LMSManifestHandler(theXSDPath);
+         mOnlineValidation = validationValue.equals("1");
+         for (int i = 0; i < myFileNameList.size(); i++){
+             String zipFile = uploadDirList.get(i) + fileSeparator + myFileNameList.get(i);
+             String theXSDPath = theWebPath.
+                     substring(0, theWebPath.
+                             lastIndexOf(fileSeparator));
+             // Create a manifest handler instance
+             myManifestHandler = new LMSManifestHandler(theXSDPath);
+             myManifestHandler.setCourseName(courseTitleList.get(i));
+             myManifestHandler.setWebPath(theWebPath);
+             // Parse the manifest and fill up the object structure
+             resultsList.add(myManifestHandler.processPackage(zipFile, mOnlineValidation));
 
-         myManifestHandler.setCourseName(courseTitle);
-
-         myManifestHandler.setWebPath(theWebPath);
-
-         // Parse the manifest and fill up the object structure
-         validationResults = myManifestHandler.processPackage(zipFile, mOnlineValidation);
-
+//             validationResults = myManifestHandler.processPackage(zipFile, mOnlineValidation);
+         }
+          mCourseFileName = myFileNameList;
       }
       catch( Exception e )
       {
          e.printStackTrace();
       }
 
-      return validationResults;
+      return resultsList;
    }
    
    /**
@@ -2314,5 +2329,7 @@ public class CourseService
       }   
       return ok;
    }
+
+
 
 }

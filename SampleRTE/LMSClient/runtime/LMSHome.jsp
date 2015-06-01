@@ -670,12 +670,12 @@ function doRefresh()
           <b><font size='3'>Administrative Options</font></b><font size='1'>&nbsp;<a href="javascript:showHideAdminTable()">Show/Hide</a>&nbsp;</font>
        </div>
        <table class="table" id="adminOptionsTable" width="700" class="sep" border="0" style="<%=adminTableDisplayVal %>">
-          
+
           <tr>
              <td width="250" colspan="3">
                 <a href="/adl/import/importCourse.jsp">Import Course</a>
              </td>
-          </tr>  
+          </tr>
           <tr>
              <td width="250">
                 <a href="/adl/import/createCourse.jsp">Create Course</a>
@@ -690,7 +690,7 @@ function doRefresh()
           <tr>
              <td>
                <a href="/adl/LMSCourseAdmin?type=<%= ServletRequestTypes.GET_EDIT_COURSES %>">Edit Course</a>
-             </td>            
+             </td>
              <!-- <td>
                 <a href="/adl/import/choseMultipleFilesImport.jsp">Import Multiple Courses</a>
              </td> -->
@@ -699,7 +699,7 @@ function doRefresh()
              </td>
              <td>
                 <a href="/adl/admin/selectAction.jsp">Global Objectives Administration</a>
-             </td>             
+             </td>
           </tr>
           <tr>
              <td>
@@ -707,12 +707,12 @@ function doRefresh()
              </td>
              <td>
                 <a href="/adl/LMSUserAdmin?type=<%= ServletRequestTypes.GET_USERS %>&setProcess=pref&caller=adminUserPref">Manage Users</a>
-             </td>     
+             </td>
              <td>
                 <a href="javascript:confirmClearDatabase()">Clear Database</a>
              </td>
           </tr>
-       </table>    
+       </table>
     </div>
 
     <%
