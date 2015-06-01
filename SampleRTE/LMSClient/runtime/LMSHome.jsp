@@ -672,16 +672,13 @@ function doRefresh()
        <table class="table" id="adminOptionsTable" width="700" class="sep" border="0" style="<%=adminTableDisplayVal %>">
           
           <tr>
-             <td width="250">
-                <a href="/adl/import/createCourse.jsp">Create Course</a>
-             </td>
-             <td colspan="2">
-               <a href="/adl/LMSCourseAdmin?type=<%= ServletRequestTypes.GET_EDIT_COURSES %>">Edit Course</a>
+             <td width="250" colspan="3">
+                <a href="/adl/import/importCourse.jsp">Import Course</a>
              </td>
           </tr>  
           <tr>
              <td width="250">
-                <a href="/adl/import/importCourse.jsp">Import Course</a>
+                <a href="/adl/import/createCourse.jsp">Create Course</a>
              </td>
              <td width="200">
                 <a href="/adl/LMSUserAdmin?type=<%= ServletRequestTypes.NEW_USER %>&setProcess=pref">Add Users</a>
@@ -692,8 +689,11 @@ function doRefresh()
           </tr>
           <tr>
              <td>
+               <a href="/adl/LMSCourseAdmin?type=<%= ServletRequestTypes.GET_EDIT_COURSES %>">Edit Course</a>
+             </td>            
+             <!-- <td>
                 <a href="/adl/import/choseMultipleFilesImport.jsp">Import Multiple Courses</a>
-             </td>
+             </td> -->
              <td>
                 <a href="/adl/LMSUserAdmin?type=<%= ServletRequestTypes.GET_USERS %>&setProcess=delete">Delete Users</a>
              </td>
