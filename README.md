@@ -56,7 +56,7 @@ will have a policy where a certain number of +1s will cause the project to merge
 in such matters.
 
 <a name='suggest-solution'/>
-# Suggest a Solution
+## Suggest a Solution
 The second most helpful and second easiest way to contribute to the specification is to suggest a solution to an issue that 
 has been raised. Ideally the person who raises the issue will propose a solution, but this does not always happen and you 
 may be able to improve a suggestion. 
@@ -76,7 +76,7 @@ Good and detailed suggested solutions for issues make it much easier to write PR
 merged faster. 
 
 <a name='create-issue'/>
-# Create an Issue
+## Create an Issue
 
 A helpful way to start a discussion around a problem, desired feature, best practice, etc. is to create an issue.  Issues 
 are typically left open until closed by the person who raised it, awaiting their satisfaction.  Most issues will eventually
@@ -96,7 +96,7 @@ with certain types of issues.  Be sure to use these tags as you become familiar 
 vary widely across projects.
 
 <a name='make-pr'/>
-# Make a Pull Request (PR)
+## Make a Pull Request (PR)
 The strongest way to contribute to a project is to create a PR.  ADL recommends only getting involved in this way if you 
 are already used to Github and markdown and/or have previously contributed to reviewing PRs and suggesting solutions to issues. 
 If you wish to learn the ropes, ADL recommends forking this repository and submitting PRs to your own branch to practice.
