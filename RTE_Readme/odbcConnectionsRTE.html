@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+	<head>
+		<title>SCORM 2004 4th Edition Sample Run-Time Environment
+			Version 1.1.1 Readme</title>
+		<link rel="stylesheet" href="README.css" type="text/css" />
+	</head>
+
+	<body class="bg">
+		<p>
+			<a name="odbcConnectionsRTE"></a>
+		</p>
+		<table>
+			<tr>
+				<td valign="top">
+					<h5 class="title">
+						ODBC Connections
+					</h5>
+					<ul>
+						<li>
+							The ODBC Connections will be set when the SRTE
+                            is installed. If for any reason they must be
+							manually reset, please do the following:
+							<ol>
+								<li>
+									Open the Windows &quot;Control Panel&quot;
+								</li>
+								<li>
+									Double-click &quot;Administrative Tools&quot;
+								</li>
+								<li>
+									Double-click &quot;Data Sources (ODBC)&quot;
+								</li>
+								<li>
+									If you are an Administrator, choose the &quot;System DSN&quot; tab
+								</li>
+								<li>
+									If you are a user, choose the &quot;User DSN&quot; tab
+								</li>
+								<li>
+									Click <strong>Add...</strong>
+								</li>
+								<li>
+									Choose &quot;Microsoft Access Driver&quot; (*.mdb), and click <strong>Finish</strong>
+								</li>
+								<li>
+									Enter SCORM4EDGlobalObjs111 for Data Source Name:
+								</li>
+								<li>
+									Click <strong>Select</strong> and browse to
+									&lt;drive&gt;:\&lt;install_directory&gt;\Sample_RTE\database\
+								</li>
+								<li>
+									Select the GlobalObjectives.mdb database and click <strong>OK</strong>
+								</li>
+								<li>
+									Repeat steps 6 through 10 using the Data Source Name
+									SCORM4EDSRTE111 matched to the SampleRTE.mdb database
+								</li>
+								<li>
+									Click <strong>OK</strong> on the ODBC Data Source Administrator window
+								</li>
+							</ol>
+						</li>
+					</ul>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>
+
+
+
