@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+	<head>
+		<title>SCORM 2004 4th Edition Sample Run-Time Environment
+			Version 1.1.1 Readme</title>
+		<link rel="stylesheet" href="README.css" type="text/css" />
+	</head>
+
+	<body class="bg">
+		<p>
+			<a name="knownIssuesRTE"></a>
+		</p>
+		<table width="100%" cellpadding="3">
+			<tr>
+				<td class="stagebar">
+					Additional Information
+				</td>
+			</tr>
+		</table>
+
+		<table>
+			<tr>
+				<td valign="top">
+					<div><br /></div>
+					<h5 class="title">
+						Known Issues
+					</h5>
+					
+					<ol style="margin-bottom: 0;">
+						<li>
+							If a package manifest contains references to Sharable Content
+							Objects (SCOs) that are located on an external web site, a
+							cross-domain JavaScript security error will occur. This may
+							prevent the SCOs from communicating with the SRTE provided
+							API.
+							<br />
+							<br />
+						</li>
+
+						<li>
+							The Internet Explorer browser must be set to check for a new page
+							every visit to the page. To configure the browser:
+							<ol>
+								<li>
+									Open a Microsoft Internet Explorer Browser
+								</li>
+								<li>
+									Click on &quot;Tools&quot; then &quot;Internet Options&quot;
+								</li>
+								<li>
+									On the &quot;General&quot; tab, if using Internet Explorer 6 
+                                    under &quot;Temporary Internet Files&quot; or under the &quot;Browsing 
+                                    History&quot; section if using Internet Explorer 7,
+									click <strong>Settings</strong>
+								</li>
+								<li>
+									Select the &quot;Every visit to the page&quot; radio button if 
+									it is not already selected
+								</li>
+								<li>
+									Click <strong>OK</strong> and then <strong>OK</strong> again.
+								</li>
+							</ol>
+							<br />
+						</li>
+
+						<li>
+							Switching between different versions of the
+							SRTE may cause an Applet Error if Applet Caching is
+							enabled. If this occurs, follow these steps to correct the issue:
+
+							<ul>
+								<li>
+									For Java SE 6
+									<ol>
+										<li>
+											Open the Windows &quot;Control Panel&quot;
+										</li>
+										<li>
+											Double click the &quot;Java&quot; icon
+										</li>
+										<li>
+											Click the &quot;General&quot; tab at the top of the dialog box
+										</li>
+										<li>
+											Under the &quot;Temporary Internet Files&quot; section, click 
+											<strong>Settings</strong>
+										</li>
+										<li>
+											Ensure that the check box labeled &quot;Keep temporary files on my
+											computer&quot; is unchecked.
+											<br /><br />
+										</li>
+									</ol>
+								</li>
+							</ul>
+						</li>
+					</ol>
+
+				</td>
+			</tr>
+		</table>
+
+
+	</body>
+</html>
