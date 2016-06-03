@@ -15,14 +15,16 @@ reverted or deleted at any time.  If you wish to maintain your own repo from ADL
 
 This project was originally released on the ADL website as a windows application
 
+For 
+
 #### For Windows
 
-Install ant-1.7.1
-Install java jdk6, 7, or 8
-Set JAVA_HOME env var to jdk path, ANT_HOME to ant path, SCORM4ED_SRTE111_HOME to /path/to/SCORM_2004_4TH_Ed_sample_RTE_V1.1.1, CATALINA_HOME to /path/to/SCORM_2004_4TH_Ed_sample_RTE_V1.1.1/Sample_RTE/apache-tomcat
-Add JAVA_HOME\bin and ANT_HOME\bin to Path
-Run the installer (make sure the install path matches the paths you provided in the env var SCORM4ED_SRTE111_HOME)
-Replace the SCORM4ED_SRTE111_HOME/Sample_RTE/source directory with this repo and rename the folder, source
++ Install ant-1.7.1
++ Install java jdk6, 7, or 8
++ Set JAVA_HOME env var to jdk path, ANT_HOME to ant path, SCORM4ED_SRTE111_HOME to /path/to/SCORM_2004_4TH_Ed_sample_RTE_V1.1.1, CATALINA_HOME to /path/to/SCORM_2004_4TH_Ed_sample_RTE_V1.1.1/Sample_RTE/apache-tomcat
++ Add JAVA_HOME\bin and ANT_HOME\bin to Path
++ Run the installer (make sure the install path matches the paths you provided in the env var SCORM4ED_SRTE111_HOME)
++ Replace the SCORM4ED_SRTE111_HOME/Sample_RTE/source directory with this repo and rename the folder, source
 
 If you just want to install and use the Sample RTE, consider using the original windows appplication linked [here](https://www.google.com/url?q=https%3A%2F%2Fadlnet.gov%2Fwp-content%2Fuploads%2F2011%2F07%2FSCORM.2004.4ED.SRTE_.v1.1.1.zip&sa=D&sntz=1&usg=AFQjCNG81dbJtfuAsig1E4vzJbbG19R3-g)
 
@@ -36,6 +38,9 @@ Run: `git clone https://github.com/adlnet/SCORM-2004-4ed-SampleRTE`
 
 or [Download directly](https://github.com/adlnet/SCORM-2004-4ed-SampleRTE/archive/master.zip)
 
+## Configuration
+
+For additional configuration, installation and use, see the original [readme]()
 
 ## Contributing to the project
 We welcome contributions to this project. Fork this repository, make changes, and submit pull requests. If you're not comfortable with editing the code, please [submit an issue](https://github.com/adlnet/xAPIWrapper/issues) and we'll be happy to address it. 
