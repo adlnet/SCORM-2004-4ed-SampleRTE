@@ -48,11 +48,11 @@
 7. Add these system variables:
 
   ```
-  JAVA_HOME="\path\to\Java\jdk<version>"
-  ANT_HOME="\path\to\apache-ant-1.7.1"
-  SCORM4ED_SRTE111_HOME="\path\to\SCORM_2004_4th_Ed_Sample_RTE_V1.1.1"
-  SCORM4ED_TS111_HOME="\path\to\SCORM_2004_4th_Ed_Sample_RTE_V1.1.1"
-  CATALINA_HOME="\path\to\SCORM_2004_4th_Ed_Sample_RTE_V1.1.1\Sample_RTE\apache-tomcat" 
+  JAVA_HOME="<Drive>:\path\to\Java\jdk<version>"
+  ANT_HOME="<Drive>:\path\to\apache-ant-1.7.1"
+  SCORM4ED_SRTE111_HOME="<Drive>:\path\to\SCORM_2004_4th_Ed_Sample_RTE_V1.1.1"
+  SCORM4ED_TS111_HOME="<Drive>:\path\to\SCORM_2004_4th_Ed_Sample_RTE_V1.1.1"
+  CATALINA_HOME="<Drive>:\path\to\SCORM_2004_4th_Ed_Sample_RTE_V1.1.1\Sample_RTE\apache-tomcat" 
   ```
 8. Add these to your system Path:
 
