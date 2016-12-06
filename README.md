@@ -6,7 +6,7 @@
 2. Install openjdk-6-jdk (or 7, or oracle jdk8) (`sudo apt-get install openjdk-<6 or 7>-jdk`)
 3. Download the core tar.gz file and unzip tomcat (we'll be moving this later) - https://tomcat.apache.org/download-60.cgi
 4. Create a directory named `SCORM_2004_4th_Ed_Sample_RTE_V1.1.1`. Inside of that directory create another directory named `Sample_RTE`.
-5. Inside of `Sample_RTE` clone this repository (`git clone https://github.com/adlnet/SCORM-2004-4ed-SampleRTE.git`) and rename this folder `source`.
+5. Inside of `Sample_RTE` clone this repository (`git clone https://github.com/adlnet/SCORM-2004-4ed-SampleRTE.git`) and rename this folder `source`. Also don't forget to pull down this branch (enhancements)
 6. Rename your `apache-tomcat-<version>` download from earlier to 'apache-tomcat' and move it inside `Sample_RTE`.
 7. sudo nano /etc/environment and add:
   
