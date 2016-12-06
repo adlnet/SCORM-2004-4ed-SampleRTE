@@ -75,3 +75,13 @@
 11. Run the command `ant` in the `source` directory so it builds the project. (If you ever need to clean it or want to rerun these instructions, always run `ant cleanRTE` to remove stale files and reset the db)
 12. To run, navigate to CATALINA_HOME/bin and run `catalina.bat start` (`catalina.bat stop` to stop)
 13. Go to `localhost:8080`
+
+
+#### Admin Login
+By default the admin credentials are:
+  
+  ```
+  username: admin
+  password:admin
+  ```
+Once you login as the admin you can change your password
