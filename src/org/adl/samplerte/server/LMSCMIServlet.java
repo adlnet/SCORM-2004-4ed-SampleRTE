@@ -366,19 +366,21 @@ public class LMSCMIServlet extends HttpServlet
 
                String cmidmstr = ((SCORM_2004_DM)mSCOData.getDataModel("cmi")).toJSONString();
                String adldmstr =  ((SCORM_2004_NAV_DM)mSCOData.getDataModel("adl")).toJSONString();
-               
+
+
                Gson gsondm = new Gson();
                HashMap<String, String> cmiobj = gsondm.fromJson(cmidmstr, HashMap.class);
                cmiobj.putAll(gsondm.fromJson(adldmstr, HashMap.class));
-               
+
                StringBuilder sb = new StringBuilder();
                sb.append("{\"elems\":");
+
                sb.append(gsondm.toJson(cmiobj));
                sb.append(",\"validrequests\":");
+
                sb.append(gsondm.toJson(gsondm.fromJson(mState.toJSONString(), HashMap.class)));
                sb.append("}");
                out.print(sb.toString());
-               
                // shrug.. this was done in clientrts.. now that it's removed, i moved this here
                SCORM_2004_NAV_DM navDM = (SCORM_2004_NAV_DM)mSCOData.getDataModel("adl");
                navDM.setValidRequests(mState);
