@@ -52,7 +52,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.io.Serializable;
 
-
 /**
  * <strong>Filename:</strong> SCORM_2004_DM.java<br><br>
  *
@@ -1433,8 +1432,13 @@ public class SCORM_2004_DM extends DataModel implements Serializable
       while (key.hasMoreElements()) {
          String k = key.nextElement();
          DMElement val = (DMElement)mElements.get(k);
-
-         sb.append(val.toJSONString(mBinding));
+         if (k.equals("launch_data")){
+             String[] elemSplit = val.toJSONString(mBinding).split(":", 2);
+             sb.append(elemSplit[0] + ":\'" + elemSplit[1].substring(2, elemSplit[1].length()-3) + "\',\n");
+         }
+         else {
+             sb.append(val.toJSONString(mBinding));
+         }
       }
       sb.deleteCharAt(sb.length() -2);
       sb.append("}");
